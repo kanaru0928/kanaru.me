@@ -1,6 +1,8 @@
-import colors from "tailwindcss/colors";
 import chroma from "chroma-js";
+import clsx from "clsx";
 import { HTMLProps } from "react";
+import { css } from "styled-system/css";
+import { token } from "styled-system/tokens";
 
 interface Props {
   size?: number;
@@ -19,7 +21,12 @@ export function Hamberger({ size = 24, ...props }: Props) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="icon icon-tabler icons-tabler-outline icon-tabler-menu-2 text-white"
+      className={clsx(
+        "icon icon-tabler icons-tabler-outline icon-tabler-menu-2",
+        css({
+          color: "white",
+        })
+      )}
       {...props}
     >
       <defs>
@@ -31,11 +38,11 @@ export function Hamberger({ size = 24, ...props }: Props) {
         <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
           <stop
             offset="0%"
-            stopColor={chroma(colors.violet[300]).alpha(0.1).css()}
+            stopColor={chroma(token("colors.violet.300")).alpha(0.1).css()}
           />
           <stop
             offset="100%"
-            stopColor={chroma(colors.violet[300]).alpha(0.6).css()}
+            stopColor={chroma(token("colors.violet.300")).alpha(0.6).css()}
           />
         </linearGradient>
       </defs>
