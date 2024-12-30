@@ -53,9 +53,10 @@ export default function App() {
       })}
     >
       <header
-        className={css({
+        className={flex({
           h: "dvh",
           bg: "black",
+          justify: "center",
         })}
       >
         <HomeBG />
@@ -67,6 +68,8 @@ export default function App() {
             h: "full",
             position: "relative",
             pb: 10,
+            w: "full",
+            maxW: 600,
           })}
         >
           <Hamberger size={120} />
@@ -121,50 +124,57 @@ export default function App() {
         className={css({
           p: 5,
           bg: "zinc.900",
-          spaceY: 5,
         })}
       >
-        <div>
-          <SectionHeader>Portfolio</SectionHeader>
-          <Card
-            title="ポートフォリオ"
-            className={css({ my: 3 })}
-            anchor={
-              <div>
-                <IconChevronsRight />
-              </div>
-            }
-          >
-            <p>ポートフォリオはこちら。</p>
-          </Card>
-        </div>
-        <div>
-          <SectionHeader>Articles</SectionHeader>
-          <Card
-            title="テストの記事"
-            className={css({ my: 3 })}
-            anchor={
-              <div>
-                <IconChevronsRight />
-              </div>
-            }
-          >
-            <p>ここに記事の説明。</p>
-          </Card>
-        </div>
-        <div>
-          <SectionHeader>Links</SectionHeader>
-          <Card
-            title="相互リンク"
-            className={css({ my: 3 })}
-            anchor={
-              <div>
-                <IconChevronsRight />
-              </div>
-            }
-          >
-            <p>ここに相互リンク</p>
-          </Card>
+        <div
+          className={flex({
+            direction: "column",
+            alignItems: "center",
+            spaceY: 5,
+          })}
+        >
+          <div className={css({ w: "full", maxW: 600 })}>
+            <SectionHeader>Portfolio</SectionHeader>
+            <Card
+              title="ポートフォリオ"
+              className={css({ my: 3 })}
+              anchor={
+                <div>
+                  <IconChevronsRight />
+                </div>
+              }
+            >
+              <p>ポートフォリオはこちら。</p>
+            </Card>
+          </div>
+          <div className={css({ w: "full", maxW: 600 })}>
+            <SectionHeader>Articles</SectionHeader>
+            <Card
+              title="テストの記事"
+              className={css({ my: 3 })}
+              anchor={
+                <div>
+                  <IconChevronsRight />
+                </div>
+              }
+            >
+              <p>ここに記事の説明。</p>
+            </Card>
+          </div>
+          <div className={css({ w: "full", maxW: 600 })}>
+            <SectionHeader>Links</SectionHeader>
+            <Card
+              title="相互リンク"
+              className={css({ my: 3 })}
+              anchor={
+                <div>
+                  <IconChevronsRight />
+                </div>
+              }
+            >
+              <p>ここに相互リンク</p>
+            </Card>
+          </div>
         </div>
       </div>
       <footer
