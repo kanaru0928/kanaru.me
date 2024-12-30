@@ -1,27 +1,42 @@
 import {
-  CartesianGrid,
   Line,
   LineChart,
   ReferenceLine,
   ResponsiveContainer,
   ResponsiveContainerProps,
   XAxis,
-  YAxis,
 } from "recharts";
+import { css } from "styled-system/css";
 import { token } from "styled-system/tokens";
-import { getGithubContributes } from "~/loader/getGithubContributes";
 
-interface Props extends Omit<ResponsiveContainerProps, "children"> {}
+interface Contribute {
+  month: string;
+  amt: number;
+}
+
+interface Props extends Omit<ResponsiveContainerProps, "children"> {
+  contributes: Contribute[];
+}
 
 export function GithubGraph(props: Props) {
-  const data = getGithubContributes();
-  const max = Math.max(...data.map((d) => d.amt));
-  const min = Math.min(...data.map((d) => d.amt));
+  const contributes = props.contributes;
+
+  const max = Math.max(...contributes.map((d) => d.amt));
+  const min = Math.min(...contributes.map((d) => d.amt));
 
   return (
-    <ResponsiveContainer width="100%" height="30%" {...props}>
+    <ResponsiveContainer
+      width="100%"
+      height="30%"
+      {...props}
+      className={css({
+        "& svg": {
+          animation: "fadeIn 0.5s",
+        },
+      })}
+    >
       <LineChart
-        data={data}
+        data={contributes}
         margin={{
           top: 20,
           right: 20,

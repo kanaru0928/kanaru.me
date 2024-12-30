@@ -1,10 +1,12 @@
 import type { MetaFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { IconChevronsDown } from "@tabler/icons-react";
 import { css } from "styled-system/css";
 import { flex } from "styled-system/patterns";
 import { Chip } from "~/components/chip";
 import { GithubGraph } from "~/components/github-graph";
 import { Hamberger } from "~/components/hamberger";
+import { getGithubContributesChart } from "~/loader/github-contributes";
 
 export const meta: MetaFunction = () => {
   return [
@@ -16,7 +18,29 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+interface Contribute {
+  month: string;
+  amt: number;
+}
+
+interface LoaderData {
+  contributes: Contribute[];
+}
+
+export const loader = async () => {
+  const contributes = await getGithubContributesChart();
+
+  return new Response(JSON.stringify({ contributes }), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+    },
+  });
+};
+
 export default function App() {
+  const { contributes } = useLoaderData<LoaderData>();
+
   return (
     <div>
       <div
@@ -62,7 +86,7 @@ export default function App() {
             kanaru.me
           </h1>
           <Chip>v0.0.1</Chip>
-          <GithubGraph />
+          <GithubGraph contributes={contributes} />
         </div>
         <div
           className={css({
