@@ -12,8 +12,7 @@ export default defineConfig({
 
   // Useful for theme customization
   theme: {
-    extend: {
-    },
+    
   },
 
   jsxFramework: "react",
