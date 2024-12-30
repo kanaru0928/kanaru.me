@@ -50,7 +50,7 @@ export default function App() {
     >
       <div
         className={css({
-          h: "screen",
+          h: "dvh",
         })}
       >
         <HomeBG />
