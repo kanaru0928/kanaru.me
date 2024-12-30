@@ -1,5 +1,3 @@
-import * as Dialog from "@radix-ui/react-dialog";
-import { Link } from "@remix-run/react";
 import { flex } from "styled-system/patterns";
 import { HambergerLink } from "./hamberger-link";
 import { IconChevronsRight } from "@tabler/icons-react";

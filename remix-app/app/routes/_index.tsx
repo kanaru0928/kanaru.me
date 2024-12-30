@@ -1,9 +1,10 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import type { MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import {
   IconChevronsDown,
   IconChevronsRight,
+  IconLink,
   IconX,
 } from "@tabler/icons-react";
 import { css } from "styled-system/css";
@@ -198,6 +199,8 @@ export default function App() {
                     <IconChevronsRight />
                   </div>
                 }
+                elementType={Link}
+                to="/portfolio"
               >
                 <p>ポートフォリオはこちら。</p>
               </Card>
@@ -223,7 +226,7 @@ export default function App() {
                 className={css({ my: 3 })}
                 anchor={
                   <div>
-                    <IconChevronsRight />
+                    <IconLink />
                   </div>
                 }
               >

@@ -3,14 +3,17 @@ import { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 import { css } from "styled-system/css";
 import { flex } from "styled-system/patterns";
 
-interface Props extends ComponentPropsWithoutRef<"div"> {
+type Props<As extends ElementType> = Omit<
+  ComponentPropsWithoutRef<As>,
+  "as"
+> & {
   children?: ReactNode;
   anchor?: ReactNode;
   title?: string;
-  elementType?: ElementType;
-}
+  elementType?: As;
+};
 
-export function Card(props: Props) {
+export function Card<As extends ElementType>(props: Props<As>) {
   const As = props.elementType || "div";
 
   return (
@@ -18,6 +21,7 @@ export function Card(props: Props) {
       {...props}
       className={clsx(
         css({
+          display: "block",
           rounded: "md",
           border: "solid 1px",
           borderColor: "zinc.50/40",
