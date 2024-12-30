@@ -6,6 +6,7 @@ import { flex } from "styled-system/patterns";
 import { Chip } from "~/components/chip";
 import { GithubGraph } from "~/components/github-graph";
 import { Hamberger } from "~/components/hamberger";
+import { HomeBG } from "~/components/home-bg";
 import { getGithubContributesChart } from "~/loader/github-contributes";
 
 export const meta: MetaFunction = () => {
@@ -42,13 +43,17 @@ export default function App() {
   const { contributes } = useLoaderData<LoaderData>();
 
   return (
-    <div>
+    <div
+      className={css({
+        color: "white",
+      })}
+    >
       <div
         className={css({
-          bg: "black",
           h: "screen",
         })}
       >
+        <HomeBG />
         <div
           className={flex({
             direction: "column",
@@ -56,7 +61,8 @@ export default function App() {
             align: "center",
             h: "full",
             position: "relative",
-            zIndex: 0,
+            zIndex: 1,
+            pb: 10,
           })}
         >
           <Hamberger size={120} />
@@ -76,7 +82,7 @@ export default function App() {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                bg: "violet.300/70",
+                bg: "violet.300/60",
                 filter: "auto",
                 blur: "2xl",
                 zIndex: -1,
@@ -101,11 +107,25 @@ export default function App() {
           <IconChevronsDown
             size={200}
             className={css({
-              color: "white/15",
+              color: "white/10",
               animation: "bounce 2s infinite",
             })}
           />
         </div>
+      </div>
+      <div
+        className={css({
+          p: 5,
+          bg: "zinc.900",
+        })}
+      >
+        <h2
+          className={css({
+            color: "white",
+          })}
+        >
+          aaaa
+        </h2>
       </div>
     </div>
   );
