@@ -1,12 +1,15 @@
 import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { IconChevronsDown } from "@tabler/icons-react";
+import { IconChevronsDown, IconChevronsRight } from "@tabler/icons-react";
 import { css } from "styled-system/css";
 import { flex } from "styled-system/patterns";
+import { Card } from "~/components/card";
 import { Chip } from "~/components/chip";
+import { Copyright } from "~/components/copyright";
 import { GithubGraph } from "~/components/github-graph";
 import { Hamberger } from "~/components/hamberger";
 import { HomeBG } from "~/components/home-bg";
+import { SectionHeader } from "~/components/section-header";
 import { getGithubContributesChart } from "~/loader/github-contributes";
 
 export const meta: MetaFunction = () => {
@@ -46,11 +49,13 @@ export default function App() {
     <div
       className={css({
         color: "white",
+        bg: "zinc.900",
       })}
     >
-      <div
+      <header
         className={css({
           h: "dvh",
+          bg: "black",
         })}
       >
         <HomeBG />
@@ -61,7 +66,6 @@ export default function App() {
             align: "center",
             h: "full",
             position: "relative",
-            zIndex: 1,
             pb: 10,
           })}
         >
@@ -112,21 +116,66 @@ export default function App() {
             })}
           />
         </div>
-      </div>
+      </header>
       <div
         className={css({
           p: 5,
           bg: "zinc.900",
+          spaceY: 5,
         })}
       >
-        <h2
-          className={css({
-            color: "white",
-          })}
-        >
-          aaaa
-        </h2>
+        <div>
+          <SectionHeader>Portfolio</SectionHeader>
+          <Card
+            title="ポートフォリオ"
+            className={css({ my: 3 })}
+            anchor={
+              <div>
+                <IconChevronsRight />
+              </div>
+            }
+          >
+            <p>ポートフォリオはこちら。</p>
+          </Card>
+        </div>
+        <div>
+          <SectionHeader>Articles</SectionHeader>
+          <Card
+            title="テストの記事"
+            className={css({ my: 3 })}
+            anchor={
+              <div>
+                <IconChevronsRight />
+              </div>
+            }
+          >
+            <p>ここに記事の説明。</p>
+          </Card>
+        </div>
+        <div>
+          <SectionHeader>Links</SectionHeader>
+          <Card
+            title="相互リンク"
+            className={css({ my: 3 })}
+            anchor={
+              <div>
+                <IconChevronsRight />
+              </div>
+            }
+          >
+            <p>ここに相互リンク</p>
+          </Card>
+        </div>
       </div>
+      <footer
+        className={css({
+          textAlign: "center",
+          p: 5,
+          bg: "zinc.900",
+        })}
+      >
+        <Copyright />
+      </footer>
     </div>
   );
 }
