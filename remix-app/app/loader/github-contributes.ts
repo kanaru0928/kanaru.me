@@ -1,4 +1,4 @@
-import { UTCDate } from "@date-fns/utc";
+import { TZDate } from "@date-fns/tz";
 import { format, subMonths } from "date-fns";
 
 export async function getGithubContributesByMonth(
@@ -8,8 +8,8 @@ export async function getGithubContributesByMonth(
   const nextMonth = month + 1 > 12 ? 1 : month + 1;
   const nextYear = month + 1 > 12 ? year + 1 : year;
 
-  const from = new UTCDate(year, month - 1).toISOString();
-  const to = new UTCDate(nextYear, nextMonth - 1).toISOString();
+  const from = new TZDate(year, month - 1, "Asia/Tokyo").toISOString();
+  const to = new TZDate(nextYear, nextMonth - 1, "Asia/Tokyo").toISOString();
 
   const query = {
     query: `

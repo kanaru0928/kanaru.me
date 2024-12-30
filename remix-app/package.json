@@ -12,6 +12,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@date-fns/tz": "^1.2.0",
     "@date-fns/utc": "^2.1.0",
     "@remix-run/node": "^2.15.2",
     "@remix-run/react": "^2.15.2",

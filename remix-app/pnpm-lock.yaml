@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@date-fns/tz':
+        specifier: ^1.2.0
+        version: 1.2.0
       '@date-fns/utc':
         specifier: ^2.1.0
         version: 2.1.0
@@ -264,6 +267,9 @@ packages:
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
       postcss-selector-parser: ^6.0.13
+
+  '@date-fns/tz@1.2.0':
+    resolution: {integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==}
 
   '@date-fns/utc@2.1.0':
     resolution: {integrity: sha512-176grgAgU2U303rD2/vcOmNg0kGPbhzckuH1TEP2al7n0AQipZIy9P15usd2TKQCG1g+E1jX/ZVQSzs4sUDwgA==}
@@ -4334,6 +4340,8 @@ snapshots:
   '@csstools/selector-specificity@3.1.1(postcss-selector-parser@6.1.2)':
     dependencies:
       postcss-selector-parser: 6.1.2
+
+  '@date-fns/tz@1.2.0': {}
 
   '@date-fns/utc@2.1.0': {}
 
