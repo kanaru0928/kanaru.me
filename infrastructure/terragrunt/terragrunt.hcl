@@ -6,13 +6,16 @@ locals {
 generate "provider" {
   path      = "provider.tf"
   if_exists = "overwrite"
-  contents  = file("./config/provider.tf.tftpl")
+  contents = templatefile("./config/provider.tf.tftpl", {
+    env    = local.env,
+    region = local.region
+  })
 }
 
 generate "main" {
   path      = "main.tf"
   if_exists = "overwrite"
-  contents  = "${templatefile("./config/main.tf.tftpl", {
+  contents = "${templatefile("./config/main.tf.tftpl", {
     env = local.env
   })}"
 }

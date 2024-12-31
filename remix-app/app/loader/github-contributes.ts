@@ -1,5 +1,6 @@
 import { TZDate } from "@date-fns/tz";
 import { format, subMonths } from "date-fns";
+import { getGitHubToken } from "./parameters";
 
 export async function getGithubContributesByMonth(
   year: number,
@@ -32,13 +33,14 @@ export async function getGithubContributesByMonth(
   const response = await fetch(process.env.GITHUB_ENDPOINT, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+      Authorization: `Bearer ${await getGitHubToken()}`,
       "Content-Type": "application/json",
       "User-Agent": "kanaru.me",
     },
     body: JSON.stringify(query),
   });
   const json = await response.json();
+  // console.log(json);
   return json.data.user.contributionsCollection.contributionCalendar
     .totalContributions;
 }
@@ -56,10 +58,12 @@ export async function getGithubContributesChart() {
 
   const data = await Promise.all(promises);
 
-  const contributes = data.map((amt, i) => ({
-    month: format(subMonths(new Date(), i), "yy MMM"),
-    amt,
-  })).reverse();
+  const contributes = data
+    .map((amt, i) => ({
+      month: format(subMonths(new Date(), i), "yy MMM"),
+      amt,
+    }))
+    .reverse();
 
   return contributes;
 }
