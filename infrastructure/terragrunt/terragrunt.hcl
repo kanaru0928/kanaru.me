@@ -12,7 +12,9 @@ generate "provider" {
 generate "main" {
   path      = "main.tf"
   if_exists = "overwrite"
-  contents  = "${file("./config/main.tf.tftpl")}"
+  contents  = "${templatefile("./config/main.tf.tftpl", {
+    env = local.env
+  })}"
 }
 
 remote_state {
@@ -39,5 +41,7 @@ generate "variables" {
 generate "tfvars" {
   path      = "terraform.tfvars"
   if_exists = "overwrite"
-  contents  = "${file("./config/terraform.tfvars.tftpl")}\n${file("./config/${local.env}/terraform.tfvars.tftpl")}"
+  contents = "${templatefile("./config/terraform.tfvars.tftpl", {
+    env = local.env
+  })}\n${file("./config/${local.env}/terraform.tfvars.tftpl")}"
 }

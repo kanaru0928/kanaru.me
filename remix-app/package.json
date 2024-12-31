@@ -8,12 +8,14 @@
     "build": "remix vite:build",
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "start": "dotenv -f .env.production -- pnpm remix-serve ./build/server/index.js",
+    "start": "dotenv -e .env.production -- pnpm remix-serve ./build/server/index.js",
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@aws-sdk/client-ssm": "^3.716.0",
     "@date-fns/tz": "^1.2.0",
     "@date-fns/utc": "^2.1.0",
+    "@pandacss/dev": "^0.50.0",
     "@radix-ui/react-dialog": "^1.1.4",
     "@remix-run/node": "^2.15.2",
     "@remix-run/react": "^2.15.2",
@@ -23,6 +25,7 @@
     "chroma-js": "^3.1.2",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "dotenv-cli": "^8.0.0",
     "isbot": "^4.4.0",
     "react": "18.3.0-canary-c3048aab4-20240326",
     "react-dom": "18.3.0-canary-c3048aab4-20240326",
@@ -30,14 +33,12 @@
     "tailwindcss-radix": "^3.0.5"
   },
   "devDependencies": {
-    "@pandacss/dev": "^0.50.0",
     "@remix-run/dev": "^2.15.2",
     "@types/chroma-js": "^2.4.5",
     "@types/react": "18.3.0",
     "@types/react-dom": "18.3.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "dotenv": "^16.4.7",
     "eslint": "^8.57.1",
     "eslint-import-resolver-typescript": "^3.7.0",
     "eslint-plugin-import": "^2.31.0",
@@ -47,6 +48,9 @@
     "typescript": "^5.7.2",
     "vite": "^5.4.11",
     "vite-tsconfig-paths": "^4.3.2"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.29.1"
   },
   "engines": {
     "node": ">=20.0.0"
