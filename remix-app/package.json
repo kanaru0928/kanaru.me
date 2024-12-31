@@ -8,7 +8,7 @@
     "build": "remix vite:build",
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "start": "remix-serve ./build/server/index.js",
+    "start": "dotenv -f .env.production -- pnpm remix-serve ./build/server/index.js",
     "typecheck": "tsc"
   },
   "dependencies": {
@@ -37,6 +37,7 @@
     "@types/react-dom": "18.3.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
+    "dotenv": "^16.4.7",
     "eslint": "^8.57.1",
     "eslint-import-resolver-typescript": "^3.7.0",
     "eslint-plugin-import": "^2.31.0",
