@@ -30,6 +30,7 @@ ADD . .
 RUN pnpm run build
 
 FROM base AS runner
+COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.4 /lambda-adapter /opt/extensions/lambda-adapter
 
 COPY --from=production-deps /app/node_modules /app/node_modules
 COPY --from=build /app/build /app/build
