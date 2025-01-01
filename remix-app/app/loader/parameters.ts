@@ -3,7 +3,6 @@ import { fromSSO } from "@aws-sdk/credential-providers";
 
 const ssmClient = new SSMClient({
   region: process.env.AWS_REGION,
-  credentials: fromSSO(),
 });
 
 let githubToken: string | null = null;

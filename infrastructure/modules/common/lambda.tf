@@ -6,9 +6,24 @@ resource "aws_lambda_function" "lambda-app" {
   timeout       = 60
   memory_size   = 256
   architectures = ["arm64"]
+  environment {
+    variables = {
+      APP_NAME        = "kanaru.me"
+      ENVIRONMENT     = var.env
+      GITHUB_ENDPOINT = "https://api.github.com/graphql"
+    }
+  }
 }
 
 resource "aws_lambda_function_url" "lambda-app-url" {
   function_name      = aws_lambda_function.lambda-app.function_name
-  authorization_type = "NONE"
+  authorization_type = "AWS_IAM"
+}
+
+resource "aws_lambda_permission" "lambda-app-cloudfront-permission" {
+  statement_id  = "AllowExecutionFromCloudFront"
+  action        = "lambda:InvokeFunctionUrl"
+  function_name = aws_lambda_function.lambda-app.function_name
+  principal     = "cloudfront.amazonaws.com"
+  source_arn    = aws_cloudfront_distribution.app-distribution.arn
 }
