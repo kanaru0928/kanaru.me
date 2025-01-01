@@ -34,8 +34,15 @@ resource "aws_cloudfront_distribution" "app-distribution" {
 
   viewer_certificate {
     cloudfront_default_certificate = false
-    acm_certificate_arn            = var.acm_certificate_arn
+    acm_certificate_arn            = data.aws_acm_certificate.app-distribution-acm.arn
+    ssl_support_method             = "sni-only"
+    minimum_protocol_version       = "TLSv1.2_2021"
   }
+}
+
+data "aws_acm_certificate" "app-distribution-acm" {
+  domain   = "kanaru.me"
+  provider = aws.virginia
 }
 
 resource "aws_cloudfront_origin_access_control" "app-distribution-oac" {
