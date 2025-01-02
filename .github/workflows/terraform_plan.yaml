@@ -35,6 +35,7 @@ jobs:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: "hclfmt --terragrunt-check --terragrunt-diff"
           tg_version: ${{ env.TG_VERSION }}
+          tf_version: ${{ env.TF_VERSION }}
 
   plan:
     name: Terraform Plan
@@ -64,3 +65,4 @@ jobs:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: plan
           tg_version: ${{ env.TG_VERSION }}
+          tf_version: ${{ env.TF_VERSION }}
