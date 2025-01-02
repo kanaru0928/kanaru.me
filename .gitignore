@@ -261,8 +261,6 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/node,linux,macos,windows,terragrunt,terraform
 
-*.tfvars*
-!*.tfvars*.example
 infrastructure/environments/*/*
 !infrastructure/environments/**/terragrunt.hcl
 !infrastructure/environments/**/.terraform.lock.hcl
