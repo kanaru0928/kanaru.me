@@ -22,7 +22,7 @@ jobs:
         environment:
           - dev
           - prod
-    defaults: &defaults
+    defaults:
       run:
         working-directory: infrastructure/environments/${{ matrix.environment }}
     steps:
