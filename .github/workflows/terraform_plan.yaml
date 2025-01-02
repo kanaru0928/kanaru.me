@@ -17,6 +17,7 @@ jobs:
   checks:
     name: Terraform Check
     runs-on: ubuntu-latest
+    environment: deployment
     strategy:
       matrix:
         environment:
@@ -40,6 +41,7 @@ jobs:
   plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
+    environment: deployment
     needs: [checks]
     strategy:
       matrix:
