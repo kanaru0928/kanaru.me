@@ -13,20 +13,15 @@ permissions:
   id-token: write
   pull-requests: write
 
-env:
-  ROLE_TO_ASSUME: arn:aws:iam::760485329571:role/Github_OIDC
-  AWS_REGION: ap-northeast-1
-  MATRIX: >
-    {
-      "environment": ["prod", "dev"]
-    }
-
 jobs:
   checks:
     name: Terraform Check
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJson(env.MATRIX) }}
+      matrix:
+        environment:
+          - dev
+          - prod
     defaults: &defaults
       run:
         working-directory: infrastructure/environments/${{ matrix.environment }}
@@ -39,14 +34,20 @@ jobs:
         with:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: "hclfmt --terragrunt-check --terragrunt-diff"
+          tg_version: ${{ env.TG_VERSION }}
 
   plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
     needs: [checks]
     strategy:
-      matrix: ${{ fromJson(env.MATRIX) }}
-    defaults: *defaults
+      matrix:
+        environment:
+          - dev
+          - prod
+    defaults:
+      run:
+        working-directory: infrastructure/environments/${{ matrix.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,3 +63,4 @@ jobs:
         with:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: plan
+          tg_version: ${{ env.TG_VERSION }}
