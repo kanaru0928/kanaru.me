@@ -5,7 +5,7 @@ resource "aws_lambda_function" "lambda-app" {
   image_uri     = "${aws_ecr_repository.ecr.repository_url}:latest"
   timeout       = 60
   memory_size   = 256
-  architectures = ["arm64"]
+  architectures = ["x86_64"]
   environment {
     variables = {
       APP_NAME        = "kanaru.me"
