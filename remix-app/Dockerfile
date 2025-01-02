@@ -21,6 +21,7 @@ FROM base AS build
 ENV NODE_ENV=production
 
 COPY --from=deps /app/node_modules /app/node_modules
+COPY --from=deps /app/styled-system /app/styled-system
 ADD . .
 
 RUN npm run build
