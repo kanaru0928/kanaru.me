@@ -45,6 +45,7 @@ jobs:
           context: remix-app
           push: true
           tags: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/ecr-kanaru-me-${{ matrix.environment }}:latest
+          provenance: false
 
       - name: Check Terragrunt HCL
         uses: gruntwork-io/terragrunt-action@v2
@@ -61,6 +62,10 @@ jobs:
           tg_command: apply
           tf_version: ${{ vars.TF_VERSION }}
           tg_version: ${{ vars.TG_VERSION }}
+
+      - name: Update Lambda Code
+        run: |
+          aws lambda update-function-code --function-name lambda-kanaru-me-app-${{ matrix.environment }} --image-uri ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/ecr-kanaru-me-${{ matrix.environment }}:latest
 
   release:
     name: Release
