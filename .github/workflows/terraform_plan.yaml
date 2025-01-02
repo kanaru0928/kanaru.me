@@ -34,8 +34,8 @@ jobs:
         with:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: "hclfmt --terragrunt-check --terragrunt-diff"
-          tg_version: ${{ env.TG_VERSION }}
-          tf_version: ${{ env.TF_VERSION }}
+          tf_version: ${{ vars.TF_VERSION }}
+          tg_version: ${{ vars.TG_VERSION }}
 
   plan:
     name: Terraform Plan
@@ -56,13 +56,13 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.ROLE_TO_ASSUME }}
 
       - name: Terragrunt Plan
         uses: gruntwork-io/terragrunt-action@v2
         with:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: plan
-          tg_version: ${{ env.TG_VERSION }}
-          tf_version: ${{ env.TF_VERSION }}
+          tf_version: ${{ vars.TF_VERSION }}
+          tg_version: ${{ vars.TG_VERSION }}
