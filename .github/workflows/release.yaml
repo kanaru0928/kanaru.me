@@ -71,6 +71,7 @@ jobs:
       - name: Latest Tag
         id: latest_tag
         run: |
+          git fetch --tags
           echo "TAG=$(git tag -l | tail -n 1)" >> "$GITHUB_OUTPUT"
 
       - name: Terraform Apply
