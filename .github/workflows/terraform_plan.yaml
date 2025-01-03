@@ -63,6 +63,8 @@ jobs:
 
       - name: Terragrunt Plan
         uses: gruntwork-io/terragrunt-action@v2
+        env:
+          VERSION_NAME: ${{ github.ref_name }}
         with:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: plan
