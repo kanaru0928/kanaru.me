@@ -4,6 +4,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 
@@ -22,7 +23,34 @@ export const links: LinksFunction = () => [
   },
 ];
 
+interface LoaderData {
+  ENV: {
+    VERSION_NAME?: string;
+  };
+}
+
+declare global {
+  interface Window extends LoaderData {}
+}
+
+export async function loader() {
+  const data: LoaderData = {
+    ENV: {
+      VERSION_NAME: process.env.VERSION_NAME,
+    },
+  };
+
+  return new Response(JSON.stringify({ data }), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+    },
+  });
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { data } = useRouteLoaderData<typeof loader>("root");
+
   return (
     <html lang="en">
       <head>
@@ -33,6 +61,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+          }}
+        />
         <ScrollRestoration />
         <Scripts />
       </body>

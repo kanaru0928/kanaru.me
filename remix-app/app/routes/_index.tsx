@@ -10,13 +10,13 @@ import {
 import { css } from "styled-system/css";
 import { flex } from "styled-system/patterns";
 import { Card } from "~/components/card";
-import { Chip } from "~/components/chip";
 import { Copyright } from "~/components/copyright";
 import { GithubGraph } from "~/components/github-graph";
 import { Hamberger } from "~/components/hamberger";
 import { HambergerContent } from "~/components/hamberger-content";
 import { HomeBG } from "~/components/home-bg";
 import { SectionHeader } from "~/components/section-header";
+import { VersionChip } from "~/components/version-chip";
 import { getGithubContributesChart } from "~/loader/github-contributes";
 
 export const meta: MetaFunction = () => {
@@ -154,7 +154,7 @@ export default function App() {
             >
               kanaru.me
             </h1>
-            <Chip>v0.0.1</Chip>
+            <VersionChip />
             <GithubGraph contributes={contributes} />
           </div>
           <div
