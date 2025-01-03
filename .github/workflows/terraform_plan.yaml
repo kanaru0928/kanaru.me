@@ -63,7 +63,7 @@ jobs:
           
       - name: Latest Tag
         run: |
-          echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          echo "TAG=$(git tag --points-at HEAD)" >> $GITHUB_ENV
 
       - name: Terragrunt Plan
         uses: gruntwork-io/terragrunt-action@v2
