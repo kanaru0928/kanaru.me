@@ -63,7 +63,7 @@ jobs:
       - name: Check Terragrunt HCL
         uses: gruntwork-io/terragrunt-action@v2
         env:
-          VERSION_NAME: ${{ github.ref_name }}
+          TF_VAR_version_name: ${{ github.ref_name }}
         with:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: "hclfmt --terragrunt-check --terragrunt-diff"
