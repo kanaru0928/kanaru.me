@@ -60,6 +60,12 @@ jobs:
         run: |
           npx semantic-release
 
+      - name: Latest Tag
+        id: latest_tag
+        run: |
+          git fetch --tags
+          echo "TAG=$(git tag -l --sort authordate | tail -n 1)" >> "$GITHUB_OUTPUT"
+
       - name: Check Terragrunt HCL
         uses: gruntwork-io/terragrunt-action@v2
         with:
@@ -67,12 +73,6 @@ jobs:
           tg_command: "hclfmt --terragrunt-check --terragrunt-diff"
           tf_version: ${{ vars.TF_VERSION }}
           tg_version: ${{ vars.TG_VERSION }}
-          
-      - name: Latest Tag
-        id: latest_tag
-        run: |
-          git fetch --tags
-          echo "TAG=$(git tag -l --sort authordate | tail -n 1)" >> "$GITHUB_OUTPUT"
 
       - name: Terraform Apply
         uses: gruntwork-io/terragrunt-action@v2
