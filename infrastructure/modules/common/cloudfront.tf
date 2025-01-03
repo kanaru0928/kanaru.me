@@ -33,7 +33,7 @@ resource "aws_cloudfront_distribution" "app-distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = var.env == "prod" ? false : true
+    cloudfront_default_certificate = false
     acm_certificate_arn            = data.aws_acm_certificate.app-distribution-acm.arn
     ssl_support_method             = "sni-only"
     minimum_protocol_version       = "TLSv1.2_2021"

@@ -1,6 +1,7 @@
 module "common" {
-  source = "../../modules/common"
-  env    = "${env}"
+  source       = "../../modules/common"
+  env          = "${env}"
+  version_name = var.version_name
   providers = {
     aws.virginia = aws.virginia
   }
