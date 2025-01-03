@@ -70,7 +70,7 @@ jobs:
           
       - name: Latest Tag
         run: |
-          echo "TAG=$(git tag --points-at HEAD)" >> $GITHUB_ENV
+          echo "TAG=$(git tag -l | tail -n 1)" >> $GITHUB_ENV
 
       - name: Terraform Apply
         uses: gruntwork-io/terragrunt-action@v2
