@@ -67,11 +67,15 @@ jobs:
           tg_command: "hclfmt --terragrunt-check --terragrunt-diff"
           tf_version: ${{ vars.TF_VERSION }}
           tg_version: ${{ vars.TG_VERSION }}
+          
+      - name: Latest Tag
+        run: |
+          echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Terraform Apply
         uses: gruntwork-io/terragrunt-action@v2
         env:
-          TF_VAR_version_name: ${{ github.ref_name }}
+          TF_VAR_version_name: ${{ env.TAG }}
         with:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: apply
