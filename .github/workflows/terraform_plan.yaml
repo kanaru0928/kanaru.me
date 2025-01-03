@@ -62,13 +62,14 @@ jobs:
           role-to-assume: ${{ vars.ROLE_TO_ASSUME }}
           
       - name: Latest Tag
+        id: latest_tag
         run: |
-          echo "TAG=$(git tag -l | tail -n 1)" >> $GITHUB_ENV
+          echo "TAG=$(git tag -l | tail -n 1)" >> "$GITHUB_OUTPUT"
 
       - name: Terragrunt Plan
         uses: gruntwork-io/terragrunt-action@v2
         env:
-          TF_VAR_version_name: ${{ env.TAG }}
+          TF_VAR_version_name: ${{ steps.latest_tag.outputs.TAG }}
         with:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: plan
