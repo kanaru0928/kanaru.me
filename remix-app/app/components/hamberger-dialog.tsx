@@ -36,7 +36,7 @@ export function HambergerDialog() {
           Menu
         </Dialog.Title>
         <Dialog.Description className={css({ color: "white" })}>
-          このページのリンク一覧
+          リンク一覧
         </Dialog.Description>
         <HambergerContent />
         <Dialog.Close asChild>

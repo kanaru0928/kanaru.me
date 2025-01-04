@@ -1,49 +1,71 @@
 import { flex } from "styled-system/patterns";
 import { HambergerLink } from "./hamberger-link";
-import { IconChevronsRight } from "@tabler/icons-react";
+import {
+  IconBrandGithubFilled,
+  IconBrandTwitterFilled,
+  IconChevronsRight,
+} from "@tabler/icons-react";
 
 export function HambergerContent() {
   return (
-    <div
-      className={flex({
-        color: "white",
-        alignItems: "center",
-        justify: "center",
-        direction: "column",
-        spaceY: 2,
-        my: 5,
-      })}
-    >
-      <HambergerLink
-        href="/"
-        anchor={
-          <div>
-            <IconChevronsRight />
-          </div>
-        }
+    <div>
+      <div
+        className={flex({
+          color: "white",
+          alignItems: "center",
+          justify: "center",
+          direction: "column",
+          spaceY: 2,
+          my: 5,
+        })}
       >
-        Home
-      </HambergerLink>
-      <HambergerLink
-        href="/portfolio"
-        anchor={
+        <HambergerLink
+          href="/"
+          anchor={
+            <div>
+              <IconChevronsRight />
+            </div>
+          }
+        >
+          Home
+        </HambergerLink>
+        <HambergerLink
+          href="/portfolio"
+          anchor={
+            <div>
+              <IconChevronsRight />
+            </div>
+          }
+        >
+          Portfolio
+        </HambergerLink>
+        <HambergerLink
+          href="/articles"
+          anchor={
+            <div>
+              <IconChevronsRight />
+            </div>
+          }
+        >
+          Articles
+        </HambergerLink>
+      </div>
+      <div className={flex({ color: "white", justify: "center", spaceX: 3 })}>
+        <a
+          href="https://github.com/kanaru0928"
+          target="_blank"
+          rel="noreferrer"
+        >
           <div>
-            <IconChevronsRight />
+            <IconBrandGithubFilled size={28} />
           </div>
-        }
-      >
-        Portfolio
-      </HambergerLink>
-      <HambergerLink
-        href="/articles"
-        anchor={
+        </a>
+        <a href="https://x.com/Kanaru49570357" target="_blank" rel="noreferrer">
           <div>
-            <IconChevronsRight />
+            <IconBrandTwitterFilled size={28} />
           </div>
-        }
-      >
-        Articles
-      </HambergerLink>
+        </a>
+      </div>
     </div>
   );
 }
