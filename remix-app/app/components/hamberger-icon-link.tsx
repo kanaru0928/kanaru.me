@@ -1,26 +1,19 @@
-import { useEffect, useState } from "react";
-import { Chip } from "./chip";
 import * as Tooltip from "@radix-ui/react-tooltip";
+import { ReactNode } from "react";
 import { css } from "styled-system/css";
 
-export function VersionChip() {
-  const [version, setVersion] = useState<string | null>(null);
-  const [repoUrl, setRepoUrl] = useState<string | null>(null);
+interface Props {
+  href: string;
+  children: ReactNode;
+  description: string;
+}
 
-  useEffect(() => {
-    setVersion(window.ENV.VERSION_NAME ?? null);
-    setRepoUrl(window.ENV.REPOSITORY_URL ?? null);
-  }, []);
-
+export function HambergerIconLink({ href, children, description }: Props) {
   return (
     <Tooltip.Root>
       <Tooltip.Trigger asChild>
-        <a
-          href={`${repoUrl}/releases/tag/${version}`}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <Chip>{version}</Chip>
+        <a href={href} target="_blank" rel="noreferrer">
+          <div>{children}</div>
         </a>
       </Tooltip.Trigger>
       <Tooltip.Portal>
@@ -40,7 +33,7 @@ export function VersionChip() {
           })}
           sideOffset={5}
         >
-          更新履歴
+          {description}
           <Tooltip.Arrow className={css({ fill: "white" })} />
         </Tooltip.Content>
       </Tooltip.Portal>

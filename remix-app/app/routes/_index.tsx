@@ -2,7 +2,6 @@ import * as Dialog from "@radix-ui/react-dialog";
 import type { MetaFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import {
-  IconChevronsDown,
   IconChevronsRight,
   IconLink,
 } from "@tabler/icons-react";
@@ -66,18 +65,17 @@ export default function App() {
       >
         <header
           className={flex({
-            h: "dvh",
+            minH: "screen",
             bg: "black",
             justify: "center",
+            alignItems: "center",
             position: "relative",
-            zIndex: 1,
           })}
         >
           <HomeBG />
           <div
             className={flex({
               direction: "column",
-              justify: "center",
               align: "center",
               h: "full",
               position: "relative",
@@ -87,7 +85,7 @@ export default function App() {
             })}
           >
             <Dialog.Trigger asChild>
-              <button>
+              <button aria-label="リンクメニュー">
                 <HambergerIcon
                   size={120}
                   className={css({ cursor: "pointer" })}
@@ -108,30 +106,16 @@ export default function App() {
             <GithubGraph contributes={contributes} />
             <GradientText className={css({ mt: 5 })}>
               <span
-                className={css({ fontWeight: "bold", fontSize: "2xl", mr: 1 })}
+                className={css({
+                  fontWeight: "bold",
+                  fontSize: "2xl",
+                  mr: 1,
+                })}
               >
                 {count.toLocaleString("ja-JP")}
               </span>
               PV
             </GradientText>
-          </div>
-          <div
-            className={flex({
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              justify: "center",
-              zIndex: -1,
-            })}
-          >
-            <IconChevronsDown
-              size={200}
-              className={css({
-                color: "white/10",
-                animation: "bounce 2s infinite",
-              })}
-            />
           </div>
         </header>
         <div

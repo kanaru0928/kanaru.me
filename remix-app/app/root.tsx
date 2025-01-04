@@ -7,6 +7,7 @@ import {
   useRouteLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 import "./index.css";
 
@@ -50,6 +51,7 @@ export const links: LinksFunction = () => [
 interface LoaderData {
   ENV: {
     VERSION_NAME?: string;
+    REPOSITORY_URL?: string;
   };
 }
 
@@ -61,6 +63,7 @@ export async function loader() {
   const data: LoaderData = {
     ENV: {
       VERSION_NAME: process.env.VERSION_NAME,
+      REPOSITORY_URL: process.env.REPOSITORY_URL,
     },
   };
 
@@ -98,5 +101,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <Tooltip.Provider>
+      <Outlet />
+    </Tooltip.Provider>
+  );
 }
