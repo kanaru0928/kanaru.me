@@ -66,7 +66,7 @@ export default function App() {
       >
         <header
           className={flex({
-            h: "dvh",
+            h: "screen",
             bg: "black",
             justify: "center",
             position: "relative",
