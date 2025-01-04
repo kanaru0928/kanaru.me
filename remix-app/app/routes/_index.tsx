@@ -22,8 +22,8 @@ export const meta: MetaFunction = () => {
   return [
     { title: "kanaru.me" },
     {
-      name: "Kanaru's website, portfolio, blog",
-      content: "Welcome to kanaru.me!",
+      name: "description",
+      content: "kanaru.meのホームページです。",
     },
   ];
 };
