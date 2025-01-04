@@ -88,7 +88,7 @@ export default function App() {
             })}
           >
             <Dialog.Trigger asChild>
-              <button>
+              <button aria-label="リンクメニュー">
                 <HambergerIcon
                   size={120}
                   className={css({ cursor: "pointer" })}
