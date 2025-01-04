@@ -14,6 +14,7 @@ export function HambergerDialog() {
           animation: "fadeIn 0.2s",
           backdropBlur: "sm",
           backdropFilter: "auto",
+          zIndex: 100,
         })}
       />
       <Dialog.Content
@@ -24,6 +25,7 @@ export function HambergerDialog() {
           top: "50%",
           transform: "translate(-50%, -50%)",
           animation: "fadeIn 0.2s",
+          zIndex: 101,
         })}
       >
         <Dialog.Title
