@@ -17,6 +17,8 @@ import { SectionHeader } from "~/components/section-header";
 import { VersionChip } from "~/components/version-chip";
 import { getGithubContributesChart } from "~/loader/github-contributes";
 import { HambergerDialog } from "~/components/hamberger-dialog";
+import { incrementPageViews } from "~/loader/page-views";
+import { GradientText } from "~/components/gradient-text";
 
 export const meta: MetaFunction = () => {
   return [
@@ -35,12 +37,15 @@ interface Contribute {
 
 interface LoaderData {
   contributes: Contribute[];
+  count: number;
 }
 
 export const loader = async () => {
+  const count = await incrementPageViews("/");
+
   const contributes = await getGithubContributesChart();
 
-  return new Response(JSON.stringify({ contributes }), {
+  return new Response(JSON.stringify({ contributes, count }), {
     status: 200,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
@@ -49,7 +54,7 @@ export const loader = async () => {
 };
 
 export default function App() {
-  const { contributes } = useLoaderData<LoaderData>();
+  const { contributes, count } = useLoaderData<LoaderData>();
 
   return (
     <Dialog.Root>
@@ -64,6 +69,8 @@ export default function App() {
             h: "dvh",
             bg: "black",
             justify: "center",
+            position: "relative",
+            zIndex: 1,
           })}
         >
           <HomeBG />
@@ -88,42 +95,33 @@ export default function App() {
               </button>
             </Dialog.Trigger>
             <HambergerDialog />
-            <h1
+            <GradientText
+              component="h1"
               className={css({
-                textGradient: "to-r",
-                gradientFrom: "violet.300",
-                gradientVia: "violet.50",
-                gradientTo: "violet.300",
                 fontWeight: "bold",
                 fontSize: "4xl",
-                position: "relative",
-                _before: {
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  bg: "violet.300/60",
-                  filter: "auto",
-                  blur: "2xl",
-                  zIndex: -1,
-                },
               })}
             >
               kanaru.me
-            </h1>
+            </GradientText>
             <VersionChip />
             <GithubGraph contributes={contributes} />
+            <GradientText className={css({ mt: 5 })}>
+              <span
+                className={css({ fontWeight: "bold", fontSize: "2xl", mr: 1 })}
+              >
+                {count.toLocaleString("ja-JP")}
+              </span>
+              PV
+            </GradientText>
           </div>
           <div
-            className={css({
+            className={flex({
               position: "absolute",
               bottom: 0,
               left: 0,
               right: 0,
-              display: "flex",
-              justifyContent: "center",
+              justify: "center",
             })}
           >
             <IconChevronsDown

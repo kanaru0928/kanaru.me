@@ -12,8 +12,10 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.721.0",
     "@aws-sdk/client-ssm": "^3.716.0",
     "@aws-sdk/credential-providers": "^3.716.0",
+    "@aws-sdk/lib-dynamodb": "^3.721.0",
     "@date-fns/tz": "^1.2.0",
     "@date-fns/utc": "^2.1.0",
     "@pandacss/dev": "^0.50.0",
