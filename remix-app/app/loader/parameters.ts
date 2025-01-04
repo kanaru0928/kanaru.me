@@ -1,5 +1,4 @@
 import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
-import { fromSSO } from "@aws-sdk/credential-providers";
 
 const ssmClient = new SSMClient({
   region: process.env.AWS_REGION,
