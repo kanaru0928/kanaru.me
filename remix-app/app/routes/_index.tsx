@@ -23,7 +23,7 @@ export const meta: MetaFunction = () => {
     { title: "kanaru.me" },
     {
       name: "description",
-      content: "kanaru.meのホームページです。",
+      content: "kanaru.meのホームページ",
     },
   ];
 };
