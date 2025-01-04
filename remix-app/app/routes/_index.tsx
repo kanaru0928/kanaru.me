@@ -5,19 +5,19 @@ import {
   IconChevronsDown,
   IconChevronsRight,
   IconLink,
-  IconX,
 } from "@tabler/icons-react";
 import { css } from "styled-system/css";
 import { flex } from "styled-system/patterns";
 import { Card } from "~/components/card";
 import { Copyright } from "~/components/copyright";
 import { GithubGraph } from "~/components/github-graph";
-import { Hamberger } from "~/components/hamberger";
-import { HambergerContent } from "~/components/hamberger-content";
+import { HambergerIcon } from "~/components/hamberger-icon";
 import { HomeBG } from "~/components/home-bg";
 import { SectionHeader } from "~/components/section-header";
 import { VersionChip } from "~/components/version-chip";
 import { getGithubContributesChart } from "~/loader/github-contributes";
+import { HambergerDialog } from "~/components/hamberger-dialog";
+import { Button } from "~/components/button";
 
 export const meta: MetaFunction = () => {
   return [
@@ -81,54 +81,16 @@ export default function App() {
             })}
           >
             <Dialog.Trigger asChild>
-              <button className={css({ cursor: "pointer" })}>
-                <Hamberger size={120} />
-              </button>
+              <Button asChild>
+                <div>
+                  <HambergerIcon
+                    size={120}
+                    className={css({ cursor: "pointer" })}
+                  />
+                </div>
+              </Button>
             </Dialog.Trigger>
-            <Dialog.Portal>
-              <Dialog.Overlay
-                className={css({
-                  bg: "zinc.900/80",
-                  position: "fixed",
-                  inset: 0,
-                  animation: "fadeIn 0.2s",
-                })}
-              />
-              <Dialog.Content
-                className={css({
-                  position: "fixed",
-                  inset: 0,
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                  animation: "fadeIn 0.2s",
-                })}
-              >
-                <Dialog.Title
-                  className={css({
-                    fontSize: "xl",
-                    fontWeight: "bold",
-                    color: "white",
-                  })}
-                >
-                  Menu
-                </Dialog.Title>
-                <HambergerContent />
-                <Dialog.Close asChild>
-                  <button
-                    className={css({
-                      position: "fixed",
-                      top: 5,
-                      right: 5,
-                      color: "white",
-                      cursor: "pointer",
-                    })}
-                  >
-                    <IconX />
-                  </button>
-                </Dialog.Close>
-              </Dialog.Content>
-            </Dialog.Portal>
+            <HambergerDialog />
             <h1
               className={css({
                 textGradient: "to-r",

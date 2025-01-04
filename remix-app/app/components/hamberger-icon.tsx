@@ -1,15 +1,14 @@
 import chroma from "chroma-js";
 import clsx from "clsx";
-import { HTMLProps } from "react";
+import { ComponentPropsWithoutRef } from "react";
 import { css } from "styled-system/css";
 import { token } from "styled-system/tokens";
 
-interface Props {
+interface Props extends ComponentPropsWithoutRef<"svg"> {
   size?: number;
-  props?: HTMLProps<SVGElement>;
 }
 
-export function Hamberger({ size = 24, ...props }: Props) {
+export function HambergerIcon({ size = 24, ...props }: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

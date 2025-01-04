@@ -11,6 +11,7 @@ export function HambergerContent() {
         justify: "center",
         direction: "column",
         spaceY: 2,
+        my: 5,
       })}
     >
       <HambergerLink
