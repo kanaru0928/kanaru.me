@@ -1,5 +1,8 @@
 export const loader = async () => {
   const robotsTxt = `
+User-agent: *
+Disallow: /assets/
+
 User-agent: anthropic-ai
 User-agent: Applebot-Extended
 User-agent: Bytespider
@@ -19,7 +22,7 @@ User-agent: Timpibot
 User-agent: Baiduspider
 Disallow: /
   `;
-  
+
   return new Response(robotsTxt, {
     status: 200,
     headers: {
