@@ -5,6 +5,7 @@ import {
   IconBrandTwitterFilled,
   IconChevronsRight,
 } from "@tabler/icons-react";
+import { HambergerIconLink } from "./hamberger-icon-link";
 
 export function HambergerContent() {
   return (
@@ -51,20 +52,18 @@ export function HambergerContent() {
         </HambergerLink>
       </div>
       <div className={flex({ color: "white", justify: "center", spaceX: 3 })}>
-        <a
+        <HambergerIconLink
           href="https://github.com/kanaru0928"
-          target="_blank"
-          rel="noreferrer"
+          description="GitHubへ移動"
         >
-          <div>
-            <IconBrandGithubFilled size={28} />
-          </div>
-        </a>
-        <a href="https://x.com/Kanaru49570357" target="_blank" rel="noreferrer">
-          <div>
-            <IconBrandTwitterFilled size={28} />
-          </div>
-        </a>
+          <IconBrandGithubFilled size={28} />
+        </HambergerIconLink>
+        <HambergerIconLink
+          href="https://x.com/Kanaru49570357"
+          description="Twitterへ移動"
+        >
+          <IconBrandTwitterFilled size={28} />
+        </HambergerIconLink>
       </div>
     </div>
   );

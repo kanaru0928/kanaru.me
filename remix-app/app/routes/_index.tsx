@@ -19,6 +19,7 @@ import { getGithubContributesChart } from "~/loader/github-contributes";
 import { HambergerDialog } from "~/components/hamberger-dialog";
 import { incrementPageViews } from "~/loader/page-views";
 import { GradientText } from "~/components/gradient-text";
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 export const meta: MetaFunction = () => {
   return [
@@ -108,7 +109,11 @@ export default function App() {
             <GithubGraph contributes={contributes} />
             <GradientText className={css({ mt: 5 })}>
               <span
-                className={css({ fontWeight: "bold", fontSize: "2xl", mr: 1 })}
+                className={css({
+                  fontWeight: "bold",
+                  fontSize: "2xl",
+                  mr: 1,
+                })}
               >
                 {count.toLocaleString("ja-JP")}
               </span>
