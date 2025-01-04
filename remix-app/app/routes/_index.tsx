@@ -122,6 +122,7 @@ export default function App() {
               left: 0,
               right: 0,
               justify: "center",
+              zIndex: -1,
             })}
           >
             <IconChevronsDown
