@@ -2,7 +2,6 @@ import * as Dialog from "@radix-ui/react-dialog";
 import type { MetaFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import {
-  IconChevronsDown,
   IconChevronsRight,
   IconLink,
 } from "@tabler/icons-react";

@@ -18,9 +18,7 @@ interface Props extends Omit<ResponsiveContainerProps, "children"> {
   contributes: Contribute[];
 }
 
-export function GithubGraph(props: Props) {
-  const contributes = props.contributes;
-
+export function GithubGraph({ contributes, ...props }: Props) {
   const max = Math.max(...contributes.map((d) => d.amt));
   const min = Math.min(...contributes.map((d) => d.amt));
 
@@ -34,6 +32,7 @@ export function GithubGraph(props: Props) {
           animation: "fadeIn 0.5s",
         },
       })}
+      
     >
       <LineChart
         data={contributes}

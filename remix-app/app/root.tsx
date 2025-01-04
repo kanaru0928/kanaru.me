@@ -51,6 +51,7 @@ export const links: LinksFunction = () => [
 interface LoaderData {
   ENV: {
     VERSION_NAME?: string;
+    REPOSITORY_URL?: string;
   };
 }
 
@@ -62,6 +63,7 @@ export async function loader() {
   const data: LoaderData = {
     ENV: {
       VERSION_NAME: process.env.VERSION_NAME,
+      REPOSITORY_URL: process.env.REPOSITORY_URL,
     },
   };
 
