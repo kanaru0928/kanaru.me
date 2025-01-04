@@ -45,6 +45,16 @@ resource "aws_iam_role_policy" "lambda-app-ssm-policy" {
       "Resource": [
 				"arn:aws:ssm:ap-northeast-1:760485329571:parameter/kanaru.me/*"
       ]
+    },
+    {
+      "Effect": "Allow",
+			"Action": [
+				"dynamodb:GetItem",
+				"dynamodb:UpdateItem"
+			],
+			"Resource": [
+				"arn:aws:dynamodb:ap-northeast-1:760485329571:table/kanaru-me-table-page-views-*"
+			]
     }
 	]
 }
