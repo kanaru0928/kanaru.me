@@ -199,7 +199,7 @@ export default function App() {
                     <IconChevronsRight />
                   </div>
                 }
-                elementType={Link}
+                as={Link}
                 to="/portfolio"
               >
                 <p>ポートフォリオはこちら。</p>

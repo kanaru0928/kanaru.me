@@ -10,11 +10,11 @@ type Props<As extends ElementType> = Omit<
   children?: ReactNode;
   anchor?: ReactNode;
   title?: string;
-  elementType?: As;
+  as?: As;
 };
 
 export function Card<As extends ElementType>(props: Props<As>) {
-  const As = props.elementType || "div";
+  const As = props.as || "div";
 
   return (
     <As
