@@ -17,14 +17,13 @@ import { SectionHeader } from "~/components/section-header";
 import { VersionChip } from "~/components/version-chip";
 import { getGithubContributesChart } from "~/loader/github-contributes";
 import { HambergerDialog } from "~/components/hamberger-dialog";
-import { Button } from "~/components/button";
 
 export const meta: MetaFunction = () => {
   return [
     { title: "kanaru.me" },
     {
-      name: "Kanaru's website, portfolio, blog",
-      content: "Welcome to kanaru.me!",
+      name: "description",
+      content: "kanaru.meのホームページ",
     },
   ];
 };
@@ -81,14 +80,12 @@ export default function App() {
             })}
           >
             <Dialog.Trigger asChild>
-              <Button asChild>
-                <div>
-                  <HambergerIcon
-                    size={120}
-                    className={css({ cursor: "pointer" })}
-                  />
-                </div>
-              </Button>
+              <button>
+                <HambergerIcon
+                  size={120}
+                  className={css({ cursor: "pointer" })}
+                />
+              </button>
             </Dialog.Trigger>
             <HambergerDialog />
             <h1
