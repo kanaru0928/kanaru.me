@@ -19,7 +19,6 @@ import { getGithubContributesChart } from "~/loader/github-contributes";
 import { HambergerDialog } from "~/components/hamberger-dialog";
 import { incrementPageViews } from "~/loader/page-views";
 import { GradientText } from "~/components/gradient-text";
-import * as Tooltip from "@radix-ui/react-tooltip";
 
 export const meta: MetaFunction = () => {
   return [
@@ -72,7 +71,6 @@ export default function App() {
             justify: "center",
             alignItems: "center",
             position: "relative",
-            zIndex: 1,
           })}
         >
           <HomeBG />
@@ -119,24 +117,6 @@ export default function App() {
               </span>
               PV
             </GradientText>
-          </div>
-          <div
-            className={flex({
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              justify: "center",
-              zIndex: -1,
-            })}
-          >
-            <IconChevronsDown
-              size={200}
-              className={css({
-                color: "white/10",
-                animation: "bounce 2s infinite",
-              })}
-            />
           </div>
         </header>
         <div
