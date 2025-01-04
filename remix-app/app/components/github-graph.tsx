@@ -27,7 +27,7 @@ export function GithubGraph(props: Props) {
   return (
     <ResponsiveContainer
       width="100%"
-      height="30%"
+      height={200}
       {...props}
       className={css({
         "& svg": {

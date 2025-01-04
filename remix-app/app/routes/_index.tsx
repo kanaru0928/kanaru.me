@@ -67,9 +67,10 @@ export default function App() {
       >
         <header
           className={flex({
-            h: "screen",
+            minH: "screen",
             bg: "black",
             justify: "center",
+            alignItems: "center",
             position: "relative",
             zIndex: 1,
           })}
@@ -78,7 +79,6 @@ export default function App() {
           <div
             className={flex({
               direction: "column",
-              justify: "center",
               align: "center",
               h: "full",
               position: "relative",
