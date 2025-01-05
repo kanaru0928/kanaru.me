@@ -12,6 +12,7 @@ resource "aws_lambda_function" "lambda-app" {
       ENVIRONMENT     = var.env
       GITHUB_ENDPOINT = "https://api.github.com/graphql"
       VERSION_NAME    = var.version_name
+      REPOSITORY_URL  = "https://github.com/kanaru0928/kanaru.me"
     }
   }
 }
