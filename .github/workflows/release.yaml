@@ -50,6 +50,7 @@ jobs:
           push: true
           tags: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/ecr-kanaru-me-${{ matrix.environment }}:latest
           provenance: false
+          platforms: linux/arm64
 
       - name: Install Dependencies
         run: npm install
