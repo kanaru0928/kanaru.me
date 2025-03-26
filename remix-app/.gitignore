@@ -3,6 +3,8 @@ node_modules
 /.cache
 /build
 .env*
+!.env*.example
+.react-router/
 
 ## Panda
 styled-system
