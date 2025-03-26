@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { ReactNode } from "react";
 import { css } from "styled-system/css";
 import { flex } from "styled-system/patterns";
