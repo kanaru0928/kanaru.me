@@ -14,9 +14,9 @@ import { HambergerIcon } from "~/components/hamberger-icon";
 import { HomeBG } from "~/components/home-bg";
 import { SectionHeader } from "~/components/section-header";
 import { VersionChip } from "~/components/version-chip";
-import { getGithubContributesChart } from "~/loader/github-contributes";
+import { getGithubContributesChart } from "~/loaders/github-contributes";
 import { HambergerDialog } from "~/components/hamberger-dialog";
-import { incrementPageViews } from "~/loader/page-views";
+import { incrementPageViews } from "~/loaders/page-views";
 import { GradientText } from "~/components/gradient-text";
 
 export const meta: MetaFunction = () => {
