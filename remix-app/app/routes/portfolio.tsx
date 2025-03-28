@@ -5,19 +5,9 @@ import {
   IconLayoutFilled,
 } from "@tabler/icons-react";
 import clsx from "clsx";
-import { MetaFunction, NavLink, Outlet } from "react-router";
+import { NavLink, Outlet } from "react-router";
 import { css } from "styled-system/css";
 import { flex, stack } from "styled-system/patterns";
-
-const meta: MetaFunction = () => {
-  return [
-    { title: "kanaru.me | Portfolio" },
-    {
-      name: "description",
-      content: "Portfolio page",
-    },
-  ];
-};
 
 const gradientProperties: { [key: string]: string } = {
   "--x-0": "14%",
