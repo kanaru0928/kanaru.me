@@ -1,5 +1,13 @@
-import { MetaFunction } from "react-router";
+import {
+  IconBoltFilled,
+  IconFoldersFilled,
+  IconHomeFilled,
+  IconLayoutFilled,
+} from "@tabler/icons-react";
+import clsx from "clsx";
+import { MetaFunction, NavLink, Outlet } from "react-router";
 import { css } from "styled-system/css";
+import { flex, stack } from "styled-system/patterns";
 
 const meta: MetaFunction = () => {
   return [
@@ -33,6 +41,18 @@ const gradientProperties: { [key: string]: string } = {
   animation: "hero-gradient-animation 10s linear infinite alternate",
 };
 
+const tabTriggerStyles = flex({
+  rounded: "full",
+  w: "full",
+  py: "2",
+  px: "4",
+  spaceX: "2",
+  align: "center",
+  _hover: {
+    bg: "violet.50",
+  },
+});
+
 export default function PortfolioPage() {
   return (
     <div
@@ -41,8 +61,117 @@ export default function PortfolioPage() {
         ...gradientProperties,
       })}
     >
-      <h1>Portfolio</h1>
-      <p>Welcome to your portfolio page!</p>
+      <div
+        className={flex({
+          direction: "row",
+        })}
+      >
+        <div
+          className={flex({
+            direction: "column",
+            padding: "4",
+            bg: "zinc.50/40",
+            backdropBlur: "lg",
+            width: "250px",
+            height: "100vh",
+            overflowY: "auto",
+            shadow: "lg",
+            justify: "space-between",
+          })}
+        >
+          <div
+            className={flex({
+              direction: "column",
+            })}
+          >
+            <div
+              className={stack({
+                align: "start",
+                spaceY: "2",
+              })}
+            >
+              <NavLink
+                className={({ isActive }) =>
+                  clsx(
+                    tabTriggerStyles,
+                    isActive &&
+                      css({
+                        bg: "violet.50",
+                        shadow: "lg",
+                      })
+                  )
+                }
+                to="/portfolio/about"
+              >
+                <IconLayoutFilled size={20} />
+                <span>About</span>
+              </NavLink>
+              <NavLink
+                className={({ isActive }) =>
+                  clsx(
+                    tabTriggerStyles,
+                    isActive &&
+                      css({
+                        bg: "violet.50",
+                        shadow: "lg",
+                      })
+                  )
+                }
+                to="/portfolio/skils"
+              >
+                <IconBoltFilled size={20} />
+                <span>Skils</span>
+              </NavLink>
+              <NavLink
+                className={({ isActive }) =>
+                  clsx(
+                    tabTriggerStyles,
+                    isActive &&
+                      css({
+                        bg: "violet.50",
+                        shadow: "lg",
+                      })
+                  )
+                }
+                to="/portfolio/works"
+              >
+                <IconFoldersFilled size={20} />
+                <span>Works</span>
+              </NavLink>
+            </div>
+          </div>
+          <div
+            className={stack({
+              align: "start",
+              spaceY: "2",
+            })}
+          >
+            <NavLink
+              className={({ isActive }) =>
+                clsx(
+                  tabTriggerStyles,
+                  isActive &&
+                    css({
+                      bg: "violet.50",
+                      shadow: "lg",
+                    })
+                )
+              }
+              to="/"
+            >
+              <IconHomeFilled size={20} />
+              <span>Home</span>
+            </NavLink>
+          </div>
+        </div>
+        <div
+          className={css({
+            flex: 1,
+          })}
+        >
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 }
