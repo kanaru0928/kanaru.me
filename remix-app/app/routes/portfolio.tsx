@@ -88,7 +88,8 @@ export default function PortfolioPage() {
               direction: "column",
               padding: "4",
               bg: "zinc.50/70",
-              backdropBlur: "lg",
+              backdropFilter: "auto",
+              backdropBlur: "sm",
               height: "100vh",
               overflowY: "auto",
               shadow: "lg",
@@ -101,8 +102,6 @@ export default function PortfolioPage() {
                   : "translateX(-100%)",
                 transition: "transform 0.5s",
                 zIndex: "100",
-                backdropFilter: "auto",
-                backdropBlur: "sm",
               },
               lg: {
                 position: "sticky",
@@ -111,6 +110,7 @@ export default function PortfolioPage() {
                   ? "translateX(0)"
                   : "translateX(-100%)",
                 transition: "transform 0.5s",
+                background: "zinc.50/40",
               },
             })}
           >
@@ -248,7 +248,7 @@ export default function PortfolioPage() {
           <Outlet />
           <div
             className={css({
-              background: "zinc.950/60",
+              background: "zinc.800/70",
               position: "fixed",
               top: "0",
               left: "0",
