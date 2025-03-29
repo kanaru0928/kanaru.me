@@ -1,4 +1,5 @@
 import { defineConfig } from "@pandacss/dev";
+import { textStyles } from "~/styles/textStyles";
 
 export default defineConfig({
   // Whether to use css reset
@@ -12,7 +13,9 @@ export default defineConfig({
 
   // Useful for theme customization
   theme: {
-    
+    extend: {
+      textStyles,
+    },
   },
 
   jsxFramework: "react",
