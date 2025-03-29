@@ -29,6 +29,7 @@
     "@tabler/icons-react": "^3.31.0",
     "chroma-js": "^3.1.2",
     "date-fns": "^4.1.0",
+    "devicon": "^2.16.0",
     "dotenv-cli": "^8.0.0",
     "isbot": "^5.1.25",
     "react": "^19.0.0",

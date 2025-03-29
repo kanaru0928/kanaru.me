@@ -1,8 +1,16 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration, useRouteLoaderData } from "react-router";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useRouteLoaderData,
+} from "react-router";
 import type { LinksFunction } from "react-router";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 import "./index.css";
+import "devicon/devicon.min.css";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -69,7 +77,7 @@ export async function loader() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { data } = useRouteLoaderData<typeof loader>("root");
+  const { data } = useRouteLoaderData<any>("root");
 
   return (
     <html lang="en">
