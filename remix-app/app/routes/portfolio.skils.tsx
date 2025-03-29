@@ -4,6 +4,7 @@ import { flex, stack } from "styled-system/patterns";
 import DashboardContainer from "~/components/dashboard-container";
 import { LogoAfterEffects } from "~/components/logo-aftereffects";
 import { LogoDocker } from "~/components/logo-docker";
+import { LogoIllustrator } from "~/components/logo-illustrator";
 import { SkilIcon } from "~/components/skil-icon";
 
 export const meta: MetaFunction = () => {
@@ -157,6 +158,10 @@ export default function SkilsPage() {
             alt="GitHub Actions"
           />
           <SkilIcon
+            source="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cloudflare/cloudflare-original.svg"
+            alt="Cloudflare"
+          />
+          <SkilIcon
             source="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg"
             alt="VSCode"
           />
@@ -184,8 +189,22 @@ export default function SkilsPage() {
             icon={<LogoAfterEffects width={36} height={36} />}
             alt="AfterEffects"
           />
+          <SkilIcon
+            icon={<LogoIllustrator width={36} height={36} />}
+            alt="Illustrator"
+          />
         </div>
         <div className={flex({ gap: "2", wrap: "wrap" })}>
+          <SkilIcon
+            source="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg"
+            alt="MySQL"
+            size={24}
+          />
+          <SkilIcon
+            source="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg"
+            alt="Firebase"
+            size={24}
+          />
           <SkilIcon
             source="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg"
             alt="Photoshop"
