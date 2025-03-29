@@ -1,10 +1,17 @@
+import {
+  IconBrandGithub,
+  IconBrandX,
+  IconExternalLink,
+  IconMail,
+} from "@tabler/icons-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { MetaFunction } from "react-router";
 import { css } from "styled-system/css";
-import { flex, stack } from "styled-system/patterns";
+import { flex, hstack, stack } from "styled-system/patterns";
 import { token } from "styled-system/tokens";
 import { BarProgress } from "~/components/bar-progress";
 import DashboardContainer from "~/components/dashboard-container";
+import { IconBrandWantedly } from "~/components/icon-brand-wantedly";
 import { useBirthday } from "~/hooks/use-birthday";
 
 export const meta: MetaFunction = () => {
@@ -41,7 +48,9 @@ export default function AboutPage() {
           wrap: "wrap",
         })}
       >
-        <DashboardContainer className={css({ flexGrow: 10, minW: "17rem" })}>
+        <DashboardContainer
+          className={css({ flexGrow: 10, minW: "max(17rem, 50%)" })}
+        >
           <h2
             className={css({
               textStyle: "heading2",
@@ -62,7 +71,7 @@ export default function AboutPage() {
         <DashboardContainer
           className={css({
             flexGrow: 7,
-            minW: "15rem",
+            minW: "max(15rem, 30%)",
             position: "relative",
             overflow: "hidden",
           })}
@@ -101,6 +110,124 @@ export default function AboutPage() {
               right: "0",
             })}
           />
+        </DashboardContainer>
+        <DashboardContainer
+          className={css({
+            flexGrow: 5,
+            minW: "max(12rem, 20%)",
+          })}
+        >
+          <h2
+            className={css({
+              textStyle: "heading2",
+              color: "zinc.800",
+              mb: "2",
+            })}
+          >
+            Location
+          </h2>
+          <p
+            className={css({
+              fontSize: "lg",
+            })}
+          >
+            Tokyo, Japan
+          </p>
+        </DashboardContainer>
+        <DashboardContainer
+          className={css({
+            flexGrow: 7,
+            minW: "max(17rem, 40%)",
+          })}
+        >
+          <h2
+            className={css({
+              textStyle: "heading2",
+              color: "zinc.800",
+              mb: "2",
+            })}
+          >
+            Institution
+          </h2>
+          <p
+            className={css({
+              fontSize: "lg",
+            })}
+          >
+            the University of Electro-Communications
+          </p>
+          <p>School of Informatics and Engineering</p>
+          <p>Cluster I, Computer Science Program</p>
+        </DashboardContainer>
+        <DashboardContainer
+          className={css({
+            flexGrow: 5,
+            minW: "max(12rem, 25%)",
+            md: {
+              maxW: "35%",
+            },
+          })}
+        >
+          <h2
+            className={css({
+              textStyle: "heading2",
+              color: "zinc.800",
+              mb: "2",
+            })}
+          >
+            Contact
+          </h2>
+          <ul>
+            <li>
+              <a
+                className={hstack({
+                  color: "violet.950",
+                  _hover: { color: "violet.600" },
+                })}
+                href="https://github.com/kanaru0928"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconBrandGithub size={20} />
+                <span>kanaru0928</span>
+                <IconExternalLink size={16} />
+              </a>
+            </li>
+            <li>
+              <a
+                className={hstack({
+                  color: "violet.950",
+                  _hover: { color: "violet.600" },
+                })}
+                href="https://x.com/Kanaru49570357"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconBrandX size={20} />
+                <span>Kanaru49570357</span>
+                <IconExternalLink size={16} />
+              </a>
+            </li>
+            <li className={hstack()}>
+              <IconMail size={20} />
+              <span>kanaru [at] kanaru.me</span>
+            </li>
+            <li>
+              <a
+                className={hstack({
+                  color: "violet.950",
+                  _hover: { color: "violet.600" },
+                })}
+                href="https://www.wantedly.com/id/k_azuma"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconBrandWantedly size={20} />
+                <span>k_azuma</span>
+                <IconExternalLink size={16} />
+              </a>
+            </li>
+          </ul>
         </DashboardContainer>
       </div>
     </div>
