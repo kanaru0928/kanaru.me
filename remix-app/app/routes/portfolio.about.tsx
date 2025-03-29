@@ -32,7 +32,6 @@ export default function AboutPage() {
     <div
       className={stack({
         px: "6",
-        py: "4",
       })}
     >
       <h1

@@ -1,13 +1,18 @@
+import { Separator } from "@radix-ui/react-separator";
 import {
   IconBoltFilled,
   IconFoldersFilled,
   IconHomeFilled,
   IconLayoutFilled,
+  IconLayoutSidebar,
 } from "@tabler/icons-react";
 import clsx from "clsx";
+import { useState } from "react";
 import { NavLink, Outlet } from "react-router";
 import { css } from "styled-system/css";
 import { flex, stack } from "styled-system/patterns";
+import { token } from "styled-system/tokens";
+import { useWindowSize } from "~/hooks/use-window-size";
 
 const gradientProperties: { [key: string]: string } = {
   "--x-0": "14%",
@@ -44,6 +49,19 @@ const tabTriggerStyles = flex({
 });
 
 export default function PortfolioPage() {
+  const { width: windowWidth } = useWindowSize();
+  const lgBreakPoint = parseInt(token("breakpoints.lg"));
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isOverlaySidebarOpen, setIsOverlaySidebarOpen] = useState(false);
+
+  const handleSidebarToggle = () => {
+    if (windowWidth < lgBreakPoint) {
+      setIsOverlaySidebarOpen((prev) => !prev);
+    } else {
+      setIsSidebarOpen((prev) => !prev);
+    }
+  };
+
   return (
     <div
       className={css({
@@ -57,25 +75,130 @@ export default function PortfolioPage() {
         })}
       >
         <div
-          className={flex({
-            direction: "column",
-            padding: "4",
-            bg: "zinc.50/40",
-            backdropBlur: "lg",
-            width: "250px",
-            height: "100vh",
-            overflowY: "auto",
-            shadow: "lg",
-            justify: "space-between",
-            position: "sticky",
-            top: "0",
+          className={css({
+            lg: {
+              width: isSidebarOpen ? "250px" : "0",
+              transition: "width 0.5s",
+              position: "relative",
+            },
           })}
         >
           <div
             className={flex({
               direction: "column",
+              padding: "4",
+              bg: "zinc.50/70",
+              backdropBlur: "lg",
+              height: "100vh",
+              overflowY: "auto",
+              shadow: "lg",
+              justify: "space-between",
+              position: "fixed",
+              width: ["100%", "250px"],
+              lgDown: {
+                transform: isOverlaySidebarOpen
+                  ? "translateX(0)"
+                  : "translateX(-100%)",
+                transition: "transform 0.5s",
+                zIndex: "100",
+                backdropFilter: "auto",
+                backdropBlur: "sm",
+              },
+              lg: {
+                position: "sticky",
+                top: "0",
+                transform: isSidebarOpen
+                  ? "translateX(0)"
+                  : "translateX(-100%)",
+                transition: "transform 0.5s",
+              },
             })}
           >
+            <div
+              className={flex({
+                direction: "column",
+              })}
+            >
+              <div
+                className={css({
+                  lg: {
+                    display: "none",
+                  },
+                })}
+              >
+                <div
+                  className={flex({ justify: "end" })}
+                  onClick={() => handleSidebarToggle()}
+                >
+                  <IconLayoutSidebar />
+                </div>
+                <Separator
+                  className={css({
+                    bg: "zinc.900",
+                    height: "0.5px",
+                    my: "4",
+                  })}
+                />
+              </div>
+              <div
+                className={stack({
+                  align: "start",
+                  spaceY: "2",
+                })}
+              >
+                <NavLink
+                  className={({ isActive }) =>
+                    clsx(
+                      tabTriggerStyles,
+                      isActive &&
+                        css({
+                          bg: "violet.50",
+                          shadow: "lg",
+                        })
+                    )
+                  }
+                  onClick={() => setIsOverlaySidebarOpen(false)}
+                  to="/portfolio/about"
+                >
+                  <IconLayoutFilled size={20} />
+                  <span>About</span>
+                </NavLink>
+                <NavLink
+                  className={({ isActive }) =>
+                    clsx(
+                      tabTriggerStyles,
+                      isActive &&
+                        css({
+                          bg: "violet.50",
+                          shadow: "lg",
+                        })
+                    )
+                  }
+                  onClick={() => setIsOverlaySidebarOpen(false)}
+                  to="/portfolio/skils"
+                >
+                  <IconBoltFilled size={20} />
+                  <span>Skils</span>
+                </NavLink>
+                <NavLink
+                  className={({ isActive }) =>
+                    clsx(
+                      tabTriggerStyles,
+                      isActive &&
+                        css({
+                          bg: "violet.50",
+                          shadow: "lg",
+                        })
+                    )
+                  }
+                  onClick={() => setIsOverlaySidebarOpen(false)}
+                  to="/portfolio/works"
+                >
+                  <IconFoldersFilled size={20} />
+                  <span>Works</span>
+                </NavLink>
+              </div>
+            </div>
             <div
               className={stack({
                 align: "start",
@@ -93,76 +216,51 @@ export default function PortfolioPage() {
                       })
                   )
                 }
-                to="/portfolio/about"
+                to="/"
               >
-                <IconLayoutFilled size={20} />
-                <span>About</span>
-              </NavLink>
-              <NavLink
-                className={({ isActive }) =>
-                  clsx(
-                    tabTriggerStyles,
-                    isActive &&
-                      css({
-                        bg: "violet.50",
-                        shadow: "lg",
-                      })
-                  )
-                }
-                to="/portfolio/skils"
-              >
-                <IconBoltFilled size={20} />
-                <span>Skils</span>
-              </NavLink>
-              <NavLink
-                className={({ isActive }) =>
-                  clsx(
-                    tabTriggerStyles,
-                    isActive &&
-                      css({
-                        bg: "violet.50",
-                        shadow: "lg",
-                      })
-                  )
-                }
-                to="/portfolio/works"
-              >
-                <IconFoldersFilled size={20} />
-                <span>Works</span>
+                <IconHomeFilled size={20} />
+                <span>Home</span>
               </NavLink>
             </div>
-          </div>
-          <div
-            className={stack({
-              align: "start",
-              spaceY: "2",
-            })}
-          >
-            <NavLink
-              className={({ isActive }) =>
-                clsx(
-                  tabTriggerStyles,
-                  isActive &&
-                    css({
-                      bg: "violet.50",
-                      shadow: "lg",
-                    })
-                )
-              }
-              to="/"
-            >
-              <IconHomeFilled size={20} />
-              <span>Home</span>
-            </NavLink>
           </div>
         </div>
         <div
           className={css({
             flex: 1,
             overflowY: "auto",
+            position: "relative",
           })}
         >
+          <div
+            className={css({ px: "6", pt: "4" })}
+            onClick={() => handleSidebarToggle()}
+          >
+            <IconLayoutSidebar />
+          </div>
+          <Separator
+            className={css({
+              bg: "zinc.900",
+              height: "0.5px",
+              my: "4",
+              mx: "6",
+            })}
+          />
           <Outlet />
+          <div
+            className={css({
+              background: "zinc.950/60",
+              position: "fixed",
+              top: "0",
+              left: "0",
+              right: "0",
+              bottom: "0",
+              zIndex: "10",
+              display: isOverlaySidebarOpen ? "block" : "none",
+              lg: {
+                display: "none",
+              },
+            })}
+          ></div>
         </div>
       </div>
     </div>
