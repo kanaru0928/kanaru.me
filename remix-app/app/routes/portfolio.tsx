@@ -67,6 +67,8 @@ export default function PortfolioPage() {
             overflowY: "auto",
             shadow: "lg",
             justify: "space-between",
+            position: "sticky",
+            top: "0",
           })}
         >
           <div
@@ -157,6 +159,7 @@ export default function PortfolioPage() {
         <div
           className={css({
             flex: 1,
+            overflowY: "auto",
           })}
         >
           <Outlet />
