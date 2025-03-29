@@ -6,39 +6,33 @@ export function useBirthday(birthday: Date) {
   const [nextBirthday, setNextBirthday] = useState(new Date(0));
 
   useEffect(() => {
-    const updateBirthdayInfo = () => {
-      const today = new Date();
+    const today = new Date();
 
-      const nextBirthdayTemp = new Date(
-        today.getFullYear(),
-        birthday.getMonth(),
-        birthday.getDate()
-      );
+    const nextBirthdayTemp = new Date(
+      today.getFullYear(),
+      birthday.getMonth(),
+      birthday.getDate()
+    );
 
-      if (nextBirthdayTemp < today) {
-        nextBirthdayTemp.setFullYear(today.getFullYear() + 1);
-      }
+    if (nextBirthdayTemp < today) {
+      nextBirthdayTemp.setFullYear(today.getFullYear() + 1);
+    }
 
-      setNextBirthday(nextBirthdayTemp);
+    setNextBirthday(nextBirthdayTemp);
 
-      const previousBirthday = new Date(
-        nextBirthday.getFullYear() - 1,
-        birthday.getMonth(),
-        birthday.getDate()
-      );
+    const previousBirthday = new Date(
+      nextBirthdayTemp.getFullYear() - 1,
+      birthday.getMonth(),
+      birthday.getDate()
+    );
 
-      const totalMS = nextBirthday.getTime() - previousBirthday.getTime();
-      const elapsedMS = today.getTime() - previousBirthday.getTime();
+    const totalMS = nextBirthdayTemp.getTime() - previousBirthday.getTime();
+    const elapsedMS = today.getTime() - previousBirthday.getTime();
 
-      setProgress((elapsedMS / totalMS) * 100);
+    setProgress((elapsedMS / totalMS) * 100);
 
-      setAge(nextBirthday.getFullYear() - birthday.getFullYear() - 1);
-    };
-
-    const id = setInterval(updateBirthdayInfo, 100);
-    updateBirthdayInfo();
-    return () => clearInterval(id);
-  }, [birthday]);
+    setAge(nextBirthdayTemp.getFullYear() - birthday.getFullYear() - 1);
+  }, []);
 
   return { progress, age, nextBirthday };
 }
