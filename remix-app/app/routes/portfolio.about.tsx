@@ -41,7 +41,7 @@ export default function AboutPage() {
           wrap: "wrap",
         })}
       >
-        <DashboardContainer className={css({ flexGrow: 5 })}>
+        <DashboardContainer className={css({ flexGrow: 10, minW: "17rem" })}>
           <h2
             className={css({
               textStyle: "heading2",
@@ -61,7 +61,8 @@ export default function AboutPage() {
         </DashboardContainer>
         <DashboardContainer
           className={css({
-            flexGrow: 10,
+            flexGrow: 7,
+            minW: "15rem",
             position: "relative",
             overflow: "hidden",
           })}
