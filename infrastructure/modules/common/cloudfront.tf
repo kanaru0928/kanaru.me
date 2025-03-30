@@ -1,5 +1,5 @@
 resource "aws_cloudfront_distribution" "app-distribution" {
-  aliases     = var.env == "prod" ? ["kanaru.me"] : []
+  aliases     = var.env == "prod" ? ["www.kanaru.me"] : []
   enabled     = true
   comment     = "kanaru.me app distribution"
   price_class = "PriceClass_200"
@@ -41,7 +41,7 @@ resource "aws_cloudfront_distribution" "app-distribution" {
 }
 
 data "aws_acm_certificate" "app-distribution-acm" {
-  domain   = "kanaru.me"
+  domain   = "www.kanaru.me"
   provider = aws.virginia
 }
 
