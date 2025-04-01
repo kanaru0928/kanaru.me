@@ -33,7 +33,7 @@ resource "aws_cloudfront_distribution" "app-distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = false
+    cloudfront_default_certificate = var.env == "prod" ? false : true
     acm_certificate_arn            = data.aws_acm_certificate.app-distribution-acm.arn
     ssl_support_method             = "sni-only"
     minimum_protocol_version       = "TLSv1.2_2021"
@@ -41,7 +41,7 @@ resource "aws_cloudfront_distribution" "app-distribution" {
 }
 
 data "aws_acm_certificate" "app-distribution-acm" {
-  domain   = "www.kanaru.me"
+  domain   = "kanaru.me"
   provider = aws.virginia
 }
 
@@ -67,8 +67,8 @@ resource "aws_cloudfront_cache_policy" "app-distribution-cache-policy" {
       query_string_behavior = "none"
     }
   }
-  default_ttl = 60
-  max_ttl     = 86400
+  default_ttl = 10
+  max_ttl     = 60
   min_ttl     = 0
 }
 
