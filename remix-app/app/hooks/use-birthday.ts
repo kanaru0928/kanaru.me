@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 export function useBirthday(birthday: Date) {
+  const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [age, setAge] = useState(0);
   const [nextBirthday, setNextBirthday] = useState(new Date(0));
@@ -32,7 +33,9 @@ export function useBirthday(birthday: Date) {
     setProgress((elapsedMS / totalMS) * 100);
 
     setAge(nextBirthdayTemp.getFullYear() - birthday.getFullYear() - 1);
+
+    setIsLoading(false);
   }, []);
 
-  return { progress, age, nextBirthday };
+  return { progress, age, nextBirthday, isLoading };
 }
