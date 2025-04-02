@@ -229,12 +229,11 @@ export default function PortfolioPage() {
             flex: 1,
             overflowY: "auto",
             position: "relative",
+            px: "6",
+            py: "6",
           })}
         >
-          <div
-            className={css({ px: "6", pt: "4" })}
-            onClick={() => handleSidebarToggle()}
-          >
+          <div onClick={() => handleSidebarToggle()}>
             <IconLayoutSidebar />
           </div>
           <Separator
@@ -242,7 +241,6 @@ export default function PortfolioPage() {
               bg: "zinc.900",
               height: "0.5px",
               my: "4",
-              mx: "6",
             })}
           />
           <Outlet />

@@ -18,6 +18,6 @@ export default function DashboardContainer({ className, ...props }: Props) {
         className
       )}
       {...props}
-    ></div>
+    />
   );
 }

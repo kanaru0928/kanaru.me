@@ -30,11 +30,7 @@ export default function AboutPage() {
   const { progress, age, nextBirthday, isLoading } = useBirthday(birthday);
 
   return (
-    <div
-      className={stack({
-        px: "6",
-      })}
-    >
+    <div className={stack()}>
       <h1
         className={css({
           textStyle: "heading1",
@@ -49,7 +45,13 @@ export default function AboutPage() {
         })}
       >
         <DashboardContainer
-          className={css({ flexGrow: 10, minW: "max(17rem, 50%)" })}
+          className={css({
+            flexGrow: 10,
+            maxW: "100%",
+            sm: {
+              minW: "max(17rem, 50%)",
+            },
+          })}
         >
           <h2
             className={css({
@@ -71,7 +73,10 @@ export default function AboutPage() {
         <DashboardContainer
           className={css({
             flexGrow: 7,
-            minW: "max(15rem, 30%)",
+            maxW: "100%",
+            sm: {
+              minW: "max(15rem, 30%)",
+            },
             position: "relative",
             overflow: "hidden",
           })}
@@ -128,7 +133,10 @@ export default function AboutPage() {
         <DashboardContainer
           className={css({
             flexGrow: 5,
-            minW: "max(12rem, 20%)",
+            maxW: "100%",
+            sm: {
+              minW: "max(12rem, 20%)",
+            },
           })}
         >
           <h2
@@ -151,7 +159,10 @@ export default function AboutPage() {
         <DashboardContainer
           className={css({
             flexGrow: 7,
-            minW: "max(17rem, 40%)",
+            maxW: "100%",
+            sm: {
+              minW: "max(17rem, 40%)",
+            },
           })}
         >
           <h2
@@ -176,7 +187,10 @@ export default function AboutPage() {
         <DashboardContainer
           className={css({
             flexGrow: 5,
-            minW: "max(12rem, 25%)",
+            sm: {
+              minW: "max(12rem, 25%)",
+            },
+            maxW: "100%",
             md: {
               maxW: "35%",
             },
