@@ -12,6 +12,7 @@ import { token } from "styled-system/tokens";
 import { BarProgress } from "~/components/bar-progress";
 import DashboardContainer from "~/components/dashboard-container";
 import { IconBrandWantedly } from "~/components/icon-brand-wantedly";
+import { SkeltonLetter } from "~/components/skelton-letter";
 import { useBirthday } from "~/hooks/use-birthday";
 
 export const meta: MetaFunction = () => {
@@ -26,7 +27,7 @@ export const meta: MetaFunction = () => {
 
 export default function AboutPage() {
   const birthday = new Date("2004-09-28");
-  const { progress, age, nextBirthday } = useBirthday(birthday);
+  const { progress, age, nextBirthday, isLoading } = useBirthday(birthday);
 
   return (
     <div
@@ -86,14 +87,28 @@ export default function AboutPage() {
           </h2>
           <div className={flex({ gap: "2", align: "center" })}>
             <p className={css({ fontSize: "xl" })}>
-              <span className={css({ fontWeight: "bold" })}>{age}</span> years
-              old
+              {isLoading ? (
+                <SkeltonLetter>00</SkeltonLetter>
+              ) : (
+                <span className={css({ fontWeight: "bold" })}>{age}</span>
+              )}{" "}
+              years old
             </p>
           </div>
           <div>since {format(birthday, "PP")}</div>
           <div>
-            {Math.round(progress * 10) / 10}% (
-            {formatDistanceToNow(nextBirthday)} left)
+            {isLoading ? (
+              <SkeltonLetter>00.</SkeltonLetter>
+            ) : (
+              Math.round(progress * 10) / 10
+            )}
+            % (
+            {isLoading ? (
+              <SkeltonLetter>0 days</SkeltonLetter>
+            ) : (
+              formatDistanceToNow(nextBirthday)
+            )}{" "}
+            left)
           </div>
           <BarProgress
             progress={progress}
