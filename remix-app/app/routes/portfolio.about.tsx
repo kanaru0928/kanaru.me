@@ -30,11 +30,7 @@ export default function AboutPage() {
   const { progress, age, nextBirthday, isLoading } = useBirthday(birthday);
 
   return (
-    <div
-      className={stack({
-        px: "6",
-      })}
-    >
+    <div className={stack()}>
       <h1
         className={css({
           textStyle: "heading1",

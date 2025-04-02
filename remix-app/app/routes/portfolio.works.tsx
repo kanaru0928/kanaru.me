@@ -1,5 +1,6 @@
 import { MetaFunction } from "react-router";
 import { css } from "styled-system/css";
+import { stack } from "styled-system/patterns";
 
 export const meta: MetaFunction = () => {
   return [
@@ -13,12 +14,7 @@ export const meta: MetaFunction = () => {
 
 export default function WorksPage() {
   return (
-    <div
-      className={css({
-        px: "6",
-        py: "2",
-      })}
-    >
+    <div className={stack()}>
       <h1
         className={css({
           textStyle: "heading1",

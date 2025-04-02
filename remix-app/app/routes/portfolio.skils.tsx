@@ -19,12 +19,7 @@ export const meta: MetaFunction = () => {
 
 export default function SkilsPage() {
   return (
-    <div
-      className={stack({
-        px: "6",
-        py: "2",
-      })}
-    >
+    <div className={stack()}>
       <h1
         className={css({
           textStyle: "heading1",
