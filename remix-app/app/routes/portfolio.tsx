@@ -175,10 +175,10 @@ export default function PortfolioPage() {
                     )
                   }
                   onClick={() => setIsOverlaySidebarOpen(false)}
-                  to="/portfolio/skils"
+                  to="/portfolio/skills"
                 >
                   <IconBoltFilled size={20} />
-                  <span>Skils</span>
+                  <span>Skills</span>
                 </NavLink>
                 <NavLink
                   className={({ isActive }) =>
