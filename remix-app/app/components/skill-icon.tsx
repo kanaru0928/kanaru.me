@@ -9,7 +9,7 @@ interface Props extends ComponentProps<"div"> {
   alt?: string;
 }
 
-export function SkilIcon({
+export function SkillIcon({
   source,
   icon,
   size = 36,
