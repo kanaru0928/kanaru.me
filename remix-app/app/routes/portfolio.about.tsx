@@ -9,11 +9,11 @@ import { MetaFunction } from "react-router";
 import { css } from "styled-system/css";
 import { flex, hstack, stack } from "styled-system/patterns";
 import { token } from "styled-system/tokens";
-import { BarProgress } from "~/components/bar-progress";
 import DashboardContainer from "~/components/dashboard-container";
 import { IconBrandWantedly } from "~/components/icon-brand-wantedly";
 import { SkeltonLetter } from "~/components/skelton-letter";
 import { useBirthday } from "~/hooks/use-birthday";
+import * as Progress from "@radix-ui/react-progress";
 
 export const meta: MetaFunction = () => {
   return [
@@ -115,11 +115,7 @@ export default function AboutPage() {
             )}{" "}
             left)
           </div>
-          <BarProgress
-            progress={progress}
-            progressColor={`linear-gradient(90deg, transparent 0%, ${token(
-              "colors.violet.400"
-            )} 100%)`}
+          <Progress.Root
             className={css({
               backgroundColor: "violet.100",
               height: "1.5",
@@ -128,7 +124,21 @@ export default function AboutPage() {
               left: "0",
               right: "0",
             })}
-          />
+            value={progress}
+          >
+            <Progress.Indicator
+              className={css({
+                height: "full",
+                transition: "width 0.5s ease-in-out",
+              })}
+              style={{
+                background: `linear-gradient(90deg, transparent 0%, ${token(
+                  "colors.violet.400"
+                )} 100%)`,
+                width: `${progress}%`,
+              }}
+            />
+          </Progress.Root>
         </DashboardContainer>
         <DashboardContainer
           className={css({
