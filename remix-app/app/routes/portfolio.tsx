@@ -10,7 +10,7 @@ import clsx from "clsx";
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router";
 import { css } from "styled-system/css";
-import { flex, stack } from "styled-system/patterns";
+import { flex, hstack, stack } from "styled-system/patterns";
 import { token } from "styled-system/tokens";
 import { useWindowSize } from "~/hooks/use-window-size";
 
@@ -126,11 +126,20 @@ export default function PortfolioPage() {
                   },
                 })}
               >
-                <div
-                  className={flex({ justify: "end" })}
-                  onClick={() => handleSidebarToggle()}
-                >
-                  <IconLayoutSidebar />
+                <div className={flex({ justify: "end" })}>
+                  <a
+                    href="#"
+                    className={css({
+                      p: "1",
+                      rounded: "full",
+                      _hover: {
+                        bg: "zinc.900/20",
+                      },
+                    })}
+                    onClick={() => handleSidebarToggle()}
+                  >
+                    <IconLayoutSidebar />
+                  </a>
                 </div>
                 <Separator
                   className={css({
@@ -230,17 +239,30 @@ export default function PortfolioPage() {
             overflowY: "auto",
             position: "relative",
             px: "6",
-            py: "6",
+            pt: "4",
+            pb: "6",
           })}
         >
-          <div onClick={() => handleSidebarToggle()}>
-            <IconLayoutSidebar />
+          <div className={hstack()}>
+            <a
+              href="#"
+              className={css({
+                p: "1",
+                rounded: "full",
+                _hover: {
+                  bg: "zinc.900/20",
+                },
+              })}
+              onClick={() => handleSidebarToggle()}
+            >
+              <IconLayoutSidebar />
+            </a>
           </div>
           <Separator
             className={css({
               bg: "zinc.900",
               height: "0.5px",
-              my: "4",
+              my: "3",
             })}
           />
           <Outlet />

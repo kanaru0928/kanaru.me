@@ -1,7 +1,7 @@
 import { css } from "styled-system/css";
 import { flex, hstack } from "styled-system/patterns";
 import { LevelIndicator } from "./level-indicator";
-import { levelColors, Skill } from "~/contents/skills";
+import { levelColors, levelText, Skill } from "~/contents/skills";
 import * as HoverCard from "@radix-ui/react-hover-card";
 import { Link } from "react-router";
 import { SkillIcon } from "./skill-icon";
@@ -12,14 +12,6 @@ type Props = {
   familiarity: "familiar" | "learning";
 };
 
-const levelText = {
-  1: "Beriefly used",
-  2: "Created basic projects",
-  3: "Can implement with documentation",
-  4: "Comfortable using independently",
-  5: "Expert level",
-};
-
 export function SkillCard({ skill, familiarity }: Props) {
   return (
     <>
@@ -27,8 +19,8 @@ export function SkillCard({ skill, familiarity }: Props) {
         <HoverCard.Trigger asChild>
           <Link to={skill.name.toLowerCase()}>
             <SkillIcon
-              source={typeof skill.icon === "string" ? skill.icon : undefined}
-              icon={typeof skill.icon !== "string" ? skill.icon : undefined}
+              source={skill.iconSource}
+              icon={skill.icon}
               size={familiarity === "familiar" ? 36 : 24}
               alt={skill.name}
             />
