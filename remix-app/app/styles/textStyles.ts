@@ -15,4 +15,11 @@ export const textStyles = defineTextStyles({
       fontWeight: "bold",
     },
   },
+  heading3: {
+    description: "Heading 3",
+    value: {
+      fontSize: "lg",
+      fontWeight: "bold",
+    },
+  },
 });
