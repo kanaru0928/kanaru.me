@@ -1,10 +1,12 @@
+import { MDXProvider } from "@mdx-js/react";
 import { LoaderFunctionArgs, useLoaderData } from "react-router";
 import { css } from "styled-system/css";
 import { flex } from "styled-system/patterns";
 import { SkillIcon } from "~/components/skill-icon";
 import { levelText, skills } from "~/contents/skills";
+import { markdownStyles } from "~/styles/markdown";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function clientLoader({ params }: LoaderFunctionArgs) {
   const skillName = params.skill?.toLocaleLowerCase();
 
   if (!skillName) {
@@ -19,13 +21,30 @@ export async function loader({ params }: LoaderFunctionArgs) {
   if (!skill) {
     throw new Response("Skill not found", { status: 404 });
   }
-  return {
-    skill,
-  };
+
+  try {
+    const Contents = await import(
+      `../contents/skills/${skillName.toLowerCase()}.mdx`
+    );
+
+    return {
+      skill,
+      Contents,
+    };
+  } catch (error) {
+    return {
+      skill,
+      Contents: {
+        default: () => null,
+      },
+    };
+  }
 }
 
 export default function SkillsPage() {
-  const { skill } = useLoaderData<typeof loader>();
+  const { skill, Contents } = useLoaderData<typeof clientLoader>();
+
+  console.log("contents", Contents);
 
   return (
     <div>
@@ -72,6 +91,10 @@ export default function SkillsPage() {
           </tr>
         </tbody>
       </table>
+
+      <div className={markdownStyles}>
+        <Contents.default />
+      </div>
     </div>
   );
 }
