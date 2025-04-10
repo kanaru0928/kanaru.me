@@ -40,7 +40,11 @@ export const levelText = {
   5: "Expert level",
 };
 
-export const skills: SkillsCategory[] = [
+export type MySkill = (typeof skills)[number][
+  | "familiar"
+  | "learning"][number]["name"];
+
+export const skills = [
   {
     name: "Languages",
     familiar: [
@@ -277,4 +281,4 @@ export const skills: SkillsCategory[] = [
       },
     ],
   },
-];
+] as const satisfies SkillsCategory[];

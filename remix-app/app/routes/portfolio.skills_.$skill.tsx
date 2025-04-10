@@ -7,7 +7,7 @@ import { flex, hstack, stack } from "styled-system/patterns";
 import { token } from "styled-system/tokens";
 import { LevelIndicator } from "~/components/level-indicator";
 import { SkillIcon } from "~/components/skill-icon";
-import { levelColors, levelText, skills } from "~/contents/skills";
+import { levelColors, levelText, Skill, skills, SkillsCategory } from "~/contents/skills";
 import { markdownStyles } from "~/styles/markdown";
 
 export async function clientLoader({ params }: LoaderFunctionArgs) {
@@ -18,8 +18,8 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
   }
 
   const skill = skills
-    .flatMap((category) => category.familiar)
-    .concat(skills.flatMap((category) => category.learning))
+    .flatMap((category: SkillsCategory) => category.familiar)
+    .concat(skills.flatMap((category: SkillsCategory) => category.learning))
     .find((skill) => skill.name.toLocaleLowerCase() === skillName);
 
   if (!skill) {
