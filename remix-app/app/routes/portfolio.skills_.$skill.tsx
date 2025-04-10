@@ -1,6 +1,7 @@
 import { MDXProvider } from "@mdx-js/react";
+import { IconChevronLeft } from "@tabler/icons-react";
 import { ReactNode } from "react";
-import { LoaderFunctionArgs, useLoaderData } from "react-router";
+import { Link, LoaderFunctionArgs, useLoaderData } from "react-router";
 import { css } from "styled-system/css";
 import { flex, hstack, stack } from "styled-system/patterns";
 import { token } from "styled-system/tokens";
@@ -51,14 +52,26 @@ export default function SkillsPage() {
 
   return (
     <div>
-      <h1
-        className={css({
-          textStyle: "heading1",
-          mb: "4",
-        })}
-      >
-        {skill.name}
-      </h1>
+      <div className={hstack({ mb: "4" })}>
+        <Link to="/portfolio/skills">
+          <div
+            className={css({
+              p: "1",
+              borderRadius: "full",
+              _hover: { bg: "zinc.900/20" },
+            })}
+          >
+            <IconChevronLeft />
+          </div>
+        </Link>
+        <h1
+          className={css({
+            textStyle: "heading1",
+          })}
+        >
+          {skill.name}
+        </h1>
+      </div>
       <div className={hstack({ gap: "4", flexWrap: "wrap", mb: "4" })}>
         <SkillIcon
           className={flex()}
