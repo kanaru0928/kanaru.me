@@ -1,10 +1,16 @@
-import { LoaderFunctionArgs, useLoaderData } from "react-router";
+import { MDXProvider } from "@mdx-js/react";
+import { IconChevronLeft } from "@tabler/icons-react";
+import { ReactNode } from "react";
+import { Link, LoaderFunctionArgs, useLoaderData } from "react-router";
 import { css } from "styled-system/css";
-import { flex } from "styled-system/patterns";
+import { flex, hstack, stack } from "styled-system/patterns";
+import { token } from "styled-system/tokens";
+import { LevelIndicator } from "~/components/level-indicator";
 import { SkillIcon } from "~/components/skill-icon";
-import { levelText, skills } from "~/contents/skills";
+import { levelColors, levelText, skills } from "~/contents/skills";
+import { markdownStyles } from "~/styles/markdown";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function clientLoader({ params }: LoaderFunctionArgs) {
   const skillName = params.skill?.toLocaleLowerCase();
 
   if (!skillName) {
@@ -19,59 +25,84 @@ export async function loader({ params }: LoaderFunctionArgs) {
   if (!skill) {
     throw new Response("Skill not found", { status: 404 });
   }
-  return {
-    skill,
-  };
+
+  try {
+    const Contents = await import(
+      `../contents/skills/${skillName.toLowerCase()}.mdx`
+    );
+
+    return {
+      skill,
+      Contents,
+    };
+  } catch (error) {
+    return {
+      skill,
+      Contents: {
+        default: () => null,
+      },
+    };
+  }
 }
 
 export default function SkillsPage() {
-  const { skill } = useLoaderData<typeof loader>();
+  const { skill, Contents } = useLoaderData<typeof clientLoader>();
+
+  console.log("contents", Contents);
 
   return (
     <div>
-      <h1
-        className={css({
-          textStyle: "heading1",
-          mb: "4",
-        })}
-      >
-        {skill.name}
-      </h1>
-      <div className={flex()}>
+      <div className={hstack({ mb: "4" })}>
+        <Link to="/portfolio/skills">
+          <div
+            className={css({
+              p: "1",
+              borderRadius: "full",
+              _hover: { bg: "zinc.900/20" },
+            })}
+          >
+            <IconChevronLeft />
+          </div>
+        </Link>
+        <h1
+          className={css({
+            textStyle: "heading1",
+          })}
+        >
+          {skill.name}
+        </h1>
+      </div>
+      <div className={hstack({ gap: "4", flexWrap: "wrap", mb: "4" })}>
         <SkillIcon
+          className={flex()}
           source={skill.iconSource}
-          icon={skill.icon}
+          icon={skill.icon as ReactNode}
           size={48}
           alt={skill.name}
         />
+        <div className={stack({ gap: "2" })}>
+          <p
+            className={css({
+              textStyle: "heading4/markdown",
+            })}
+          >
+            Experience
+          </p>
+          <div className={css({ pl: "1" })}>
+            <LevelIndicator level={skill.level || 1} />
+            <p
+              style={{
+                color: token(`colors.${levelColors[skill.level || 1]}.700`),
+              }}
+            >
+              {levelText[skill.level || 1]}
+            </p>
+          </div>
+        </div>
       </div>
-      <table
-        className={css({
-          my: "2",
-        })}
-      >
-        <tbody
-          className={css({
-            "& tr": {
-              borderBottom: "1px solid",
-              borderColor: "gray.800",
-            },
-            "& th,td": {
-              padding: "2",
-              textAlign: "left",
-            },
-          })}
-        >
-          <tr className={css({ borderTop: "1px solid" })}>
-            <th>Proficiency</th>
-            <td>{skill.level}</td>
-          </tr>
-          <tr>
-            <th>Experience</th>
-            <td>{levelText[skill.level || 1]}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div className={markdownStyles}>
+        <Contents.default />
+      </div>
     </div>
   );
 }
