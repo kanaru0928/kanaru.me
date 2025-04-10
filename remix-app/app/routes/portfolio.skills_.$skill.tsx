@@ -1,9 +1,12 @@
 import { MDXProvider } from "@mdx-js/react";
+import { ReactNode } from "react";
 import { LoaderFunctionArgs, useLoaderData } from "react-router";
 import { css } from "styled-system/css";
-import { flex } from "styled-system/patterns";
+import { flex, hstack, stack } from "styled-system/patterns";
+import { token } from "styled-system/tokens";
+import { LevelIndicator } from "~/components/level-indicator";
 import { SkillIcon } from "~/components/skill-icon";
-import { levelText, skills } from "~/contents/skills";
+import { levelColors, levelText, skills } from "~/contents/skills";
 import { markdownStyles } from "~/styles/markdown";
 
 export async function clientLoader({ params }: LoaderFunctionArgs) {
@@ -56,42 +59,34 @@ export default function SkillsPage() {
       >
         {skill.name}
       </h1>
-      <div className={flex()}>
+      <div className={hstack({ gap: "4", flexWrap: "wrap", mb: "4" })}>
         <SkillIcon
+          className={flex()}
           source={skill.iconSource}
-          icon={skill.icon}
+          icon={skill.icon as ReactNode}
           size={48}
           alt={skill.name}
         />
+        <div className={stack({ gap: "2" })}>
+          <p
+            className={css({
+              textStyle: "heading4/markdown",
+            })}
+          >
+            Experience
+          </p>
+          <div className={css({ pl: "1" })}>
+            <LevelIndicator level={skill.level || 1} />
+            <p
+              style={{
+                color: token(`colors.${levelColors[skill.level || 1]}.700`),
+              }}
+            >
+              {levelText[skill.level || 1]}
+            </p>
+          </div>
+        </div>
       </div>
-      <table
-        className={css({
-          my: "2",
-        })}
-      >
-        <tbody
-          className={css({
-            "& tr": {
-              borderBottom: "1px solid",
-              borderColor: "gray.800",
-            },
-            "& th,td": {
-              padding: "2",
-              textAlign: "left",
-            },
-          })}
-        >
-          <tr className={css({ borderTop: "1px solid" })}>
-            <th>Proficiency</th>
-            <td>{skill.level}</td>
-          </tr>
-          <tr>
-            <th>Experience</th>
-            <td>{levelText[skill.level || 1]}</td>
-          </tr>
-        </tbody>
-      </table>
-
       <div className={markdownStyles}>
         <Contents.default />
       </div>

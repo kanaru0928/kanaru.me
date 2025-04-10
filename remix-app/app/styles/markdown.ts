@@ -69,7 +69,8 @@ export const markdownStyles = css({
       backgroundColor: "zinc.100/40",
     },
     "& th, td": {
-      padding: "2",
+      py: "2",
+      px: "4",
     },
   },
 });
