@@ -1,28 +1,41 @@
-import { ReactNode } from "react";
-import { MySkill } from "./skills";
 import {
-  IconBrandGithub,
   IconBrandGithubFilled,
   IconLink,
+  IconProps,
 } from "@tabler/icons-react";
-import { css } from "styled-system/css";
+import { Component, ForwardRefExoticComponent, ReactNode } from "react";
+import { MySkill } from "./skills";
+import { ColorToken } from "styled-system/tokens";
 
 export type WorkLink = {
   type: "github" | "other";
   url: string;
+  label?: string;
 };
 
-export const LinkIcons = {
-  github: (
-    <IconBrandGithubFilled className={css({ color: "zinc.50" })} size={16} />
-  ),
-  other: <IconLink className={css({ color: "zinc.50" })} size={16} />,
-} satisfies Record<WorkLink["type"], ReactNode>;
+export type LinkType = {
+  icon: ForwardRefExoticComponent<IconProps>;
+  label?: string;
+  color: ColorToken;
+  hoverColor: ColorToken;
+  iconColor: ColorToken;
+};
 
-export const linkColors = {
-  github: "zinc.900",
-  other: "violet.400",
-} as const satisfies Record<WorkLink["type"], string>;
+export const linkTypes = {
+  github: {
+    icon: IconBrandGithubFilled,
+    label: "GitHub",
+    color: "zinc.900",
+    iconColor: "zinc.50",
+    hoverColor: "zinc.800",
+  },
+  other: {
+    icon: IconLink,
+    color: "violet.400",
+    iconColor: "zinc.50",
+    hoverColor: "violet.500",
+  },
+} as const satisfies Record<WorkLink["type"], LinkType>;
 
 export type Work = {
   title: string;
@@ -50,6 +63,7 @@ export const works = [
       {
         type: "other",
         url: "https://www.kanaru.me",
+        label: "Link",
       },
     ],
   },
@@ -61,5 +75,6 @@ export const works = [
     imageAlt: "Osansaku",
     skills: [],
     links: [],
+    detailPage: "osansaku",
   },
 ] satisfies Work[];

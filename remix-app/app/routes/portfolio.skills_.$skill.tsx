@@ -1,13 +1,17 @@
-import { MDXProvider } from "@mdx-js/react";
-import { IconChevronLeft } from "@tabler/icons-react";
 import { ReactNode } from "react";
-import { Link, LoaderFunctionArgs, useLoaderData } from "react-router";
+import { LoaderFunctionArgs, useLoaderData } from "react-router";
 import { css } from "styled-system/css";
 import { flex, hstack, stack } from "styled-system/patterns";
 import { token } from "styled-system/tokens";
+import { BackAnchor } from "~/components/back-anchor";
 import { LevelIndicator } from "~/components/level-indicator";
 import { SkillIcon } from "~/components/skill-icon";
-import { levelColors, levelText, Skill, skills, SkillsCategory } from "~/contents/skills";
+import {
+  levelColors,
+  levelText,
+  skills,
+  SkillsCategory,
+} from "~/contents/skills";
 import { markdownStyles } from "~/styles/markdown";
 
 export async function clientLoader({ params }: LoaderFunctionArgs) {
@@ -53,17 +57,7 @@ export default function SkillsPage() {
   return (
     <div>
       <div className={hstack({ mb: "4" })}>
-        <Link to="/portfolio/skills">
-          <div
-            className={css({
-              p: "1",
-              borderRadius: "full",
-              _hover: { bg: "zinc.900/20" },
-            })}
-          >
-            <IconChevronLeft />
-          </div>
-        </Link>
+        <BackAnchor to="/portfolio/skills" />
         <h1
           className={css({
             textStyle: "heading1",

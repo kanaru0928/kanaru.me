@@ -36,12 +36,16 @@ export function Card({
       <AspectRatio.Root
         className={css({
           position: "relative",
-          aspectRatio: "16/9",
           overflow: "hidden",
         })}
-        ratio={16 / 9}
+        ratio={16 / 10}
       >
-        <img src={imageSource} alt={imageAlt} />
+        <img src={imageSource} alt={imageAlt} className={css({
+          width: "full",
+          height: "full",
+          objectFit: "cover",
+          objectPosition: "top",
+        })} />
       </AspectRatio.Root>
       <div className={stack({ p: "4", pt: "2", justify: "space-between" })}>
         <div>

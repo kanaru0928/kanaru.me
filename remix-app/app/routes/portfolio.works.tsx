@@ -1,9 +1,9 @@
-import { Link, MetaFunction } from "react-router";
+import { MetaFunction } from "react-router";
 import { css } from "styled-system/css";
 import { center, grid, hstack, stack } from "styled-system/patterns";
 import { token } from "styled-system/tokens";
 import { Card } from "~/components/works-card";
-import { linkColors, LinkIcons, works } from "~/contents/works";
+import { linkTypes, works } from "~/contents/works";
 
 export const meta: MetaFunction = () => {
   return [
@@ -41,33 +41,41 @@ export default function WorksPage() {
             link={work.detailPage}
           >
             <p className={css({ mb: "2" })}>{work.description}</p>
-            <div className={hstack({gap: "1.5"})}>
-              {work.links.map((link) => (
-                <a
-                  key={link.url}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={css({
-                    textStyle: "body/markdown",
-                    _hover: {
-                      textDecoration: "underline",
-                    },
-                  })}
-                >
-                  <div
-                    className={center({
-                      rounded: "md",
-                      p: "1",
+            <div className={hstack({ gap: "1.5" })}>
+              {work.links.map((link) => {
+                const Icon = linkTypes[link.type].icon;
+                return (
+                  <a
+                    key={link.url}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={css({
+                      textStyle: "body/markdown",
+                      _hover: {
+                        textDecoration: "underline",
+                      },
                     })}
-                    style={{
-                      backgroundColor: token(`colors.${linkColors[link.type]}`),
-                    }}
                   >
-                    {LinkIcons[link.type]}
-                  </div>
-                </a>
-              ))}
+                    <div
+                      className={center({
+                        rounded: "md",
+                        p: "1",
+                      })}
+                      style={{
+                        backgroundColor: token(
+                          `colors.${linkTypes[link.type].color}`
+                        ),
+                      }}
+                    >
+                      <Icon
+                        size={16}
+                        color={token(`colors.${linkTypes[link.type].iconColor}`)}
+                      />
+                    </div>
+                  </a>
+                );
+              })}
             </div>
           </Card>
         ))}
