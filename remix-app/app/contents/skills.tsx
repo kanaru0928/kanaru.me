@@ -134,6 +134,24 @@ export const skills = [
         level: SkillLevelNames.Proficient,
       },
       {
+        name: "Next.js",
+        iconSource:
+          "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg",
+        level: SkillLevelNames.Proficient,
+      },
+      {
+        name: "Vite",
+        iconSource:
+          "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg",
+        level: SkillLevelNames.Proficient,
+      },
+      {
+        name: "React Router v7",
+        iconSource:
+          "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/reactrouter/reactrouter-original.svg",
+        level: SkillLevelNames.Proficient,
+      },
+      {
         name: "Node.js",
         iconSource:
           "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg",
@@ -144,6 +162,12 @@ export const skills = [
         iconSource:
           "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pytorch/pytorch-original.svg",
         level: SkillLevelNames.Proficient,
+      },
+      {
+        name: "FastAPI",
+        iconSource:
+          "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg",
+        level: SkillLevelNames.Expert,
       },
       {
         name: ".NET",
