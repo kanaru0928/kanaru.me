@@ -1,7 +1,7 @@
 import { Navigate, redirect, StaticRouter } from "react-router";
 
-export const loader = async () => {
-  return redirect("/portfolio/about", {
+export const serverLoader = async () => {
+  return redirect("/portfolio/about/", {
     status: 301,
   });
 };

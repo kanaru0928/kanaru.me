@@ -1,5 +1,9 @@
 import * as AspectRatio from "@radix-ui/react-aspect-ratio";
-import { ClientLoaderFunctionArgs, Link, useLoaderData } from "react-router";
+import {
+  Link,
+  ClientLoaderFunctionArgs as LoaderFunctionArgs,
+  useLoaderData,
+} from "react-router";
 import { css } from "styled-system/css";
 import { hstack } from "styled-system/patterns";
 import { BackAnchor } from "~/components/back-anchor";
@@ -7,7 +11,7 @@ import { Button } from "~/components/button";
 import { LinkType, linkTypes, works } from "~/contents/works";
 import { markdownStyles } from "~/styles/markdown";
 
-export async function clientLoader({ params }: ClientLoaderFunctionArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   const [work] = works.filter((work) => work.detailPage === params.work);
   if (!work) {
     throw new Response("Work not found", { status: 404 });
@@ -30,7 +34,7 @@ export async function clientLoader({ params }: ClientLoaderFunctionArgs) {
 }
 
 export default function WorkPage() {
-  const { work, Contents } = useLoaderData<typeof clientLoader>();
+  const { work, Contents } = useLoaderData<typeof loader>();
 
   return (
     <div className={css({ spaceY: "2" })}>
@@ -97,9 +101,7 @@ export default function WorkPage() {
         Overview
       </h2>
       <p>{work.description}</p>
-      <div className={markdownStyles}>
-        <Contents />
-      </div>
+      <div className={markdownStyles}>{Contents && <Contents />}</div>
     </div>
   );
 }

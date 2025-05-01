@@ -14,7 +14,7 @@ import {
 } from "~/contents/skills";
 import { markdownStyles } from "~/styles/markdown";
 
-export async function clientLoader({ params }: LoaderFunctionArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   const skillName = params.skill?.toLocaleLowerCase();
 
   if (!skillName) {
@@ -24,15 +24,24 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
   const skill = skills
     .flatMap((category: SkillsCategory) => category.familiar)
     .concat(skills.flatMap((category: SkillsCategory) => category.learning))
-    .find((skill) => skill.name.toLocaleLowerCase() === skillName);
+    .find(
+      (skill) =>
+        skill.name
+          .toLocaleLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "") === skillName
+    );
 
   if (!skill) {
     throw new Response("Skill not found", { status: 404 });
   }
 
   try {
-    const Contents = await import(
-      `../contents/skills/${skillName.toLowerCase()}.mdx`
+    const { default: Contents } = await import(
+      `../contents/skills/${skillName
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "")}.mdx`
     );
 
     return {
@@ -42,15 +51,13 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
   } catch (error) {
     return {
       skill,
-      Contents: {
-        default: () => null,
-      },
+      Contents: () => null,
     };
   }
 }
 
 export default function SkillsPage() {
-  const { skill, Contents } = useLoaderData<typeof clientLoader>();
+  const { skill, Contents } = useLoaderData<typeof loader>();
 
   console.log("contents", Contents);
 
@@ -94,9 +101,7 @@ export default function SkillsPage() {
           </div>
         </div>
       </div>
-      <div className={markdownStyles}>
-        <Contents.default />
-      </div>
+      <div className={markdownStyles}>{Contents && <Contents />}</div>
     </div>
   );
 }

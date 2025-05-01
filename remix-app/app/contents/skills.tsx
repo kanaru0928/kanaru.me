@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import { LogoAfterEffects } from "~/components/logo-aftereffects";
-import { LogoDocker } from "~/components/logo-docker";
-import { LogoIllustrator } from "~/components/logo-illustrator";
+import { LogoAfterEffects } from "../components/logo-aftereffects";
+import { LogoDocker } from "../components/logo-docker";
+import { LogoIllustrator } from "../components/logo-illustrator";
 
 export type Skill = {
   name: string;
