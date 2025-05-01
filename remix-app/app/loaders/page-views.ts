@@ -1,39 +1,36 @@
 import {
-  DynamoDBDocumentClient,
-  GetCommand,
-  UpdateCommand,
-} from "@aws-sdk/lib-dynamodb";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+  DynamoDBClient,
+  GetItemCommand,
+  UpdateItemCommand,
+} from "@aws-sdk/client-dynamodb";
 
 const dbClient = new DynamoDBClient({
   region: process.env.AWS_REGION,
 });
 
-const dynamo = DynamoDBDocumentClient.from(dbClient);
-
 export async function incrementPageViews(
   path: string
 ): Promise<number | undefined> {
-  const updateCommand = new UpdateCommand({
+  const updateCommand = new UpdateItemCommand({
     TableName: `kanaru-me-table-page-views-${process.env.ENVIRONMENT}`,
     Key: {
-      path,
+      path: { S: path },
     },
     UpdateExpression: "ADD #count :inc",
     ExpressionAttributeNames: {
       "#count": "count",
     },
     ExpressionAttributeValues: {
-      ":inc": 1,
+      ":inc": { N: "1" },
     },
   });
-  await dynamo.send(updateCommand);
-  const getCommand = new GetCommand({
+  await dbClient.send(updateCommand);
+  const getCommand = new GetItemCommand({
     TableName: `kanaru-me-table-page-views-${process.env.ENVIRONMENT}`,
     Key: {
-      path,
+      path: { S: path },
     },
   });
-  const { Item } = await dynamo.send(getCommand);
-  return Item?.count;
+  const { Item } = await dbClient.send(getCommand);
+  return Item?.count.N ? parseInt(Item.count.N) : undefined;
 }
