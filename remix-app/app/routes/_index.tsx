@@ -1,23 +1,20 @@
 import * as Dialog from "@radix-ui/react-dialog";
+import { IconChevronsRight, IconLink } from "@tabler/icons-react";
 import type { MetaFunction } from "react-router";
 import { Link, useLoaderData } from "react-router";
-import {
-  IconChevronsRight,
-  IconLink,
-} from "@tabler/icons-react";
 import { css } from "styled-system/css";
 import { flex } from "styled-system/patterns";
 import { Card } from "~/components/card";
 import { Copyright } from "~/components/copyright";
 import { GithubGraph } from "~/components/github-graph";
+import { GradientText } from "~/components/gradient-text";
+import { HambergerDialog } from "~/components/hamberger-dialog";
 import { HambergerIcon } from "~/components/hamberger-icon";
 import { HomeBG } from "~/components/home-bg";
 import { SectionHeader } from "~/components/section-header";
 import { VersionChip } from "~/components/version-chip";
 import { getGithubContributesChart } from "~/loaders/github-contributes";
-import { HambergerDialog } from "~/components/hamberger-dialog";
 import { incrementPageViews } from "~/loaders/page-views";
-import { GradientText } from "~/components/gradient-text";
 
 export const meta: MetaFunction = () => {
   return [
