@@ -17,7 +17,12 @@ export function SkillCard({ skill, familiarity }: Props) {
     <>
       <HoverCard.Root key={skill.name}>
         <HoverCard.Trigger asChild>
-          <Link to={skill.name.toLowerCase()}>
+          <Link
+            to={skill.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")
+              .replace(/[^a-z0-9-]/g, "")}
+          >
             <SkillIcon
               source={skill.iconSource}
               icon={skill.icon}

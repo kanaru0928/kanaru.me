@@ -1,16 +1,20 @@
-import { MDXProvider } from "@mdx-js/react";
-import { IconChevronLeft } from "@tabler/icons-react";
 import { ReactNode } from "react";
-import { Link, LoaderFunctionArgs, useLoaderData } from "react-router";
+import { LoaderFunctionArgs, useLoaderData } from "react-router";
 import { css } from "styled-system/css";
 import { flex, hstack, stack } from "styled-system/patterns";
 import { token } from "styled-system/tokens";
+import { BackAnchor } from "~/components/back-anchor";
 import { LevelIndicator } from "~/components/level-indicator";
 import { SkillIcon } from "~/components/skill-icon";
-import { levelColors, levelText, skills } from "~/contents/skills";
+import {
+  levelColors,
+  levelText,
+  skills,
+  SkillsCategory,
+} from "~/contents/skills";
 import { markdownStyles } from "~/styles/markdown";
 
-export async function clientLoader({ params }: LoaderFunctionArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
   const skillName = params.skill?.toLocaleLowerCase();
 
   if (!skillName) {
@@ -18,17 +22,26 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
   }
 
   const skill = skills
-    .flatMap((category) => category.familiar)
-    .concat(skills.flatMap((category) => category.learning))
-    .find((skill) => skill.name.toLocaleLowerCase() === skillName);
+    .flatMap((category: SkillsCategory) => category.familiar)
+    .concat(skills.flatMap((category: SkillsCategory) => category.learning))
+    .find(
+      (skill) =>
+        skill.name
+          .toLocaleLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, "") === skillName
+    );
 
   if (!skill) {
     throw new Response("Skill not found", { status: 404 });
   }
 
   try {
-    const Contents = await import(
-      `../contents/skills/${skillName.toLowerCase()}.mdx`
+    const { default: Contents } = await import(
+      `../contents/skills/${skillName
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "")}.mdx`
     );
 
     return {
@@ -38,32 +51,20 @@ export async function clientLoader({ params }: LoaderFunctionArgs) {
   } catch (error) {
     return {
       skill,
-      Contents: {
-        default: () => null,
-      },
+      Contents: () => null,
     };
   }
 }
 
 export default function SkillsPage() {
-  const { skill, Contents } = useLoaderData<typeof clientLoader>();
+  const { skill, Contents } = useLoaderData<typeof loader>();
 
   console.log("contents", Contents);
 
   return (
     <div>
       <div className={hstack({ mb: "4" })}>
-        <Link to="/portfolio/skills">
-          <div
-            className={css({
-              p: "1",
-              borderRadius: "full",
-              _hover: { bg: "zinc.900/20" },
-            })}
-          >
-            <IconChevronLeft />
-          </div>
-        </Link>
+        <BackAnchor to="/portfolio/skills" />
         <h1
           className={css({
             textStyle: "heading1",
@@ -100,9 +101,7 @@ export default function SkillsPage() {
           </div>
         </div>
       </div>
-      <div className={markdownStyles}>
-        <Contents.default />
-      </div>
+      <div className={markdownStyles}>{Contents && <Contents />}</div>
     </div>
   );
 }
