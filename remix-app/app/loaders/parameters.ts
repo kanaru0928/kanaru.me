@@ -15,6 +15,8 @@ const ssmClient = new SSMClient({
 
 let githubToken: string | null = null;
 export async function getGitHubToken() {
+  "use server";
+  
   if (githubToken === null) {
     const ssmGetParameterCommand = new GetParameterCommand({
       Name: `/${process.env.APP_NAME}/${process.env.ENVIRONMENT}/github_token`,

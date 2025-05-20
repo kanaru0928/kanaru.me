@@ -53,6 +53,8 @@ export async function getGithubContributesByMonth(
 }
 
 export async function getGithubContributesChart() {
+  "use server";
+  
   let date = new Date();
 
   const data = await getGithubContributesByMonth(

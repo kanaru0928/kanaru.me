@@ -36,7 +36,7 @@ interface LoaderData {
   count: number;
 }
 
-export const loader = async () => {
+export async function clientLoader() {
   const count = await incrementPageViews("/");
 
   const contributes = await getGithubContributesChart();

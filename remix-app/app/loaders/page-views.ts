@@ -20,6 +20,8 @@ const dbClient = new DynamoDBClient({
 export async function incrementPageViews(
   path: string
 ): Promise<number | undefined> {
+  "use server";
+  
   const updateCommand = new UpdateItemCommand({
     TableName: `kanaru-me-table-page-views-${process.env.ENVIRONMENT}`,
     Key: {
