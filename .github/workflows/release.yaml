@@ -50,6 +50,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.aws-credentials.outputs.aws-access-key-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.aws-credentials.outputs.aws-secret-access-key }}
+          AWS_REGION: ap-northeast-1
         with:
           context: remix-app
           push: true
