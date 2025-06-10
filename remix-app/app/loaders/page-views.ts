@@ -4,24 +4,13 @@ import {
   UpdateItemCommand,
 } from "@aws-sdk/client-dynamodb";
 
-const credentials =
-  process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY
-    ? {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      }
-    : undefined;
-
-const dbClient = new DynamoDBClient({
+let dbClient = new DynamoDBClient({
   region: process.env.AWS_REGION,
-  credentials,
 });
 
 export async function incrementPageViews(
   path: string
 ): Promise<number | undefined> {
-  "use server";
-  
   const updateCommand = new UpdateItemCommand({
     TableName: `kanaru-me-table-page-views-${process.env.ENVIRONMENT}`,
     Key: {

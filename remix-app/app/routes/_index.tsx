@@ -26,31 +26,16 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-interface Contribute {
-  month: string;
-  amt: number;
-}
-
-interface LoaderData {
-  contributes: Contribute[];
-  count: number;
-}
-
-export async function clientLoader() {
-  const count = await incrementPageViews("/");
+export async function loader() {
+  const count = await incrementPageViews("/") || 0;
 
   const contributes = await getGithubContributesChart();
 
-  return new Response(JSON.stringify({ contributes, count }), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-    },
-  });
-};
+  return { contributes, count };
+}
 
 export default function App() {
-  const { contributes, count } = useLoaderData<LoaderData>();
+  const { contributes, count } = useLoaderData<typeof loader>();
 
   return (
     <Dialog.Root>
