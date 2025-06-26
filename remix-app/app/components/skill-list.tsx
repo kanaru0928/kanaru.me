@@ -1,11 +1,7 @@
 import { css } from "styled-system/css";
-import { flex, hstack } from "styled-system/patterns";
-import { SkillIcon } from "~/components/skill-icon";
+import { flex } from "styled-system/patterns";
 import { skills } from "~/contents/skills";
 import DashboardContainer from "./dashboard-container";
-import * as HoverCard from "@radix-ui/react-hover-card";
-import { Link } from "react-router";
-import { LevelIndicator } from "./level-indicator";
 import { SkillCard } from "./skill-card";
 
 export function Skills() {
