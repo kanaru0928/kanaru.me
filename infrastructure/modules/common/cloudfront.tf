@@ -16,6 +16,17 @@ resource "aws_cloudfront_distribution" "app-distribution" {
     }
   }
 
+  ordered_cache_behavior {
+    path_pattern             = "/__manifest*"
+    allowed_methods          = ["GET", "HEAD", "OPTIONS"]
+    cached_methods           = ["GET", "HEAD"]
+    target_origin_id         = aws_lambda_function.lambda-app.id
+    viewer_protocol_policy   = "redirect-to-https"
+    compress                 = true
+    cache_policy_id          = aws_cloudfront_cache_policy.no-cache-policy.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.app-distribution-origin-request-policy.id
+  }
+
   default_cache_behavior {
     allowed_methods          = ["GET", "HEAD", "POST", "PUT", "PATCH", "OPTIONS", "DELETE"]
     cached_methods           = ["GET", "HEAD"]
@@ -69,6 +80,26 @@ resource "aws_cloudfront_cache_policy" "app-distribution-cache-policy" {
   }
   default_ttl = 10
   max_ttl     = 60
+  min_ttl     = 0
+}
+
+resource "aws_cloudfront_cache_policy" "no-cache-policy" {
+  name    = "no-cache-policy-kanaru-me-app-${var.env}"
+  comment = "No cache policy for __manifest files"
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config {
+      cookie_behavior = "none"
+    }
+    // enable_accept_encoding_gzip = true ← 削除
+    headers_config {
+      header_behavior = "none"
+    }
+    query_strings_config {
+      query_string_behavior = "none"
+    }
+  }
+  default_ttl = 0
+  max_ttl     = 0
   min_ttl     = 0
 }
 
