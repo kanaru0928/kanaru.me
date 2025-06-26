@@ -1,10 +1,11 @@
 import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 
-const ssmClient = new SSMClient({
+let ssmClient = new SSMClient({
   region: process.env.AWS_REGION,
 });
 
 let githubToken: string | null = null;
+
 export async function getGitHubToken() {
   if (githubToken === null) {
     const ssmGetParameterCommand = new GetParameterCommand({

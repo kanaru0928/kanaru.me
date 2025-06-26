@@ -1,23 +1,20 @@
 import * as Dialog from "@radix-ui/react-dialog";
+import { IconChevronsRight, IconLink } from "@tabler/icons-react";
 import type { MetaFunction } from "react-router";
 import { Link, useLoaderData } from "react-router";
-import {
-  IconChevronsRight,
-  IconLink,
-} from "@tabler/icons-react";
 import { css } from "styled-system/css";
 import { flex } from "styled-system/patterns";
 import { Card } from "~/components/card";
 import { Copyright } from "~/components/copyright";
 import { GithubGraph } from "~/components/github-graph";
+import { GradientText } from "~/components/gradient-text";
+import { HambergerDialog } from "~/components/hamberger-dialog";
 import { HambergerIcon } from "~/components/hamberger-icon";
 import { HomeBG } from "~/components/home-bg";
 import { SectionHeader } from "~/components/section-header";
 import { VersionChip } from "~/components/version-chip";
 import { getGithubContributesChart } from "~/loaders/github-contributes";
-import { HambergerDialog } from "~/components/hamberger-dialog";
 import { incrementPageViews } from "~/loaders/page-views";
-import { GradientText } from "~/components/gradient-text";
 
 export const meta: MetaFunction = () => {
   return [
@@ -29,31 +26,16 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-interface Contribute {
-  month: string;
-  amt: number;
-}
-
-interface LoaderData {
-  contributes: Contribute[];
-  count: number;
-}
-
-export const loader = async () => {
-  const count = await incrementPageViews("/");
+export async function loader() {
+  const count = await incrementPageViews("/") || 0;
 
   const contributes = await getGithubContributesChart();
 
-  return new Response(JSON.stringify({ contributes, count }), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-    },
-  });
-};
+  return { contributes, count };
+}
 
 export default function App() {
-  const { contributes, count } = useLoaderData<LoaderData>();
+  const { contributes, count } = useLoaderData<typeof loader>();
 
   return (
     <Dialog.Root>

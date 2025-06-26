@@ -32,10 +32,12 @@ jobs:
         uses: docker/setup-qemu-action@v3
 
       - name: Configure AWS Credentials
+        id: aws-credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.ROLE_TO_ASSUME }}
+          output-credentials: true
 
       - name: ECR Login
         uses: aws-actions/amazon-ecr-login@v2
@@ -45,6 +47,10 @@ jobs:
 
       - name: Build and Push
         uses: docker/build-push-action@v6
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.aws-credentials.outputs.aws-access-key-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.aws-credentials.outputs.aws-secret-access-key }}
+          AWS_REGION: ap-northeast-1
         with:
           context: remix-app
           push: true
