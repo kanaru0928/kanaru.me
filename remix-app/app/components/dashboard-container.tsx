@@ -4,7 +4,7 @@ import { css } from "styled-system/css";
 
 interface Props extends ComponentProps<"div"> {}
 
-export default function DashboardContainer({ className, ...props }: Props) {
+export function DashboardContainer({ className, ...props }: Props) {
   return (
     <div
       className={clsx(
