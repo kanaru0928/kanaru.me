@@ -40,6 +40,9 @@ export default function LinksPage() {
       >
         Links
       </h1>
+      <p className={css({ textStyle: "body" })}>
+        Here are some of my mutual links with friends.
+      </p>
       <div
         className={grid({
           columns: { base: 1, sm: 2, md: 3, lg: 4 },
