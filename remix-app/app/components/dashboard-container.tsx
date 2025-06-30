@@ -14,6 +14,9 @@ export function DashboardContainer({ className, ...props }: Props) {
           boxShadow:
             "20px 20px 60px rgba(190, 190, 190, 0.5), -20px -20px 60px rgba(255, 255, 255, 0.5)",
           p: "4",
+          border: "1px solid",
+          borderTop: "2px solid",
+          borderColor: "zinc.100/40",
         }),
         className
       )}
