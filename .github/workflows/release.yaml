@@ -27,6 +27,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "package-lock.json"
+
+      - name: Install Dependencies
+        run: npm install
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -57,9 +62,8 @@ jobs:
           tags: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/ecr-kanaru-me-${{ matrix.environment }}:latest
           provenance: false
           platforms: linux/arm64
-
-      - name: Install Dependencies
-        run: npm install
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Release
         env:
@@ -73,8 +77,20 @@ jobs:
           git fetch --tags
           echo "TAG=$(git tag -l --sort authordate | tail -n 1)" >> "$GITHUB_OUTPUT"
 
+      - name: Cache Terraform
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.terraform.d/plugin-cache
+            ~/.terragrunt-cache
+          key: terraform-${{ runner.os }}-${{ hashFiles('infrastructure/**/*.hcl', 'infrastructure/**/*.tf') }}
+          restore-keys: |
+            terraform-${{ runner.os }}-
+
       - name: Check Terragrunt HCL
         uses: gruntwork-io/terragrunt-action@v2
+        env:
+          TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
         with:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: "hclfmt --terragrunt-check --terragrunt-diff"
@@ -85,6 +101,7 @@ jobs:
         uses: gruntwork-io/terragrunt-action@v2
         env:
           TF_VAR_version_name: ${{ steps.latest_tag.outputs.TAG }}
+          TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
         with:
           tg_dir: infrastructure/environments/${{ matrix.environment }}
           tg_command: apply
