@@ -9,7 +9,7 @@ import { MetaFunction } from "react-router";
 import { css } from "styled-system/css";
 import { flex, hstack, stack } from "styled-system/patterns";
 import { token } from "styled-system/tokens";
-import DashboardContainer from "~/components/dashboard-container";
+import { DashboardContainer } from "~/components/dashboard-container";
 import { IconBrandWantedly } from "~/components/icon-brand-wantedly";
 import { SkeltonLetter } from "~/components/skelton-letter";
 import { useBirthday } from "~/hooks/use-birthday";

@@ -5,9 +5,10 @@ import {
   IconHomeFilled,
   IconLayoutFilled,
   IconLayoutSidebar,
+  IconLink,
 } from "@tabler/icons-react";
 import clsx from "clsx";
-import { useState } from "react";
+import { ElementType, useState } from "react";
 import { NavLink, Outlet } from "react-router";
 import { css } from "styled-system/css";
 import { flex, hstack, stack } from "styled-system/patterns";
@@ -47,6 +48,35 @@ const tabTriggerStyles = flex({
     bg: "violet.50",
   },
 });
+
+interface SidebarRoute {
+  path: string;
+  label: string;
+  icon: ElementType;
+}
+
+const routes = [
+  {
+    path: "about",
+    label: "About",
+    icon: IconLayoutFilled,
+  },
+  {
+    path: "skills",
+    label: "Skills",
+    icon: IconBoltFilled,
+  },
+  {
+    path: "works",
+    label: "Works",
+    icon: IconFoldersFilled,
+  },
+  {
+    path: "links",
+    label: "Links",
+    icon: IconLink,
+  },
+] as const satisfies SidebarRoute[];
 
 export default function PortfolioPage() {
   const { width: windowWidth } = useWindowSize();
@@ -155,57 +185,25 @@ export default function PortfolioPage() {
                   spaceY: "2",
                 })}
               >
-                <NavLink
-                  className={({ isActive }) =>
-                    clsx(
-                      tabTriggerStyles,
-                      isActive &&
-                        css({
-                          bg: "violet.50",
-                          shadow: "lg",
-                        })
-                    )
-                  }
-                  onClick={() => setIsOverlaySidebarOpen(false)}
-                  to="/portfolio/about"
-                >
-                  <IconLayoutFilled size={20} />
-                  <span>About</span>
-                </NavLink>
-                <NavLink
-                  className={({ isActive }) =>
-                    clsx(
-                      tabTriggerStyles,
-                      isActive &&
-                        css({
-                          bg: "violet.50",
-                          shadow: "lg",
-                        })
-                    )
-                  }
-                  onClick={() => setIsOverlaySidebarOpen(false)}
-                  to="/portfolio/skills"
-                >
-                  <IconBoltFilled size={20} />
-                  <span>Skills</span>
-                </NavLink>
-                <NavLink
-                  className={({ isActive }) =>
-                    clsx(
-                      tabTriggerStyles,
-                      isActive &&
-                        css({
-                          bg: "violet.50",
-                          shadow: "lg",
-                        })
-                    )
-                  }
-                  onClick={() => setIsOverlaySidebarOpen(false)}
-                  to="/portfolio/works"
-                >
-                  <IconFoldersFilled size={20} />
-                  <span>Works</span>
-                </NavLink>
+                {routes.map((route) => (
+                  <NavLink
+                    key={route.path}
+                    className={({ isActive }) =>
+                      clsx(
+                        tabTriggerStyles,
+                        isActive &&
+                          css({
+                            bg: "violet.50",
+                            shadow: "lg",
+                          })
+                      )
+                    }
+                    to={route.path}
+                  >
+                    <route.icon size={20} />
+                    <span>{route.label}</span>
+                  </NavLink>
+                ))}
               </div>
             </div>
             <div

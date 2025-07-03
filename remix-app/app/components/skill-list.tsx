@@ -1,7 +1,7 @@
 import { css } from "styled-system/css";
 import { flex } from "styled-system/patterns";
 import { skills } from "~/contents/skills";
-import DashboardContainer from "./dashboard-container";
+import { DashboardContainer } from "./dashboard-container";
 import { SkillCard } from "./skill-card";
 
 export function Skills() {
