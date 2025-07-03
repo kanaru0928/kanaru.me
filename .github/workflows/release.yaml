@@ -10,6 +10,57 @@ permissions:
   issues: write
 
 jobs:
+  build:
+    name: Build Remix App
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment:
+          - prod
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: "remix-app/pnpm-lock.yaml"
+
+      - name: Install Dependencies
+        run: |
+          cd remix-app
+          pnpm install
+
+      - name: Build Remix App
+        run: |
+          cd remix-app
+          pnpm build
+
+      - name: Configure AWS Credentials
+        id: aws-credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.ROLE_TO_ASSUME }}
+          output-credentials: true
+
+      - name: S3 Upload
+        run: |
+          aws s3 sync remix-app/build/client s3://760485329571-kanaru-me-static-site-${{ matrix.environment }} --delete
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: remix-build-${{ matrix.environment }}
+          path: remix-app/build/
+          retention-days: 1
+
   apply:
     name: Terraform Apply
     runs-on: ubuntu-latest
@@ -35,6 +86,12 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm install
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: remix-build-${{ matrix.environment }}
+          path: remix-app/build/
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -114,7 +171,3 @@ jobs:
       - name: Update Lambda Code
         run: |
           aws lambda update-function-code --function-name lambda-kanaru-me-app-${{ matrix.environment }} --image-uri ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/ecr-kanaru-me-${{ matrix.environment }}:latest
-      
-      - name: S3 Upload
-        run: |
-          aws s3 sync remix-app/build/client s3://760485329571-kanaru-me-static-site-${{ matrix.environment }} --delete
