@@ -94,3 +94,7 @@ jobs:
       - name: Update Lambda Code
         run: |
           aws lambda update-function-code --function-name lambda-kanaru-me-app-${{ matrix.environment }} --image-uri ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/ecr-kanaru-me-${{ matrix.environment }}:latest
+      
+      - name: S3 Upload
+        run: |
+          aws s3 sync remix-app/build/client s3://760485329571-kanaru-me-static-site-${{ matrix.environment }} --delete
