@@ -34,6 +34,17 @@ resource "aws_cloudfront_distribution" "app-distribution" {
   }
 
   ordered_cache_behavior {
+    path_pattern             = "/*.data"
+    allowed_methods          = ["GET", "HEAD", "OPTIONS"]
+    cached_methods           = ["GET", "HEAD"]
+    target_origin_id         = aws_lambda_function.lambda-app.id
+    viewer_protocol_policy   = "redirect-to-https"
+    compress                 = true
+    cache_policy_id          = aws_cloudfront_cache_policy.no-cache-policy.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.app-distribution-origin-request-policy.id
+  }
+
+  ordered_cache_behavior {
     path_pattern             = "/*.*"
     allowed_methods          = ["GET", "HEAD", "OPTIONS"]
     cached_methods           = ["GET", "HEAD"]
