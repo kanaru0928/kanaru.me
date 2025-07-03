@@ -13,6 +13,7 @@ jobs:
   build:
     name: Build Remix App
     runs-on: ubuntu-latest
+    environment: deployment
     strategy:
       matrix:
         environment:
@@ -41,6 +42,7 @@ jobs:
         run: |
           cd remix-app
           pnpm build
+
 
       - name: Configure AWS Credentials
         id: aws-credentials
@@ -86,12 +88,6 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm install
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: remix-build-${{ matrix.environment }}
-          path: remix-app/build/
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
