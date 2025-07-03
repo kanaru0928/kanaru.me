@@ -16,6 +16,12 @@ resource "aws_cloudfront_distribution" "app-distribution" {
     }
   }
 
+  origin {
+    domain_name              = aws_s3_bucket.static-site-bucket.bucket_regional_domain_name
+    origin_id                = aws_s3_bucket.static-site-bucket.id
+    origin_access_control_id = aws_cloudfront_origin_access_control.static-site-oac.id
+  }
+
   ordered_cache_behavior {
     path_pattern             = "/__manifest*"
     allowed_methods          = ["GET", "HEAD", "OPTIONS"]
@@ -24,6 +30,17 @@ resource "aws_cloudfront_distribution" "app-distribution" {
     viewer_protocol_policy   = "redirect-to-https"
     compress                 = true
     cache_policy_id          = aws_cloudfront_cache_policy.no-cache-policy.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.app-distribution-origin-request-policy.id
+  }
+
+  ordered_cache_behavior {
+    path_pattern             = "/*.*"
+    allowed_methods          = ["GET", "HEAD", "OPTIONS"]
+    cached_methods           = ["GET", "HEAD"]
+    target_origin_id         = aws_s3_bucket.static-site-bucket.id
+    viewer_protocol_policy   = "redirect-to-https"
+    compress                 = true
+    cache_policy_id          = data.aws_cloudfront_cache_policy.static-site-cache-policy.id
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.app-distribution-origin-request-policy.id
   }
 
@@ -61,6 +78,13 @@ resource "aws_cloudfront_origin_access_control" "app-distribution-oac" {
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
   origin_access_control_origin_type = "lambda"
+}
+
+resource "aws_cloudfront_origin_access_control" "static-site-oac" {
+  name                              = "kanaru-me-static-site-oac-${var.env}"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+  origin_access_control_origin_type = "s3"
 }
 
 resource "aws_cloudfront_cache_policy" "app-distribution-cache-policy" {
@@ -101,6 +125,10 @@ resource "aws_cloudfront_cache_policy" "no-cache-policy" {
   default_ttl = 0
   max_ttl     = 0
   min_ttl     = 0
+}
+
+data "aws_cloudfront_cache_policy" "static-site-cache-policy" {
+  name = "Managed-CachingOptimized"
 }
 
 data "aws_cloudfront_origin_request_policy" "app-distribution-origin-request-policy" {

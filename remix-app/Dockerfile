@@ -20,8 +20,7 @@ ENV PORT=3000
 COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.4 /lambda-adapter /opt/extensions/lambda-adapter
 
 COPY --from=prod-deps /app/node_modules /app/node_modules
-COPY --from=build /app/build /app/build
-COPY --from=build /app/public /app/public
+COPY --from=build /app/build/server /app/build/server
 COPY --from=build /app/package.json /app/package.json
 EXPOSE 3000
 CMD [ "pnpm", "start" ]

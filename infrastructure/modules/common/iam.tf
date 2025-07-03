@@ -16,6 +16,7 @@ resource "aws_iam_role" "lambda-app-role" {
 EOF
 }
 
+
 resource "aws_iam_role_policy_attachment" "lambda-app-role-basic-policy" {
   role       = aws_iam_role.lambda-app-role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
