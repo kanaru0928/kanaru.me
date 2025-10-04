@@ -1,6 +1,8 @@
 import iconImage from "~/features/top-page/images/icon@512.webp";
 import type { GitHubContributionData } from "../loaders/github";
 import { GitHubContributionGraph } from "./GitHubContributionGraph";
+import { TwitterIcon } from "./TwitterIcon";
+import { GitHubIcon } from "./GitHubIcon";
 
 type HeroSectionProps = {
   gitHubContributionData: GitHubContributionData;
@@ -26,6 +28,7 @@ export function HeroSection({ gitHubContributionData }: HeroSectionProps) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                <GitHubIcon size={16} />
                 GitHub
               </a>
               <a
@@ -34,6 +37,7 @@ export function HeroSection({ gitHubContributionData }: HeroSectionProps) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                <TwitterIcon size={16} />
                 Twitter
               </a>
             </div>
