@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import type { GitHubContributionData } from "./types";
+import type { GitHubContributionData } from "../types";
 
 export function GitHubContributionGraph({ weeks }: GitHubContributionData) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -22,7 +22,7 @@ export function GitHubContributionGraph({ weeks }: GitHubContributionData) {
   };
 
   return (
-    <div ref={scrollRef} className="w-full overflow-x-auto">
+    <div ref={scrollRef} className="w-full overflow-x-auto scroll-smooth">
       <div className="inline-flex gap-1.5 p-4">
         {weeks.map((week) => (
           <div

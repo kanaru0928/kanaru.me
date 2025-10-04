@@ -1,5 +1,5 @@
+import type { GitHubContributionData } from "../types";
 import { GitHubContributionGraph } from "./GitHubContributionGraph";
-import type { GitHubContributionData } from "./types";
 
 type HeroSectionProps = {
   gitHubContributionData: GitHubContributionData;
@@ -7,7 +7,7 @@ type HeroSectionProps = {
 
 export function HeroSection({ gitHubContributionData }: HeroSectionProps) {
   return (
-    <div className="hero min-h-screen bg-base-100">
+    <div className="hero min-h-screen bg-base-200">
       <div className="hero-content flex-col lg:flex-row-reverse gap-12">
         <div className="text-center lg:text-left max-w-md">
           <h1 className="text-5xl font-bold">kanaru.me</h1>
@@ -15,7 +15,7 @@ export function HeroSection({ gitHubContributionData }: HeroSectionProps) {
           <div className="flex justify-center lg:justify-start gap-4">
             <a
               href="https://github.com/kanaru0928"
-              className="btn btn-primary"
+              className="btn btn-neutral"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -23,7 +23,7 @@ export function HeroSection({ gitHubContributionData }: HeroSectionProps) {
             </a>
             <a
               href="https://x.com/Kanaru49570357"
-              className="btn btn-secondary"
+              className="btn btn-primary"
               target="_blank"
               rel="noopener noreferrer"
             >
