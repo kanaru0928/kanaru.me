@@ -1,23 +1,5 @@
 import { useEffect, useRef } from "react";
-
-interface ContributionDay {
-  date: string;
-  contributionLevel:
-    | "NONE"
-    | "FIRST_QUARTILE"
-    | "SECOND_QUARTILE"
-    | "THIRD_QUARTILE"
-    | "FOURTH_QUARTILE";
-  contributionCount: number;
-}
-
-interface ContributionWeek {
-  contributionDays: ContributionDay[];
-}
-
-interface GitHubContributionData {
-  weeks: ContributionWeek[];
-}
+import type { GitHubContributionData } from "./types";
 
 export function GitHubContributionGraph({ weeks }: GitHubContributionData) {
   const scrollRef = useRef<HTMLDivElement>(null);
