@@ -1,8 +1,10 @@
+import { ChevronsRight } from "lucide-react";
 import iconImage from "~/features/top-page/images/icon@512.webp";
 import type { GitHubContributionData } from "../loaders/github";
 import { GitHubContributionGraph } from "./GitHubContributionGraph";
-import { TwitterIcon } from "./TwitterIcon";
 import { GitHubIcon } from "./GitHubIcon";
+import { TwitterIcon } from "./TwitterIcon";
+import { Link } from "react-router";
 
 type HeroSectionProps = {
   gitHubContributionData: GitHubContributionData;
@@ -45,6 +47,12 @@ export function HeroSection({ gitHubContributionData }: HeroSectionProps) {
         </div>
         <div className="w-full max-w-md">
           <GitHubContributionGraph weeks={gitHubContributionData.weeks} />
+        </div>
+        <div>
+          <Link to="/portfolio" className="btn btn-primary btn-lg">
+            Go to my portfolio
+            <ChevronsRight />
+          </Link>
         </div>
       </div>
     </div>

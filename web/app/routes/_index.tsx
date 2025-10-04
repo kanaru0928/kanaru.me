@@ -1,5 +1,5 @@
-import { getGitHubContributionData } from "~/features/top-page/loaders/github";
 import { HeroSection } from "~/features/top-page/components/HeroSection";
+import { getGitHubContributionData } from "~/features/top-page/loaders/github";
 import type { Route } from "./+types/_index";
 
 export function meta() {
