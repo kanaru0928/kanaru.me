@@ -17,8 +17,6 @@ export async function loader() {
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   return (
-    <>
-      <HeroSection gitHubContributionData={loaderData.githubData} />
-    </>
+    <HeroSection gitHubContributionData={loaderData.githubData} />
   );
 }

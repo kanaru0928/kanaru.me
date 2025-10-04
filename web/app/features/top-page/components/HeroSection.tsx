@@ -12,7 +12,7 @@ type HeroSectionProps = {
 
 export function HeroSection({ gitHubContributionData }: HeroSectionProps) {
   return (
-    <div className="hero min-h-screen bg-base-200">
+    <div className="hero min-h-full bg-base-200">
       <div className="hero-content max-w-screen flex-col gap-6 lg:gap-12">
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-center">
           <div className="avatar">

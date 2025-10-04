@@ -5,6 +5,6 @@ export function meta() {
   ];
 }
 
-export function PortfolioPage() {
+export default function PortfolioPage() {
   return <div></div>;
 }
