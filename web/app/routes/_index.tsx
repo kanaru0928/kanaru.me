@@ -1,4 +1,4 @@
-import { getGitHubContributionData } from "~/features/top-page/github";
+import { getGitHubContributionData } from "~/features/top-page/loaders/github";
 import { HeroSection } from "~/features/top-page/components/HeroSection";
 import type { Route } from "./+types/_index";
 
