@@ -1,3 +1,6 @@
+import { Outlet, redirect } from "react-router";
+import type { Route } from "./+types/portfolio";
+
 export function meta() {
   return [
     { title: "kanaru.me | Portfolio" },
@@ -5,6 +8,18 @@ export function meta() {
   ];
 }
 
-export default function PortfolioPage() {
-  return <div></div>;
+export function loader({ request }: Route.LoaderArgs) {
+  const url = new URL(request.url);
+  if (url.pathname === "/portfolio" || url.pathname === "/portfolio/") {
+    return redirect("/portfolio/about");
+  }
+  return null;
+}
+
+export default function PortfolioLayout() {
+  return (
+    <div className="p-8">
+      <Outlet />
+    </div>
+  );
 }
