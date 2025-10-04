@@ -12,7 +12,7 @@ export function HeroSection({ gitHubContributionData }: HeroSectionProps) {
       <div className="hero-content max-w-screen flex-col gap-6 lg:gap-12">
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-center">
           <div className="avatar">
-            <div className="w-36 rounded-full">
+            <div className="ring-primary ring-2 ring-offset-base-200 ring-offset-3 w-36 rounded-full">
               <img src={iconImage} alt="Kanaru's Avatar" />
             </div>
           </div>
