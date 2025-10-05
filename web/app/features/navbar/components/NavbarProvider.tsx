@@ -32,7 +32,7 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
           <div className="flex-1">{children}</div>
         </div>
       </div>
-      <div className="drawer-side">
+      <div className="drawer-side z-50">
         <label
           htmlFor={drawerId}
           className="drawer-overlay"
@@ -49,28 +49,28 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
               <summary>Portfolio</summary>
               <ul>
                 <li>
-                  <Link to="/portfolio/about">
-                    <User className="h-4 w-4" />
-                    About
-                  </Link>
+                    <NavLink to="/portfolio/about">
+                      <User className="h-4 w-4" />
+                      About
+                    </NavLink>
                 </li>
                 <li>
-                  <Link to="/portfolio/works">
+                  <NavLink to="/portfolio/works">
                     <Briefcase className="h-4 w-4" />
                     Works
-                  </Link>
+                  </NavLink>
                 </li>
                 <li>
-                  <Link to="/portfolio/history">
+                  <NavLink to="/portfolio/history">
                     <History className="h-4 w-4" />
                     History
-                  </Link>
+                  </NavLink>
                 </li>
                 <li>
-                  <Link to="/portfolio/skills">
+                  <NavLink to="/portfolio/skills">
                     <Wrench className="h-4 w-4" />
                     Skills
-                  </Link>
+                  </NavLink>
                 </li>
               </ul>
             </details>
