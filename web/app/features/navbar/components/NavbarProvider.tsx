@@ -14,7 +14,7 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
       <input type="checkbox" id={drawerId} className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         <div className="flex flex-col min-h-screen">
-          <nav className="navbar bg-base-300/30  filter backdrop-blur-md shadow-sm sticky top-0 justify-center px-4">
+          <nav className="navbar bg-base-300/30  filter backdrop-blur-md shadow-sm sticky top-0 z-50 justify-center px-4">
             <div className="flex-1">
               <div className={cn(defaultOpen && "lg:hidden")}>
                 <label htmlFor={drawerId} className="btn btn-ghost btn-square">
