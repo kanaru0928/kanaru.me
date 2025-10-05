@@ -1,32 +1,55 @@
-import { GitHubIcon } from "~/features/top-page/components/GitHubIcon"
-import { TwitterIcon } from "~/features/top-page/components/TwitterIcon"
+import { GitHubIcon } from "~/features/top-page/components/GitHubIcon";
+import { TwitterIcon } from "~/features/top-page/components/TwitterIcon";
+import iconImage from "~/features/top-page/images/icon@512.webp";
 
 export default function AboutPage() {
   return (
-    <div>
-      <h1 className="text-4xl font-bold mb-8">About</h1>
+    <div className="min-h-full flex flex-col gap-8">
+      <h1 className="text-4xl font-bold">About</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="columns-1 sm:columns-2 gap-6 space-y-6">
         {/* プロフィールカード */}
-        <section className="card bg-base-100 shadow-xl">
+        <section className="card bg-base-100 shadow-xl break-inside-avoid-column">
           <div className="card-body">
-            <h2 className="card-title text-xl">プロフィール</h2>
-            <div className="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
-              <span className="text-sm opacity-60">名前</span>
-              <span>Kanaru</span>
-              <span className="text-sm opacity-60">職業</span>
-              <span>Software Developer</span>
-              <span className="text-sm opacity-60">年齢</span>
-              <span>21歳</span>
+            <h2 className="card-title text-xl mb-2">プロフィール</h2>
+            <div className="flex items-center flex-wrap gap-6 mb-4">
+              <div className="avatar">
+                <div className="ring-primary ring-2 ring-offset-base-100 ring-offset-2 w-24 rounded-full">
+                  <img src={iconImage} alt="Kanaru's Avatar" />
+                </div>
+              </div>
+              <div className="space-y-4 min-w-10">
+                <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
+                  <span className="text-sm opacity-60">名前</span>
+                  <div>
+                    <p>東 翔生</p>
+                    <p>AZUMA Kanaru</p>
+                  </div>
+                  <span className="text-sm opacity-60">所属</span>
+                  <div>
+                    <p>電気通信大学</p>
+                    <p>情報理工学域 I類</p>
+                    <p>
+                      コンピュータ
+                      <wbr />
+                      サイエンス
+                      <wbr />
+                      プログラム
+                    </p>
+                  </div>
+                  <span className="text-sm opacity-60">年齢</span>
+                  <span>21歳</span>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* 資格カード */}
-        <section className="card bg-base-100 shadow-xl">
+        <section className="card bg-base-100 shadow-xl break-inside-avoid-column">
           <div className="card-body">
-            <h2 className="card-title text-xl">資格</h2>
-            <ul className="mt-4 space-y-2 list-disc list-inside">
+            <h2 className="card-title text-xl mb-2">資格</h2>
+            <ul className="space-y-2 list-disc list-inside">
               <li>応用情報技術者</li>
               <li>第一種普通自動車運転免許 (AT限定)</li>
               <li>実用英語技能検定 2級</li>
@@ -35,22 +58,22 @@ export default function AboutPage() {
         </section>
 
         {/* 趣味カード */}
-        <section className="card bg-base-100 shadow-xl">
+        <section className="card bg-base-100 shadow-xl break-inside-avoid-column">
           <div className="card-body">
-            <h2 className="card-title text-xl">趣味</h2>
-            <ul className="mt-4 space-y-2 list-disc list-inside">
+            <h2 className="card-title text-xl mb-2">趣味</h2>
+            <ul className="space-y-2 list-disc list-inside">
               <li>プログラミング</li>
               <li>動画制作</li>
-              <li>ゲーム</li>
+              <li>VRChat</li>
             </ul>
           </div>
         </section>
 
         {/* リンクカード */}
-        <section className="card bg-base-100 shadow-xl">
+        <section className="card bg-base-100 shadow-xl break-inside-avoid-column">
           <div className="card-body">
-            <h2 className="card-title text-xl">リンク</h2>
-            <div className="mt-4 space-y-3">
+            <h2 className="card-title text-xl mb-2">リンク</h2>
+            <div className="space-y-3">
               <a
                 href="https://github.com/kanaru0928"
                 target="_blank"
