@@ -1,4 +1,11 @@
-import { Briefcase, History, PanelsTopLeft, User, Wrench } from "lucide-react";
+import {
+  Blocks,
+  Briefcase,
+  History,
+  PanelsTopLeft,
+  User,
+  Wrench,
+} from "lucide-react";
 import { type ReactNode, useId } from "react";
 import { Link, NavLink } from "react-router";
 import { cn } from "~/lib/utils";
@@ -49,10 +56,10 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
               <summary>Portfolio</summary>
               <ul>
                 <li>
-                    <NavLink to="/portfolio/about">
-                      <User className="h-4 w-4" />
-                      About
-                    </NavLink>
+                  <NavLink to="/portfolio/about">
+                    <User className="h-4 w-4" />
+                    About
+                  </NavLink>
                 </li>
                 <li>
                   <NavLink to="/portfolio/works">
@@ -70,6 +77,19 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
                   <NavLink to="/portfolio/skills">
                     <Wrench className="h-4 w-4" />
                     Skills
+                  </NavLink>
+                </li>
+              </ul>
+            </details>
+          </li>
+          <li>
+            <details open>
+              <summary>Sandbox</summary>
+              <ul>
+                <li>
+                  <NavLink to="/sandbox/puzzle">
+                    <Blocks className="h-4 w-4" />
+                    Puzzle
                   </NavLink>
                 </li>
               </ul>
