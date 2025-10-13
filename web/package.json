@@ -6,7 +6,8 @@
     "build": "react-router build",
     "dev": "cross-env NODE_ENV=development node server.js",
     "start": "node server.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "ci": "biome ci"
   },
   "dependencies": {
     "@react-router/express": "^7.9.4",
