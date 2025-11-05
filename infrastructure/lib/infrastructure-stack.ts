@@ -4,11 +4,12 @@ import type { Construct } from "constructs";
 
 export class InfrastructureStack extends cdk.Stack {
   private layerBucketArn: string;
+  private assetBucket: s3.Bucket;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    this.createAssetS3();
+    this.assetBucket = this.createAssetS3();
     this.layerBucketArn = this.createLayerS3();
   }
 
@@ -31,5 +32,9 @@ export class InfrastructureStack extends cdk.Stack {
 
   public getLayerBucketArn(): string {
     return this.layerBucketArn;
+  }
+
+  public getAssetBucket(): s3.Bucket {
+    return this.assetBucket;
   }
 }
