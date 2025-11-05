@@ -32,12 +32,6 @@ export class CloudFrontStack extends cdk.Stack {
   }
 
   private createDistribution(props: Props) {
-    // S3用のOAC作成
-    const s3Oac = new cloudfront.S3OriginAccessControl(this, "S3OAC", {
-      signing: cloudfront.Signing.SIGV4_ALWAYS,
-      originAccessControlName: "kanaru-me-web-s3-oac",
-    });
-
     // Lambda Function URL用のOAC作成
     const lambdaOac = new cloudfront.FunctionUrlOriginAccessControl(
       this,
@@ -65,10 +59,7 @@ export class CloudFrontStack extends cdk.Stack {
 
     // S3用のOrigin設定
     const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(
-      assetBucket,
-      {
-        originAccessControl: s3Oac,
-      },
+      assetBucket
     );
 
     // ACM証明書の参照
