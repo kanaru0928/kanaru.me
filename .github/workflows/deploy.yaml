@@ -39,7 +39,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm semantic-release
 
+      - name: Check web/package.json changes
+        id: check_package_json
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            # タグが存在しない場合は常に実行
+            echo "changed=true" >> $GITHUB_OUTPUT
+          elif git diff --name-only $LAST_TAG HEAD | grep -q "^web/package.json$"; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Prepare Lambda Layer
+        if: steps.check_package_json.outputs.changed == 'true'
         run: pnpm deploy:layer
 
       - name: Configure AWS credentials
@@ -52,6 +66,7 @@ jobs:
         run: cd infrastructure && pnpm cdk deploy InfrastructureStack --require-approval never
 
       - name: Zip and upload Lambda Layer
+        if: steps.check_package_json.outputs.changed == 'true'
         run: |
           cd web/layer
           zip -r9y layer.zip nodejs
