@@ -10,6 +10,9 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-24.04-arm
+    env:
+      CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
+      DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
 
     steps:
       - name: Checkout code
@@ -59,9 +62,6 @@ jobs:
 
       - name: Deploy with CDK
         run: cd infrastructure && pnpm cdk deploy --all --require-approval never
-        env:
-          CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
-          DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
 
       - name: Deploy Client Resources
         run: cd web/build/client/assets && aws s3 sync --delete . s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-assets/assets/
