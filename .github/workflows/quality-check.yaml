@@ -1,0 +1,33 @@
+name: Quality Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "web/**"
+      - ".github/workflows/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "web/**"
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v3
+      - run: corepack enable
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - name: Install dependencies
+        run: cd web && pnpm install
+      - name: Lint and format
+        run: cd web && pnpm run ci
+      - name: Build
+        run: cd web && pnpm run build
