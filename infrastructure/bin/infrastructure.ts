@@ -13,5 +13,8 @@ const env = {
   region: process.env.CDK_DEFAULT_REGION,
 };
 
-new InfrastructureStack(app, "InfrastructureStack", { env });
-new AppStack(app, "AppStack", { env });
+const infraStack = new InfrastructureStack(app, "InfrastructureStack", { env });
+new AppStack(app, "AppStack", {
+  env,
+  layerBucketArn: infraStack.getLayerBucketArn(),
+});
