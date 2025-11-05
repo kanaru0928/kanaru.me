@@ -264,3 +264,6 @@ $RECYCLE.BIN/
 infrastructure/environments/*/*
 !infrastructure/environments/**/terragrunt.hcl
 !infrastructure/environments/**/.terraform.lock.hcl
+
+# Lambda Layer deployment
+web/layer/nodejs/node_modules/

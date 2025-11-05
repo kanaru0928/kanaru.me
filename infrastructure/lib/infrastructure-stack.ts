@@ -1,16 +1,19 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import * as cdk from "aws-cdk-lib";
+import * as s3 from "aws-cdk-lib/aws-s3";
+import type { Construct } from "constructs";
 
 export class InfrastructureStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    this.createAssetS3();
+  }
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'InfrastructureQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+  private createAssetS3() {
+    return new s3.Bucket(this, "WebAssetBucket", {
+      bucketName: `${this.account}-kanaru-me-v2-web-assets`,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    });
   }
 }
