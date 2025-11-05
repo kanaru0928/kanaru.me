@@ -45,6 +45,9 @@ jobs:
           role-to-assume: ${{ vars.ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
 
+      - name: Prepare Base Resources
+        run: cd infrastructure && pnpm cdk deploy InfrastructureStack --require-approval never
+
       - name: Zip and upload Lambda Layer
         run: |
           cd web/layer
@@ -55,4 +58,4 @@ jobs:
         run: cd web && pnpm build
 
       - name: Deploy with CDK
-        run: cd infrastructure && pnpm cdk deploy --all --require-approval never
+        run: cd infrastructure && pnpm cdk deploy AppStack --require-approval never
