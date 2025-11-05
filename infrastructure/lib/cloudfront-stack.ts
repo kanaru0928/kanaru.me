@@ -2,7 +2,7 @@ import * as cdk from "aws-cdk-lib";
 import * as acm from "aws-cdk-lib/aws-certificatemanager";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
-import type * as lambda from "aws-cdk-lib/aws-lambda";
+import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import type { Construct } from "constructs";
 
@@ -11,23 +11,31 @@ type Props = cdk.StackProps & {
   assetBucketArn: string;
   certificateArn: string;
   domainName: string;
+  functionName: string;
 };
 
 export class CloudFrontStack extends cdk.Stack {
+  private distribution: cloudfront.Distribution;
+  private functionName: string;
+
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props);
 
-    if (!props.functionUrl || !props.assetBucketArn) {
-      throw new Error("functionUrl and assetBucket are required");
+    if (!props.functionUrl || !props.functionName) {
+      throw new Error("functionUrl and functionName are required");
     }
 
-    this.createDistribution(props);
+    this.functionName = props.functionName;
+
+    this.distribution = this.createDistribution(props);
+    this.grantOACInvokeUrl();
   }
 
   private createDistribution(props: Props) {
     // S3用のOAC作成
     const s3Oac = new cloudfront.S3OriginAccessControl(this, "S3OAC", {
       signing: cloudfront.Signing.SIGV4_ALWAYS,
+      originAccessControlName: "kanaru-me-web-s3-oac",
     });
 
     // Lambda Function URL用のOAC作成
@@ -36,6 +44,7 @@ export class CloudFrontStack extends cdk.Stack {
       "LambdaOAC",
       {
         signing: cloudfront.Signing.SIGV4_ALWAYS,
+        originAccessControlName: "kanaru-me-web-lambda-oac",
       },
     );
 
@@ -70,7 +79,7 @@ export class CloudFrontStack extends cdk.Stack {
     );
 
     // CloudFront Distribution作成
-    new cloudfront.Distribution(this, "Distribution", {
+    return new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: {
         origin: functionUrlOrigin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -92,6 +101,20 @@ export class CloudFrontStack extends cdk.Stack {
       domainNames: [props.domainName],
       enableLogging: false,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_ALL,
+    });
+  }
+
+  private grantOACInvokeUrl() {
+    const lambdaFunction = lambda.Function.fromFunctionName(
+      this,
+      "ImportedLambdaFunction",
+      this.functionName,
+    );
+    lambdaFunction.addPermission("CloudFrontInvokePermission", {
+      principal: new cdk.aws_iam.ServicePrincipal("cloudfront.amazonaws.com"),
+      action: "lambda:InvokeFunctionUrl",
+      functionUrlAuthType: lambda.FunctionUrlAuthType.AWS_IAM,
+      sourceArn: this.distribution.distributionArn,
     });
   }
 }

@@ -17,7 +17,7 @@ export class InfrastructureStack extends cdk.Stack {
     const bucket = new s3.Bucket(this, "WebLayerBucket", {
       bucketName: `${this.account}-kanaru-me-v2-web-layer`,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
-      autoDeleteObjects: true
+      autoDeleteObjects: true,
     });
     return bucket.bucketArn;
   }
