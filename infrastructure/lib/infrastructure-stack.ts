@@ -34,7 +34,7 @@ export class InfrastructureStack extends cdk.Stack {
     return this.layerBucketArn;
   }
 
-  public getAssetBucket(): s3.Bucket {
-    return this.assetBucket;
+  public getAssetBucketArn(): string {
+    return this.assetBucket.bucketArn;
   }
 }

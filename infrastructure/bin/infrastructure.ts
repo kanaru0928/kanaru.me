@@ -29,7 +29,7 @@ const appStack = new AppStack(app, "AppStack", {
 new CloudFrontStack(app, "CloudFrontStack", {
   env,
   functionUrl: appStack.getFunctionUrl(),
-  assetBucket: infraStack.getAssetBucket(),
+  assetBucketArn: infraStack.getAssetBucketArn(),
   certificateArn: env.certificateArn,
   domainName: env.domainName,
 });

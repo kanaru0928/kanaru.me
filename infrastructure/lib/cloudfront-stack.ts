@@ -3,12 +3,12 @@ import * as acm from "aws-cdk-lib/aws-certificatemanager";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import type * as lambda from "aws-cdk-lib/aws-lambda";
-import type * as s3 from "aws-cdk-lib/aws-s3";
+import * as s3 from "aws-cdk-lib/aws-s3";
 import type { Construct } from "constructs";
 
 type Props = cdk.StackProps & {
   functionUrl: lambda.FunctionUrl;
-  assetBucket: s3.Bucket;
+  assetBucketArn: string;
   certificateArn: string;
   domainName: string;
 };
@@ -17,7 +17,7 @@ export class CloudFrontStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props);
 
-    if (!props.functionUrl || !props.assetBucket) {
+    if (!props.functionUrl || !props.assetBucketArn) {
       throw new Error("functionUrl and assetBucket are required");
     }
 
@@ -48,9 +48,15 @@ export class CloudFrontStack extends cdk.Stack {
       },
     );
 
+    const assetBucket = s3.Bucket.fromBucketArn(
+      this,
+      "ImportedAssetBucket",
+      props.assetBucketArn,
+    );
+
     // S3用のOrigin設定
     const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(
-      props.assetBucket,
+      assetBucket,
       {
         originAccessControl: s3Oac,
       },
@@ -69,7 +75,8 @@ export class CloudFrontStack extends cdk.Stack {
         origin: functionUrlOrigin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-        originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+        originRequestPolicy:
+          cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
       },
       additionalBehaviors: {
