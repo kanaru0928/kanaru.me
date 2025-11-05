@@ -39,14 +39,20 @@ jobs:
       - name: Prepare Lambda Layer
         run: pnpm deploy:layer
 
-      - name: Build web app
-        run: cd web && pnpm build
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
+
+      - name: Zip and upload Lambda Layer
+        run: |
+          cd web/layer
+          zip -r9y layer.zip nodejs
+          aws s3 cp layer.zip s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-layer/layer.zip
+
+      - name: Build web app
+        run: cd web && pnpm build
 
       - name: Deploy with CDK
         run: cd infrastructure && pnpm cdk deploy --all --require-approval never
