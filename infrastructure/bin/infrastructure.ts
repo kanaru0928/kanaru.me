@@ -32,4 +32,5 @@ new CloudFrontStack(app, "CloudFrontStack", {
   assetBucketArn: infraStack.getAssetBucketArn(),
   certificateArn: env.certificateArn,
   domainName: env.domainName,
+  functionName: appStack.getFunctionName(),
 });

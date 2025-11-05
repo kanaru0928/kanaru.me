@@ -106,4 +106,8 @@ export class AppStack extends cdk.Stack {
   public grantInvokeUrl(grantee: iam.IGrantable): void {
     this.lambdaFunction.grantInvokeUrl(grantee);
   }
+
+  public getFunctionName(): string {
+    return this.lambdaFunction.functionName;
+  }
 }
