@@ -64,4 +64,4 @@ jobs:
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
 
       - name: Deploy Client Resources
-        run: cd web/build/client/assets && s3 sync --delete . s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-assets/assets/
+        run: cd web/build/client/assets && aws s3 sync --delete . s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-assets/assets/
