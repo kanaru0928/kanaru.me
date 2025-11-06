@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       init-base-resources:
-        description: 'Initialize base resources'
+        description: "Initialize base resources"
         required: false
         default: false
         type: boolean
@@ -19,6 +19,7 @@ jobs:
     env:
       CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
       DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+      GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -69,6 +70,7 @@ jobs:
           aws-region: ap-northeast-1
 
       - name: Prepare Base Resources
+        if: inputs.init-base-resources
         run: cd infrastructure && pnpm cdk deploy InfrastructureStack --require-approval never
 
       - name: Zip and upload Lambda Layer

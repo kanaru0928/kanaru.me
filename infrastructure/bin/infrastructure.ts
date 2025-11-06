@@ -13,10 +13,11 @@ const env = {
   region: process.env.CDK_DEFAULT_REGION,
   certificateArn: process.env.CERTIFICATE_ARN,
   domainName: process.env.DOMAIN_NAME,
+  githubToken: process.env.GITHUB_TOKEN,
 };
 
-if (!env.certificateArn || !env.domainName) {
-  throw new Error("CERTIFICATE_ARN and DOMAIN_NAME must be set in .env file");
+if (!env.certificateArn || !env.domainName || !env.githubToken) {
+  throw new Error("CERTIFICATE_ARN, DOMAIN_NAME and GITHUB_TOKEN must be set in .env file");
 }
 
 const infraStack = new InfrastructureStack(app, "InfrastructureStack", { env });
@@ -25,4 +26,5 @@ new AppStack(app, "AppStack", {
   layerBucketArn: infraStack.getLayerBucketArn(),
   certificateArn: env.certificateArn,
   domainName: env.domainName,
+  githubToken: env.githubToken,
 });

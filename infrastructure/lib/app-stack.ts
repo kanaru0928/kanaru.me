@@ -12,6 +12,7 @@ type Props = cdk.StackProps & {
   layerBucketArn: string;
   certificateArn: string;
   domainName: string;
+  githubToken: string;
 };
 
 export class AppStack extends cdk.Stack {
@@ -24,16 +25,18 @@ export class AppStack extends cdk.Stack {
   private distribution: cloudfront.Distribution;
   private certificateArn: string;
   private domainName: string;
+  private githubToken: string;
 
   constructor(scope: cdk.App, id: string, props?: Props) {
     super(scope, id, props);
 
-    if (!props?.layerBucketArn || !props?.certificateArn || !props?.domainName) {
-      throw new Error("layerBucketArn, certificateArn and domainName are required");
+    if (!props?.layerBucketArn || !props?.certificateArn || !props?.domainName || !props?.githubToken) {
+      throw new Error("layerBucketArn, certificateArn, domainName and githubToken are required");
     }
     this.layerBucketArn = props.layerBucketArn;
     this.certificateArn = props.certificateArn;
     this.domainName = props.domainName;
+    this.githubToken = props.githubToken;
 
     this.assetBucket = this.createAssetBucket();
     this.lambdaLayerVersion = this.createLambdaLayerVersion();
@@ -77,6 +80,9 @@ export class AppStack extends cdk.Stack {
       functionName: "kanarume-me-web-function",
       timeout: cdk.Duration.minutes(3),
       memorySize: 1024,
+      environment: {
+        GITHUB_TOKEN: this.githubToken,
+      }
     });
 
     return lambdaFunction;
