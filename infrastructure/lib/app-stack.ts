@@ -82,7 +82,8 @@ export class AppStack extends cdk.Stack {
       memorySize: 1024,
       environment: {
         GITHUB_TOKEN: this.githubToken,
-      }
+      },
+      architecture: lambda.Architecture.ARM_64,
     });
 
     return lambdaFunction;
@@ -177,6 +178,7 @@ export class AppStack extends cdk.Stack {
         FUNCTION_NAME: this.lambdaFunction.functionName,
       },
       timeout: cdk.Duration.seconds(30),
+      architecture: lambda.Architecture.ARM_64,
     });
 
     // Warmer関数にWebFunctionを呼び出す権限を付与
