@@ -2,7 +2,6 @@
 import * as cdk from "aws-cdk-lib";
 import { config } from "dotenv";
 import { AppStack } from "../lib/app-stack";
-import { CloudFrontStack } from "../lib/cloudfront-stack";
 import { InfrastructureStack } from "../lib/infrastructure-stack";
 
 config({ path: `${__dirname}/../.env` });
@@ -21,16 +20,9 @@ if (!env.certificateArn || !env.domainName) {
 }
 
 const infraStack = new InfrastructureStack(app, "InfrastructureStack", { env });
-const appStack = new AppStack(app, "AppStack", {
+new AppStack(app, "AppStack", {
   env,
   layerBucketArn: infraStack.getLayerBucketArn(),
-});
-
-new CloudFrontStack(app, "CloudFrontStack", {
-  env,
-  functionUrl: appStack.getFunctionUrl(),
-  assetBucketArn: infraStack.getAssetBucketArn(),
   certificateArn: env.certificateArn,
   domainName: env.domainName,
-  functionName: appStack.getFunctionName(),
 });
