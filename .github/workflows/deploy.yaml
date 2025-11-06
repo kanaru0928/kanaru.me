@@ -2,6 +2,12 @@ name: Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      init-base-resources:
+        description: 'Initialize base resources'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   id-token: write
@@ -53,7 +59,7 @@ jobs:
           fi
 
       - name: Prepare Lambda Layer
-        if: steps.check_package_json.outputs.changed == 'true'
+        if: inputs.init-base-resources || steps.check_package_json.outputs.changed == 'true'
         run: pnpm deploy:layer
 
       - name: Configure AWS credentials
@@ -66,7 +72,7 @@ jobs:
         run: cd infrastructure && pnpm cdk deploy InfrastructureStack --require-approval never
 
       - name: Zip and upload Lambda Layer
-        if: steps.check_package_json.outputs.changed == 'true'
+        if: inputs.init-base-resources || steps.check_package_json.outputs.changed == 'true'
         run: |
           cd web/layer
           zip -r9y layer.zip nodejs
