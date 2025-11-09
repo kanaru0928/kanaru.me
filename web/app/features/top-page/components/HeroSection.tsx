@@ -34,7 +34,7 @@ export function HeroSection({ gitHubContributionData }: HeroSectionProps) {
                 GitHub
               </a>
               <a
-                href="https://x.com/Kanaru49570357"
+                href="https://x.com/kanaru0928"
                 className="btn btn-primary"
                 target="_blank"
                 rel="noopener noreferrer"

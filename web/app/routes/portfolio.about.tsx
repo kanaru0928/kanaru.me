@@ -75,7 +75,7 @@ export default function AboutPage() {
               <span>GitHub</span>
             </a>
             <a
-              href="https://twitter.com/Kanaru49570357"
+              href="https://twitter.com/kanaru0928"
               target="_blank"
               rel="noopener noreferrer"
               className="link link-hover flex items-center gap-3"
@@ -83,17 +83,14 @@ export default function AboutPage() {
               <TwitterIcon size={20} className="shrink-0" />
               <span>Twitter</span>
             </a>
-            <a
-              href="mailto:kanaru@kanaru.me"
-              className="link link-hover flex items-center gap-3"
-            >
+            <span className="flex items-center gap-3">
               <Mail size={20} className="shrink-0" />
               <span>
-                kanaru
+                me
                 <wbr />
-                @kanaru.me
+                [at]kanaru.me
               </span>
-            </a>
+            </span>
           </div>
         </SectionCard>
       </div>
