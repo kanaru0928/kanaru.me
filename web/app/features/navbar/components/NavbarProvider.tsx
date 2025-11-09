@@ -13,14 +13,14 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
     <div className={cn("drawer", defaultOpen && "lg:drawer-open")}>
       <input type="checkbox" id={drawerId} className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
-        <div className="flex flex-col min-h-screen">
-          <nav className="navbar bg-base-300/30  filter backdrop-blur-md shadow-sm sticky top-0 z-50 justify-center px-4">
+        <div className="flex min-h-screen flex-col">
+          <nav className="navbar sticky top-0 z-50 justify-center bg-base-300/30 px-4 shadow-sm filter backdrop-blur-md">
             <div className="flex-1">
               <div className={cn(defaultOpen && "lg:hidden")}>
                 <label htmlFor={drawerId} className="btn btn-ghost btn-square">
                   <PanelsTopLeft className="h-6 w-6" />
                 </label>
-                <Link to="/" className="btn btn-ghost normal-case text-xl">
+                <Link to="/" className="btn btn-ghost text-xl normal-case">
                   kanaru.me
                 </Link>
               </div>
@@ -38,9 +38,9 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
           className="drawer-overlay"
           aria-label="close sidebar"
         ></label>
-        <ul className="menu bg-base-200 min-h-full w-80 p-4">
+        <ul className="menu min-h-full w-80 bg-base-200 p-4">
           <li className="mb-2">
-            <Link to="/" className="btn btn-ghost text-xl font-bold">
+            <Link to="/" className="btn btn-ghost font-bold text-xl">
               kanaru.me
             </Link>
           </li>
@@ -49,10 +49,10 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
               <summary>Portfolio</summary>
               <ul>
                 <li>
-                    <NavLink to="/portfolio/about">
-                      <User className="h-4 w-4" />
-                      About
-                    </NavLink>
+                  <NavLink to="/portfolio/about">
+                    <User className="h-4 w-4" />
+                    About
+                  </NavLink>
                 </li>
                 <li>
                   <NavLink to="/portfolio/works">

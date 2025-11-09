@@ -41,7 +41,7 @@ export function GitHubContributionGraph({ weeks }: GitHubContributionData) {
             {week.contributionDays.map((day) => (
               <div
                 key={day.date}
-                className={`w-1.5 h-1.5 rounded-full ${
+                className={`h-1.5 w-1.5 rounded-full ${
                   levelMap[day.contributionLevel]?.color || levelMap.NONE.color
                 } ${
                   levelMap[day.contributionLevel]?.scale || levelMap.NONE.scale

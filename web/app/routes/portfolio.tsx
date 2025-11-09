@@ -18,7 +18,7 @@ export function loader({ request }: Route.LoaderArgs) {
 
 export default function PortfolioLayout() {
   return (
-    <div className="p-8 break-keep wrap-anywhere min-h-full">
+    <div className="wrap-anywhere min-h-full break-keep p-8">
       <Outlet />
     </div>
   );
