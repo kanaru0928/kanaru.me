@@ -1,7 +1,10 @@
 import { Hono } from "hono";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { Env as EnvConfig } from "../../src/config/env";
 import type { Article } from "../../src/domain/entities/Article";
+import type { setupContainer } from "../../src/infrastructure/container/setup";
 import { createArticleRouter } from "../../src/interface/routes/articles";
+import { createMockContainer } from "../mocks/container";
 import { createMockArticleRepository } from "../mocks/repositories";
 import { createMockArticleStorage } from "../mocks/storage";
 
@@ -31,6 +34,11 @@ type Env = {
 		DYNAMODB_TABLE_NAME: string;
 		S3_BUCKET_NAME: string;
 		AWS_REGION: string;
+		ALLOWED_ORIGINS: string;
+	};
+	Variables: {
+		container: ReturnType<typeof setupContainer>;
+		env: EnvConfig;
 	};
 };
 
@@ -41,16 +49,21 @@ describe("Article API Routes", () => {
 		mockRepository = createMockArticleRepository();
 		mockStorage = createMockArticleStorage();
 
-		// 環境変数をモック
+		// 環境変数とDIコンテナをモック
 		app = new Hono<Env>();
 
-		// テスト用の環境変数を設定
+		// テスト用のDIコンテナと環境変数を設定
 		app.use("*", async (c, next) => {
-			c.env = {
+			const mockContainer = createMockContainer(mockRepository, mockStorage);
+			const mockEnvConfig: EnvConfig = {
 				DYNAMODB_TABLE_NAME: "test-table",
 				S3_BUCKET_NAME: "test-bucket",
 				AWS_REGION: "us-east-1",
+				ALLOWED_ORIGINS: ["http://localhost:3000"],
 			};
+
+			c.set("container", mockContainer);
+			c.set("env", mockEnvConfig);
 			await next();
 		});
 

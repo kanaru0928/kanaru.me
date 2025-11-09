@@ -8,6 +8,7 @@ export function createMockArticleRepository(): IArticleRepository {
 		findAll: vi.fn().mockResolvedValue([]),
 		updateMetadata: vi.fn().mockResolvedValue(null),
 		updateContentKey: vi.fn().mockResolvedValue(null),
+		incrementPV: vi.fn().mockResolvedValue(undefined),
 		delete: vi.fn().mockResolvedValue(undefined),
 	};
 }

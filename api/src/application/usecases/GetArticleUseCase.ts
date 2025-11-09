@@ -24,6 +24,11 @@ export class GetArticleUseCase {
       throw new Error(`Content not found for article "${slug}"`);
     }
 
+    // PVを自動インクリメント（非同期で実行、エラーは無視）
+    this.repository.incrementPV(slug).catch((err) => {
+      console.error(`Failed to increment PV for article "${slug}":`, err);
+    });
+
     return {
       ...article,
       contentBody,

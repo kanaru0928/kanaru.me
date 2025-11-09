@@ -3,9 +3,6 @@ import type { IArticleStorage } from "../../src/domain/repositories/IArticleStor
 
 export function createMockArticleStorage(): IArticleStorage {
 	return {
-		generateContentKey: vi.fn((content: string) => {
-			return `articles/${content.substring(0, 8)}.md`;
-		}),
 		uploadContent: vi
 			.fn()
 			.mockResolvedValue("articles/abc12345def67890.md"),

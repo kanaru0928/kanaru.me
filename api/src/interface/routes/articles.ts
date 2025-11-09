@@ -1,12 +1,13 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
-import { CreateArticleUseCase } from "../../application/usecases/CreateArticleUseCase";
-import { DeleteArticleUseCase } from "../../application/usecases/DeleteArticleUseCase";
-import { GetArticleUseCase } from "../../application/usecases/GetArticleUseCase";
-import { ListArticlesUseCase } from "../../application/usecases/ListArticlesUseCase";
-import { UpdateArticleContentUseCase } from "../../application/usecases/UpdateArticleContentUseCase";
-import { UpdateArticleMetadataUseCase } from "../../application/usecases/UpdateArticleMetadataUseCase";
-import { DynamoDBArticleRepository } from "../../infrastructure/repositories/DynamoDBArticleRepository";
-import { S3ArticleStorage } from "../../infrastructure/storage/S3ArticleStorage";
+import type { CreateArticleUseCase } from "../../application/usecases/CreateArticleUseCase";
+import type { DeleteArticleUseCase } from "../../application/usecases/DeleteArticleUseCase";
+import type { GetArticleUseCase } from "../../application/usecases/GetArticleUseCase";
+import type { ListArticlesUseCase } from "../../application/usecases/ListArticlesUseCase";
+import type { UpdateArticleContentUseCase } from "../../application/usecases/UpdateArticleContentUseCase";
+import type { UpdateArticleMetadataUseCase } from "../../application/usecases/UpdateArticleMetadataUseCase";
+import type { Env as EnvConfig } from "../../config/env";
+import type { setupContainer } from "../../infrastructure/container/setup";
+import { DI_TOKENS } from "../../infrastructure/container/types";
 import { toArticleDetail, toArticleListItem } from "../dto/ArticleDTO";
 import {
   ArticleDetailSchema,
@@ -27,6 +28,11 @@ type Env = {
     DYNAMODB_TABLE_NAME: string;
     S3_BUCKET_NAME: string;
     AWS_REGION: string;
+    ALLOWED_ORIGINS: string;
+  };
+  Variables: {
+    container: ReturnType<typeof setupContainer>;
+    env: EnvConfig;
   };
 };
 
@@ -62,12 +68,10 @@ export function createArticleRouter() {
 
   app.openapi(listArticlesRoute, async (c) => {
     try {
-      // 環境変数から設定を取得
-      const repository = new DynamoDBArticleRepository(
-        c.env.DYNAMODB_TABLE_NAME,
-        c.env.AWS_REGION,
+      const container = c.get("container");
+      const listArticlesUseCase = container.resolve<ListArticlesUseCase>(
+        DI_TOKENS.ListArticlesUseCase,
       );
-      const listArticlesUseCase = new ListArticlesUseCase(repository);
 
       const articles = await listArticlesUseCase.execute();
       return c.json(
@@ -128,18 +132,9 @@ export function createArticleRouter() {
 
   app.openapi(createArticleRoute, async (c) => {
     try {
-      // 環境変数から設定を取得
-      const repository = new DynamoDBArticleRepository(
-        c.env.DYNAMODB_TABLE_NAME,
-        c.env.AWS_REGION,
-      );
-      const storage = new S3ArticleStorage(
-        c.env.S3_BUCKET_NAME,
-        c.env.AWS_REGION,
-      );
-      const createArticleUseCase = new CreateArticleUseCase(
-        repository,
-        storage,
+      const container = c.get("container");
+      const createArticleUseCase = container.resolve<CreateArticleUseCase>(
+        DI_TOKENS.CreateArticleUseCase,
       );
 
       const input = c.req.valid("json");
@@ -196,16 +191,10 @@ export function createArticleRouter() {
 
   app.openapi(getArticleRoute, async (c) => {
     try {
-      // 環境変数から設定を取得
-      const repository = new DynamoDBArticleRepository(
-        c.env.DYNAMODB_TABLE_NAME,
-        c.env.AWS_REGION,
+      const container = c.get("container");
+      const getArticleUseCase = container.resolve<GetArticleUseCase>(
+        DI_TOKENS.GetArticleUseCase,
       );
-      const storage = new S3ArticleStorage(
-        c.env.S3_BUCKET_NAME,
-        c.env.AWS_REGION,
-      );
-      const getArticleUseCase = new GetArticleUseCase(repository, storage);
 
       const { slug } = c.req.valid("param");
       const article = await getArticleUseCase.execute(slug);
@@ -270,13 +259,9 @@ export function createArticleRouter() {
 
   app.openapi(updateArticleMetadataRoute, async (c) => {
     try {
-      // 環境変数から設定を取得
-      const repository = new DynamoDBArticleRepository(
-        c.env.DYNAMODB_TABLE_NAME,
-        c.env.AWS_REGION,
-      );
-      const updateArticleMetadataUseCase = new UpdateArticleMetadataUseCase(
-        repository,
+      const container = c.get("container");
+      const updateArticleMetadataUseCase = container.resolve<UpdateArticleMetadataUseCase>(
+        DI_TOKENS.UpdateArticleMetadataUseCase,
       );
 
       const { slug } = c.req.valid("param");
@@ -344,18 +329,9 @@ export function createArticleRouter() {
 
   app.openapi(updateArticleContentRoute, async (c) => {
     try {
-      // 環境変数から設定を取得
-      const repository = new DynamoDBArticleRepository(
-        c.env.DYNAMODB_TABLE_NAME,
-        c.env.AWS_REGION,
-      );
-      const storage = new S3ArticleStorage(
-        c.env.S3_BUCKET_NAME,
-        c.env.AWS_REGION,
-      );
-      const updateArticleContentUseCase = new UpdateArticleContentUseCase(
-        repository,
-        storage,
+      const container = c.get("container");
+      const updateArticleContentUseCase = container.resolve<UpdateArticleContentUseCase>(
+        DI_TOKENS.UpdateArticleContentUseCase,
       );
 
       const { slug } = c.req.valid("param");
@@ -416,18 +392,9 @@ export function createArticleRouter() {
 
   app.openapi(deleteArticleRoute, async (c) => {
     try {
-      // 環境変数から設定を取得
-      const repository = new DynamoDBArticleRepository(
-        c.env.DYNAMODB_TABLE_NAME,
-        c.env.AWS_REGION,
-      );
-      const storage = new S3ArticleStorage(
-        c.env.S3_BUCKET_NAME,
-        c.env.AWS_REGION,
-      );
-      const deleteArticleUseCase = new DeleteArticleUseCase(
-        repository,
-        storage,
+      const container = c.get("container");
+      const deleteArticleUseCase = container.resolve<DeleteArticleUseCase>(
+        DI_TOKENS.DeleteArticleUseCase,
       );
 
       const { slug } = c.req.valid("param");

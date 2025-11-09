@@ -134,6 +134,19 @@ export class DynamoDBArticleRepository implements IArticleRepository {
     return result.Attributes ? (result.Attributes as Article) : null;
   }
 
+	async incrementPV(slug: string): Promise<void> {
+		await this.docClient.send(
+			new UpdateCommand({
+				TableName: this.tableName,
+				Key: { slug },
+				UpdateExpression: "ADD pv :inc",
+				ExpressionAttributeValues: {
+					":inc": 1,
+				},
+			}),
+		);
+	}
+
   async delete(slug: string): Promise<void> {
     await this.docClient.send(
       new DeleteCommand({
