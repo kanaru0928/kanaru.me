@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "infrastructure"
+		},
+		{
+			"path": "api"
 		}
 	],
 	"settings": {}
