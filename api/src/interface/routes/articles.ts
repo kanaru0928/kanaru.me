@@ -260,9 +260,10 @@ export function createArticleRouter() {
   app.openapi(updateArticleMetadataRoute, async (c) => {
     try {
       const container = c.get("container");
-      const updateArticleMetadataUseCase = container.resolve<UpdateArticleMetadataUseCase>(
-        DI_TOKENS.UpdateArticleMetadataUseCase,
-      );
+      const updateArticleMetadataUseCase =
+        container.resolve<UpdateArticleMetadataUseCase>(
+          DI_TOKENS.UpdateArticleMetadataUseCase,
+        );
 
       const { slug } = c.req.valid("param");
       const input = c.req.valid("json");
@@ -330,9 +331,10 @@ export function createArticleRouter() {
   app.openapi(updateArticleContentRoute, async (c) => {
     try {
       const container = c.get("container");
-      const updateArticleContentUseCase = container.resolve<UpdateArticleContentUseCase>(
-        DI_TOKENS.UpdateArticleContentUseCase,
-      );
+      const updateArticleContentUseCase =
+        container.resolve<UpdateArticleContentUseCase>(
+          DI_TOKENS.UpdateArticleContentUseCase,
+        );
 
       const { slug } = c.req.valid("param");
       const input = c.req.valid("json");

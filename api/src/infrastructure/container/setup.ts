@@ -15,76 +15,76 @@ import { DI_TOKENS } from "./types";
  * DIコンテナをセットアップ
  */
 export function setupContainer(
-	tableName: string,
-	bucketName: string,
-	region: string,
+  tableName: string,
+  bucketName: string,
+  region: string,
 ): DIContainer {
-	const container = new DIContainer();
+  const container = new DIContainer();
 
-	// Infrastructure層の登録
-	container.registerSingleton(
-		DI_TOKENS.ArticleRepository,
-		() => new DynamoDBArticleRepository(tableName, region),
-	);
-	container.registerSingleton(
-		DI_TOKENS.ArticleStorage,
-		() => new S3ArticleStorage(bucketName, region),
-	);
+  // Infrastructure層の登録
+  container.registerSingleton(
+    DI_TOKENS.ArticleRepository,
+    () => new DynamoDBArticleRepository(tableName, region),
+  );
+  container.registerSingleton(
+    DI_TOKENS.ArticleStorage,
+    () => new S3ArticleStorage(bucketName, region),
+  );
 
-	// Application層の登録
-	container.registerSingleton(DI_TOKENS.CreateArticleUseCase, () => {
-		const repository = container.resolve<IArticleRepository>(
-			DI_TOKENS.ArticleRepository,
-		);
-		const storage = container.resolve<IArticleStorage>(
-			DI_TOKENS.ArticleStorage,
-		);
-		return new CreateArticleUseCase(repository, storage);
-	});
+  // Application層の登録
+  container.registerSingleton(DI_TOKENS.CreateArticleUseCase, () => {
+    const repository = container.resolve<IArticleRepository>(
+      DI_TOKENS.ArticleRepository,
+    );
+    const storage = container.resolve<IArticleStorage>(
+      DI_TOKENS.ArticleStorage,
+    );
+    return new CreateArticleUseCase(repository, storage);
+  });
 
-	container.registerSingleton(DI_TOKENS.GetArticleUseCase, () => {
-		const repository = container.resolve<IArticleRepository>(
-			DI_TOKENS.ArticleRepository,
-		);
-		const storage = container.resolve<IArticleStorage>(
-			DI_TOKENS.ArticleStorage,
-		);
-		return new GetArticleUseCase(repository, storage);
-	});
+  container.registerSingleton(DI_TOKENS.GetArticleUseCase, () => {
+    const repository = container.resolve<IArticleRepository>(
+      DI_TOKENS.ArticleRepository,
+    );
+    const storage = container.resolve<IArticleStorage>(
+      DI_TOKENS.ArticleStorage,
+    );
+    return new GetArticleUseCase(repository, storage);
+  });
 
-	container.registerSingleton(DI_TOKENS.ListArticlesUseCase, () => {
-		const repository = container.resolve<IArticleRepository>(
-			DI_TOKENS.ArticleRepository,
-		);
-		return new ListArticlesUseCase(repository);
-	});
+  container.registerSingleton(DI_TOKENS.ListArticlesUseCase, () => {
+    const repository = container.resolve<IArticleRepository>(
+      DI_TOKENS.ArticleRepository,
+    );
+    return new ListArticlesUseCase(repository);
+  });
 
-	container.registerSingleton(DI_TOKENS.UpdateArticleMetadataUseCase, () => {
-		const repository = container.resolve<IArticleRepository>(
-			DI_TOKENS.ArticleRepository,
-		);
-		return new UpdateArticleMetadataUseCase(repository);
-	});
+  container.registerSingleton(DI_TOKENS.UpdateArticleMetadataUseCase, () => {
+    const repository = container.resolve<IArticleRepository>(
+      DI_TOKENS.ArticleRepository,
+    );
+    return new UpdateArticleMetadataUseCase(repository);
+  });
 
-	container.registerSingleton(DI_TOKENS.UpdateArticleContentUseCase, () => {
-		const repository = container.resolve<IArticleRepository>(
-			DI_TOKENS.ArticleRepository,
-		);
-		const storage = container.resolve<IArticleStorage>(
-			DI_TOKENS.ArticleStorage,
-		);
-		return new UpdateArticleContentUseCase(repository, storage);
-	});
+  container.registerSingleton(DI_TOKENS.UpdateArticleContentUseCase, () => {
+    const repository = container.resolve<IArticleRepository>(
+      DI_TOKENS.ArticleRepository,
+    );
+    const storage = container.resolve<IArticleStorage>(
+      DI_TOKENS.ArticleStorage,
+    );
+    return new UpdateArticleContentUseCase(repository, storage);
+  });
 
-	container.registerSingleton(DI_TOKENS.DeleteArticleUseCase, () => {
-		const repository = container.resolve<IArticleRepository>(
-			DI_TOKENS.ArticleRepository,
-		);
-		const storage = container.resolve<IArticleStorage>(
-			DI_TOKENS.ArticleStorage,
-		);
-		return new DeleteArticleUseCase(repository, storage);
-	});
+  container.registerSingleton(DI_TOKENS.DeleteArticleUseCase, () => {
+    const repository = container.resolve<IArticleRepository>(
+      DI_TOKENS.ArticleRepository,
+    );
+    const storage = container.resolve<IArticleStorage>(
+      DI_TOKENS.ArticleStorage,
+    );
+    return new DeleteArticleUseCase(repository, storage);
+  });
 
-	return container;
+  return container;
 }

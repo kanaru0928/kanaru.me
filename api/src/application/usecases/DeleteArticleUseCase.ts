@@ -2,47 +2,47 @@ import type { IArticleRepository } from "../../domain/repositories/IArticleRepos
 import type { IArticleStorage } from "../../domain/repositories/IArticleStorage";
 
 export class DeleteArticleUseCase {
-	constructor(
-		private repository: IArticleRepository,
-		private storage: IArticleStorage,
-	) {}
+  constructor(
+    private repository: IArticleRepository,
+    private storage: IArticleStorage,
+  ) {}
 
-	async execute(slug: string): Promise<boolean> {
-		// 記事の存在確認
-		const existing = await this.repository.findBySlug(slug);
-		if (!existing) {
-			return false;
-		}
+  async execute(slug: string): Promise<boolean> {
+    // 記事の存在確認
+    const existing = await this.repository.findBySlug(slug);
+    if (!existing) {
+      return false;
+    }
 
-		let deletedFromRepository = false;
+    let deletedFromRepository = false;
 
-		try {
-			// DynamoDBからメタデータを削除
-			await this.repository.delete(slug);
-			deletedFromRepository = true;
+    try {
+      // DynamoDBからメタデータを削除
+      await this.repository.delete(slug);
+      deletedFromRepository = true;
 
-			// S3からコンテンツを削除
-			await this.storage.deleteContent(existing.content);
+      // S3からコンテンツを削除
+      await this.storage.deleteContent(existing.content);
 
-			return true;
-		} catch (error) {
-			// S3削除失敗時のロールバック
-			if (deletedFromRepository) {
-				try {
-					// DynamoDBに記事を復元
-					await this.repository.create(existing);
-					console.error(
-						`Rolled back article "${slug}" deletion after S3 failure`,
-					);
-				} catch (rollbackError) {
-					console.error(
-						`Critical: Failed to rollback article "${slug}" after S3 deletion failure`,
-						rollbackError,
-					);
-				}
-			}
+      return true;
+    } catch (error) {
+      // S3削除失敗時のロールバック
+      if (deletedFromRepository) {
+        try {
+          // DynamoDBに記事を復元
+          await this.repository.create(existing);
+          console.error(
+            `Rolled back article "${slug}" deletion after S3 failure`,
+          );
+        } catch (rollbackError) {
+          console.error(
+            `Critical: Failed to rollback article "${slug}" after S3 deletion failure`,
+            rollbackError,
+          );
+        }
+      }
 
-			throw error;
-		}
-	}
+      throw error;
+    }
+  }
 }
