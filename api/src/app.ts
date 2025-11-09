@@ -94,7 +94,7 @@ app.get("/api", (c) => {
 
 // 記事管理ルートをマウント
 const articlesRouter = createArticleRouter();
-app.route("/", articlesRouter);
+app.route("/api/articles", articlesRouter);
 
 // OpenAPIドキュメント生成
 app.doc("/api/openapi.json", {
