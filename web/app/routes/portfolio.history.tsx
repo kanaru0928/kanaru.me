@@ -3,7 +3,7 @@ import { TimelineItem } from "~/features/portfolio/components/TimelineItem";
 export default function HistoryPage() {
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-4">History</h1>
+      <h1 className="mb-4 font-bold text-3xl">History</h1>
       <ul className="timeline timeline-vertical">
         <TimelineItem date="2004-09-28" start>
           <p className="font-bold">生誕</p>
