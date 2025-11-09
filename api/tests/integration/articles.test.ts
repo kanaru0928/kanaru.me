@@ -2,72 +2,64 @@ import { Hono } from "hono";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Article } from "../../src/domain/entities/Article";
 import { createArticleRouter } from "../../src/interface/routes/articles";
-import { CreateArticleUseCase } from "../../src/application/usecases/CreateArticleUseCase";
-import { GetArticleUseCase } from "../../src/application/usecases/GetArticleUseCase";
-import { ListArticlesUseCase } from "../../src/application/usecases/ListArticlesUseCase";
-import { UpdateArticleMetadataUseCase } from "../../src/application/usecases/UpdateArticleMetadataUseCase";
-import { UpdateArticleContentUseCase } from "../../src/application/usecases/UpdateArticleContentUseCase";
-import { DeleteArticleUseCase } from "../../src/application/usecases/DeleteArticleUseCase";
 import { createMockArticleRepository } from "../mocks/repositories";
 import { createMockArticleStorage } from "../mocks/storage";
 
+// モック用の変数をモジュールスコープで定義
+let mockRepository: ReturnType<typeof createMockArticleRepository>;
+let mockStorage: ReturnType<typeof createMockArticleStorage>;
+
+// DynamoDBArticleRepository と S3ArticleStorage をモック
+vi.mock("../../src/infrastructure/repositories/DynamoDBArticleRepository", () => ({
+	DynamoDBArticleRepository: class {
+		constructor() {
+			return mockRepository;
+		}
+	},
+}));
+
+vi.mock("../../src/infrastructure/storage/S3ArticleStorage", () => ({
+	S3ArticleStorage: class {
+		constructor() {
+			return mockStorage;
+		}
+	},
+}));
+
+type Env = {
+	Bindings: {
+		DYNAMODB_TABLE_NAME: string;
+		S3_BUCKET_NAME: string;
+		AWS_REGION: string;
+	};
+};
+
 describe("Article API Routes", () => {
-	let app: Hono;
-	let mockRepository: ReturnType<typeof createMockArticleRepository>;
-	let mockStorage: ReturnType<typeof createMockArticleStorage>;
+	let app: Hono<Env>;
 
 	beforeEach(() => {
 		mockRepository = createMockArticleRepository();
 		mockStorage = createMockArticleStorage();
 
-		const createArticleUseCase = new CreateArticleUseCase(
-			mockRepository,
-			mockStorage,
-		);
-		const getArticleUseCase = new GetArticleUseCase(
-			mockRepository,
-			mockStorage,
-		);
-		const listArticlesUseCase = new ListArticlesUseCase(mockRepository);
-		const updateArticleMetadataUseCase = new UpdateArticleMetadataUseCase(
-			mockRepository,
-		);
-		const updateArticleContentUseCase = new UpdateArticleContentUseCase(
-			mockRepository,
-			mockStorage,
-		);
-		const deleteArticleUseCase = new DeleteArticleUseCase(
-			mockRepository,
-			mockStorage,
-		);
+		// 環境変数をモック
+		app = new Hono<Env>();
 
-		const router = createArticleRouter({
-			createArticleUseCase,
-			getArticleUseCase,
-			listArticlesUseCase,
-			updateArticleMetadataUseCase,
-			updateArticleContentUseCase,
-			deleteArticleUseCase,
+		// テスト用の環境変数を設定
+		app.use("*", async (c, next) => {
+			c.env = {
+				DYNAMODB_TABLE_NAME: "test-table",
+				S3_BUCKET_NAME: "test-bucket",
+				AWS_REGION: "us-east-1",
+			};
+			await next();
 		});
 
-		app = new Hono();
+		const router = createArticleRouter();
 		app.route("/api/articles", router);
 	});
 
 	describe("POST /api/articles", () => {
 		it("記事を作成できる", async () => {
-			const mockArticle: Article = {
-				slug: "test-article",
-				title: "Test Article",
-				content: "articles/abc12345.md",
-				author: "Test Author",
-				status: "published",
-				pv: 0,
-				createdAt: "2025-01-01T00:00:00.000Z",
-				updatedAt: "2025-01-01T00:00:00.000Z",
-				tags: ["test"],
-			};
-
 			vi.mocked(mockRepository.findBySlug).mockResolvedValue(null);
 			vi.mocked(mockStorage.uploadContent).mockResolvedValue(
 				"articles/abc12345.md",
