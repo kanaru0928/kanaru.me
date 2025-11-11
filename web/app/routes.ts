@@ -24,7 +24,7 @@ const articleRoutes =
 
 export default [
   ...(await flatRoutes({
-    ignoredRouteFiles: articleRoutes ? ["articles.tsx"] : [],
+    ignoredRouteFiles: articleRoutes ? ["**/articles*.tsx"] : [],
   })),
   ...(articleRoutes ? [layout("./routes/articles.tsx", articleRoutes)] : []),
 ] satisfies RouteConfig;
