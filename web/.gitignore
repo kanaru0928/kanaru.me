@@ -8,3 +8,7 @@
 
 # Lambda Layer
 /layer/
+
+# Articles
+/app/articles/**/*.md
+/app/articles/**/*.mdx

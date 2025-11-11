@@ -21,7 +21,7 @@ export function HeroSection({ gitHubContributionData }: HeroSectionProps) {
             </div>
           </div>
           <div className="max-w-md text-center lg:text-left">
-            <h1 className="font-bold text-5xl">kanaru.me</h1>
+            <h1 className="font-extrabold text-5xl">kanaru.me</h1>
             <p className="py-6">the University of Electro-Communications</p>
             <div className="flex justify-center gap-4 lg:justify-start">
               <a
