@@ -67,6 +67,7 @@ export function createAuthRouter() {
     // JWT トークンを発行
     const payload = {
       sub: "api-user",
+      jit: crypto.randomUUID(),
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + env.JWT_EXPIRES_IN,
     };

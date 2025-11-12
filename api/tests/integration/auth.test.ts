@@ -47,6 +47,7 @@ describe("Authentication API", () => {
 			// JWTのペイロードを検証
 			const { payload } = decode(data.token);
 			expect(payload).toHaveProperty("sub", "api-user");
+			expect(payload).toHaveProperty("jit");
 			expect(payload).toHaveProperty("iat");
 			expect(payload).toHaveProperty("exp");
 
