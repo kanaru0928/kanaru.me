@@ -11,7 +11,10 @@ import type {
   Article,
   UpdateArticleMetadataInput,
 } from "../../domain/entities/Article";
-import type { IArticleRepository } from "../../domain/repositories/IArticleRepository";
+import type {
+  FindAllOptions,
+  IArticleRepository,
+} from "../../domain/repositories/IArticleRepository";
 
 export class DynamoDBArticleRepository implements IArticleRepository {
   private docClient: DynamoDBDocumentClient;
@@ -43,12 +46,35 @@ export class DynamoDBArticleRepository implements IArticleRepository {
     return result.Item ? (result.Item as Article) : null;
   }
 
-  async findAll(): Promise<Article[]> {
-    const result = await this.docClient.send(
-      new ScanCommand({
-        TableName: this.tableName,
-      }),
-    );
+  async findAll(options?: FindAllOptions): Promise<Article[]> {
+    const scanParams: {
+      TableName: string;
+      FilterExpression?: string;
+      ExpressionAttributeNames?: Record<string, string>;
+      ExpressionAttributeValues?: Record<string, unknown>;
+    } = {
+      TableName: this.tableName,
+    };
+
+    // タグフィルタが指定されている場合
+    if (options?.tags && options.tags.length > 0) {
+      const filterExpressions: string[] = [];
+      const expressionAttributeNames: Record<string, string> = {};
+      const expressionAttributeValues: Record<string, string> = {};
+
+      for (const [index, tag] of options.tags.entries()) {
+        filterExpressions.push(`contains(#tags, :tag${index})`);
+        expressionAttributeValues[`:tag${index}`] = tag;
+      }
+
+      expressionAttributeNames["#tags"] = "tags";
+
+      scanParams.FilterExpression = filterExpressions.join(" AND ");
+      scanParams.ExpressionAttributeNames = expressionAttributeNames;
+      scanParams.ExpressionAttributeValues = expressionAttributeValues;
+    }
+
+    const result = await this.docClient.send(new ScanCommand(scanParams));
 
     return (result.Items || []) as Article[];
   }

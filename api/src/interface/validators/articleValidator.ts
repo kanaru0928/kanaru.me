@@ -52,6 +52,13 @@ export const slugParamSchema = z.object({
   slug: z.string().min(1),
 });
 
+// クエリパラメータスキーマ: 記事一覧取得
+export const listArticlesQuerySchema = z.object({
+  tag: z.string().optional(),
+  sortBy: z.enum(["createdAt", "updatedAt"]).optional(),
+  order: z.enum(["asc", "desc"]).optional(),
+});
+
 export type CreateArticleSchema = z.infer<typeof createArticleSchema>;
 export type UpdateArticleMetadataSchema = z.infer<
   typeof updateArticleMetadataSchema
@@ -59,3 +66,4 @@ export type UpdateArticleMetadataSchema = z.infer<
 export type UpdateArticleContentSchema = z.infer<
   typeof updateArticleContentSchema
 >;
+export type ListArticlesQuerySchema = z.infer<typeof listArticlesQuerySchema>;

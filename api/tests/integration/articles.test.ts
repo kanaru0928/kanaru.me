@@ -70,7 +70,7 @@ describe("Article API Routes", () => {
 				AWS_REGION: "us-east-1",
 				ALLOWED_ORIGINS: ["http://localhost:3000"],
 				JWT_SECRET: "test-secret",
-				JWT_EXPIRES_IN: "24h",
+				JWT_EXPIRES_IN: 86400,
 				INITIAL_BEARER_TOKEN: "test-initial-token",
 			};
 
@@ -248,32 +248,43 @@ describe("Article API Routes", () => {
 	});
 
 	describe("GET /api/articles", () => {
-		it("記事一覧を取得できる", async () => {
-			const mockArticles: Article[] = [
-				{
-					slug: "article-1",
-					title: "Article 1",
-					content: "articles/abc1.md",
-					author: "Author 1",
-					status: "published",
-					pv: 10,
-					createdAt: "2025-01-01T00:00:00.000Z",
-					updatedAt: "2025-01-01T00:00:00.000Z",
-					tags: ["tag1"],
-				},
-				{
-					slug: "article-2",
-					title: "Article 2",
-					content: "articles/abc2.md",
-					author: "Author 2",
-					status: "unpublished",
-					pv: 5,
-					createdAt: "2025-01-02T00:00:00.000Z",
-					updatedAt: "2025-01-02T00:00:00.000Z",
-					tags: ["tag2"],
-				},
-			];
+		const mockArticles: Article[] = [
+			{
+				slug: "article-1",
+				title: "Article 1",
+				content: "articles/abc1.md",
+				author: "Author 1",
+				status: "published",
+				pv: 10,
+				createdAt: "2025-01-01T00:00:00.000Z",
+				updatedAt: "2025-01-01T00:00:00.000Z",
+				tags: ["tag1"],
+			},
+			{
+				slug: "article-2",
+				title: "Article 2",
+				content: "articles/abc2.md",
+				author: "Author 2",
+				status: "unpublished",
+				pv: 5,
+				createdAt: "2025-01-02T00:00:00.000Z",
+				updatedAt: "2025-01-02T00:00:00.000Z",
+				tags: ["tag2"],
+			},
+			{
+				slug: "article-3",
+				title: "Article 3",
+				content: "articles/abc3.md",
+				author: "Author 3",
+				status: "published",
+				pv: 15,
+				createdAt: "2025-01-03T00:00:00.000Z",
+				updatedAt: "2025-01-03T00:00:00.000Z",
+				tags: ["tag1", "tag3"],
+			},
+		];
 
+		it("認証なしでは公開済み記事のみ取得できる", async () => {
 			vi.mocked(mockRepository.findAll).mockResolvedValue(mockArticles);
 
 			const res = await app.request("/api/articles");
@@ -282,7 +293,85 @@ describe("Article API Routes", () => {
 			const json = await res.json();
 			expect(json).toHaveLength(2);
 			expect(json[0]).toHaveProperty("slug", "article-1");
-			expect(json[1]).toHaveProperty("slug", "article-2");
+			expect(json[0]).toHaveProperty("status", "published");
+			expect(json[1]).toHaveProperty("slug", "article-3");
+			expect(json[1]).toHaveProperty("status", "published");
+		});
+
+		it("認証ありでは全ての記事を取得できる", async () => {
+			const token = await generateTestJwt("test-secret");
+			vi.mocked(mockRepository.findAll).mockResolvedValue(mockArticles);
+
+			const res = await app.request("/api/articles", {
+				headers: createAuthHeader(token),
+			});
+
+			expect(res.status).toBe(200);
+			const json = await res.json();
+			expect(json).toHaveLength(3);
+			expect(json.some((a: { status: string }) => a.status === "unpublished")).toBe(
+				true,
+			);
+		});
+
+		it("タグでフィルタできる", async () => {
+			vi.mocked(mockRepository.findAll).mockResolvedValue([
+				mockArticles[0],
+				mockArticles[2],
+			]);
+
+			const res = await app.request("/api/articles?tag=tag1");
+
+			expect(res.status).toBe(200);
+			const json = await res.json();
+			expect(json).toHaveLength(2);
+			expect(json[0]).toHaveProperty("slug", "article-1");
+			expect(json[1]).toHaveProperty("slug", "article-3");
+		});
+
+		it("createdAtでソートできる（降順）", async () => {
+			vi.mocked(mockRepository.findAll).mockResolvedValue([
+				mockArticles[0],
+				mockArticles[2],
+			]);
+
+			const res = await app.request(
+				"/api/articles?sortBy=createdAt&order=desc",
+			);
+
+			expect(res.status).toBe(200);
+			const json = await res.json();
+			expect(json[0]).toHaveProperty("slug", "article-3");
+			expect(json[1]).toHaveProperty("slug", "article-1");
+		});
+
+		it("createdAtでソートできる（昇順）", async () => {
+			vi.mocked(mockRepository.findAll).mockResolvedValue([
+				mockArticles[0],
+				mockArticles[2],
+			]);
+
+			const res = await app.request("/api/articles?sortBy=createdAt&order=asc");
+
+			expect(res.status).toBe(200);
+			const json = await res.json();
+			expect(json[0]).toHaveProperty("slug", "article-1");
+			expect(json[1]).toHaveProperty("slug", "article-3");
+		});
+
+		it("updatedAtでソートできる", async () => {
+			vi.mocked(mockRepository.findAll).mockResolvedValue([
+				mockArticles[0],
+				mockArticles[2],
+			]);
+
+			const res = await app.request(
+				"/api/articles?sortBy=updatedAt&order=desc",
+			);
+
+			expect(res.status).toBe(200);
+			const json = await res.json();
+			expect(json[0]).toHaveProperty("slug", "article-3");
 		});
 	});
 

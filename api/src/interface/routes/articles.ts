@@ -9,7 +9,10 @@ import type { UpdateArticleContentUseCase } from "../../application/usecases/Upd
 import type { UpdateArticleMetadataUseCase } from "../../application/usecases/UpdateArticleMetadataUseCase";
 import { DI_TOKENS } from "../../infrastructure/container/types";
 import { toArticleDetail, toArticleListItem } from "../dto/ArticleDTO";
-import { createAuthMiddleware } from "../middleware/authMiddleware";
+import {
+  createAuthMiddleware,
+  createOptionalAuthMiddleware,
+} from "../middleware/authMiddleware";
 import {
   ArticleDetailSchema,
   ArticleListItemSchema,
@@ -18,6 +21,7 @@ import {
 } from "../schemas/articleSchemas";
 import {
   createArticleSchema,
+  listArticlesQuerySchema,
   slugParamSchema,
   updateArticleContentSchema,
   updateArticleMetadataSchema,
@@ -32,7 +36,11 @@ export function createArticleRouter() {
     path: "/",
     tags: ["Articles"],
     summary: "記事一覧を取得",
-    description: "公開・非公開を含む全ての記事の一覧を取得します",
+    description:
+      "記事の一覧を取得します。認証されていない場合は公開済み記事のみ返却されます。",
+    request: {
+      query: listArticlesQuerySchema,
+    },
     responses: {
       200: {
         content: {
@@ -53,13 +61,29 @@ export function createArticleRouter() {
     },
   });
 
+  app.on(["GET"], "/", createOptionalAuthMiddleware());
   app.openapi(listArticlesRoute, async (c) => {
     const container = c.get("container");
     const listArticlesUseCase = container.resolve<ListArticlesUseCase>(
       DI_TOKENS.ListArticlesUseCase,
     );
 
-    const articles = await listArticlesUseCase.execute();
+    // クエリパラメータを取得
+    const query = c.req.valid("query");
+
+    // 認証状態を確認
+    const isAuthenticated = c.get("jwtPayload") !== undefined;
+
+    // タグフィルタの配列変換
+    const tags = query.tag ? [query.tag] : undefined;
+
+    const articles = await listArticlesUseCase.execute({
+      isAuthenticated,
+      tags,
+      sortBy: query.sortBy,
+      order: query.order,
+    });
+
     return c.json(
       articles.map((a) => toArticleListItem(a)),
       200,

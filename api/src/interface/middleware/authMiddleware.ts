@@ -44,3 +44,30 @@ export const createAuthMiddleware = (): MiddlewareHandler<Env> => {
     }
   };
 };
+
+/**
+ * オプショナルなJWT認証ミドルウェア
+ * Authorization: Bearer <token> ヘッダーがあれば検証し、なければスキップ
+ */
+export const createOptionalAuthMiddleware = (): MiddlewareHandler<Env> => {
+  return async (c, next) => {
+    const authHeader = c.req.header("Authorization");
+
+    // Authorizationヘッダーがない場合はスキップ
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return await next();
+    }
+
+    const env = c.get("env");
+    const jwtMiddleware = jwt({
+      secret: env.JWT_SECRET,
+    });
+
+    try {
+      return await jwtMiddleware(c, next);
+    } catch (_error) {
+      // JWT検証エラーの場合もスキップ（認証なしとして扱う）
+      return await next();
+    }
+  };
+};

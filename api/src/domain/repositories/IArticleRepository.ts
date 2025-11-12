@@ -1,9 +1,13 @@
 import type { Article, UpdateArticleMetadataInput } from "../entities/Article";
 
+export interface FindAllOptions {
+  tags?: string[];
+}
+
 export interface IArticleRepository {
   create(article: Article): Promise<void>;
   findBySlug(slug: string): Promise<Article | null>;
-  findAll(): Promise<Article[]>;
+  findAll(options?: FindAllOptions): Promise<Article[]>;
   updateMetadata(
     slug: string,
     input: UpdateArticleMetadataInput,

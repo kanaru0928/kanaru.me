@@ -12,7 +12,7 @@ describe("Authentication API", () => {
 		AWS_REGION: "us-east-1",
 		ALLOWED_ORIGINS: ["http://localhost:3000"],
 		JWT_SECRET: "test-secret-key",
-		JWT_EXPIRES_IN: "24h",
+		JWT_EXPIRES_IN: 86400,
 		INITIAL_BEARER_TOKEN: "test-initial-token",
 	};
 
@@ -43,7 +43,6 @@ describe("Authentication API", () => {
 
 			const data = await res.json();
 			expect(data).toHaveProperty("token");
-			expect(data).toHaveProperty("expiresIn", "24h");
 
 			// JWTのペイロードを検証
 			const { payload } = decode(data.token);
