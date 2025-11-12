@@ -9,6 +9,9 @@ const envSchema = z.object({
     .string()
     .min(1, "ALLOWED_ORIGINS is required")
     .transform((val) => val.split(",")),
+  JWT_SECRET: z.string().min(1, "JWT_SECRET is required"),
+  JWT_EXPIRES_IN: z.coerce.number().default(86400),
+  INITIAL_BEARER_TOKEN: z.string().min(1, "INITIAL_BEARER_TOKEN is required"),
 });
 
 export type Env = z.infer<typeof envSchema>;

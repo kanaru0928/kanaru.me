@@ -2,11 +2,17 @@ import { Hono } from "hono";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Env as EnvConfig } from "../../src/config/env";
 import type { Article } from "../../src/domain/entities/Article";
+import { DomainError } from "../../src/domain/errors/DomainError";
 import type { setupContainer } from "../../src/infrastructure/container/setup";
 import { createArticleRouter } from "../../src/interface/routes/articles";
 import { createMockContainer } from "../mocks/container";
 import { createMockArticleRepository } from "../mocks/repositories";
 import { createMockArticleStorage } from "../mocks/storage";
+import {
+	createAuthHeader,
+	generateExpiredJwt,
+	generateTestJwt,
+} from "./helpers";
 
 // モック用の変数をモジュールスコープで定義
 let mockRepository: ReturnType<typeof createMockArticleRepository>;
@@ -35,6 +41,9 @@ type Env = {
 		S3_BUCKET_NAME: string;
 		AWS_REGION: string;
 		ALLOWED_ORIGINS: string;
+		JWT_SECRET: string;
+		JWT_EXPIRES_IN: string;
+		INITIAL_BEARER_TOKEN: string;
 	};
 	Variables: {
 		container: ReturnType<typeof setupContainer>;
@@ -60,6 +69,9 @@ describe("Article API Routes", () => {
 				S3_BUCKET_NAME: "test-bucket",
 				AWS_REGION: "us-east-1",
 				ALLOWED_ORIGINS: ["http://localhost:3000"],
+				JWT_SECRET: "test-secret",
+				JWT_EXPIRES_IN: "24h",
+				INITIAL_BEARER_TOKEN: "test-initial-token",
 			};
 
 			c.set("container", mockContainer);
@@ -67,17 +79,68 @@ describe("Article API Routes", () => {
 			await next();
 		});
 
+		// グローバルエラーハンドラを設定
+		app.onError((err, c) => {
+			console.error("Error:", {
+				name: err.name,
+				message: err.message,
+				stack: err.stack,
+				path: c.req.path,
+				method: c.req.method,
+			});
+
+			if (err instanceof DomainError) {
+				return c.json(
+					{ error: err.message },
+					err.statusCode as 400 | 401 | 404 | 409 | 500,
+				);
+			}
+
+			// Zodバリデーションエラー
+			if (err.name === "ZodError") {
+				return c.json({ error: "Validation failed", details: err.message }, 400);
+			}
+
+			// その他の予期しないエラー
+			return c.json({ error: "Internal server error" }, 500);
+		});
+
 		const router = createArticleRouter();
 		app.route("/api/articles", router);
 	});
 
 	describe("POST /api/articles", () => {
-		it("記事を作成できる", async () => {
+		it("有効なJWTで記事を作成できる", async () => {
 			vi.mocked(mockRepository.findBySlug).mockResolvedValue(null);
 			vi.mocked(mockStorage.uploadContent).mockResolvedValue(
 				"articles/abc12345.md",
 			);
 
+			const token = await generateTestJwt("test-secret");
+
+			const res = await app.request("/api/articles", {
+				method: "POST",
+				body: JSON.stringify({
+					slug: "test-article",
+					title: "Test Article",
+					contentBody: "# Test Content",
+					author: "Test Author",
+					status: "published",
+					tags: ["test"],
+				}),
+				headers: createAuthHeader(token),
+			});
+
+			expect(res.status).toBe(201);
+			expect(mockStorage.uploadContent).toHaveBeenCalledWith("# Test Content");
+			expect(mockRepository.create).toHaveBeenCalled();
+
+			const json = await res.json();
+			expect(json).toHaveProperty("slug", "test-article");
+			expect(json).toHaveProperty("title", "Test Article");
+		});
+
+		it("JWTなしで 401 エラー", async () => {
 			const res = await app.request("/api/articles", {
 				method: "POST",
 				body: JSON.stringify({
@@ -91,13 +154,43 @@ describe("Article API Routes", () => {
 				headers: new Headers({ "Content-Type": "application/json" }),
 			});
 
-			expect(res.status).toBe(201);
-			expect(mockStorage.uploadContent).toHaveBeenCalledWith("# Test Content");
-			expect(mockRepository.create).toHaveBeenCalled();
+			expect(res.status).toBe(401);
+		});
 
-			const json = await res.json();
-			expect(json).toHaveProperty("slug", "test-article");
-			expect(json).toHaveProperty("title", "Test Article");
+		it("不正なJWTで 401 エラー", async () => {
+			const res = await app.request("/api/articles", {
+				method: "POST",
+				body: JSON.stringify({
+					slug: "test-article",
+					title: "Test Article",
+					contentBody: "# Test Content",
+					author: "Test Author",
+					status: "published",
+					tags: ["test"],
+				}),
+				headers: createAuthHeader("invalid-token"),
+			});
+
+			expect(res.status).toBe(401);
+		});
+
+		it("期限切れJWTで 401 エラー", async () => {
+			const expiredToken = await generateExpiredJwt("test-secret");
+
+			const res = await app.request("/api/articles", {
+				method: "POST",
+				body: JSON.stringify({
+					slug: "test-article",
+					title: "Test Article",
+					contentBody: "# Test Content",
+					author: "Test Author",
+					status: "published",
+					tags: ["test"],
+				}),
+				headers: createAuthHeader(expiredToken),
+			});
+
+			expect(res.status).toBe(401);
 		});
 
 		it("重複したslugで記事を作成しようとすると409エラー", async () => {
@@ -115,6 +208,8 @@ describe("Article API Routes", () => {
 
 			vi.mocked(mockRepository.findBySlug).mockResolvedValue(existingArticle);
 
+			const token = await generateTestJwt("test-secret");
+
 			const res = await app.request("/api/articles", {
 				method: "POST",
 				body: JSON.stringify({
@@ -125,7 +220,7 @@ describe("Article API Routes", () => {
 					status: "published",
 					tags: [],
 				}),
-				headers: new Headers({ "Content-Type": "application/json" }),
+				headers: createAuthHeader(token),
 			});
 
 			expect(res.status).toBe(409);
@@ -134,6 +229,8 @@ describe("Article API Routes", () => {
 		});
 
 		it("バリデーションエラーで400エラー", async () => {
+			const token = await generateTestJwt("test-secret");
+
 			const res = await app.request("/api/articles", {
 				method: "POST",
 				body: JSON.stringify({
@@ -143,7 +240,7 @@ describe("Article API Routes", () => {
 					author: "Author",
 					status: "published",
 				}),
-				headers: new Headers({ "Content-Type": "application/json" }),
+				headers: createAuthHeader(token),
 			});
 
 			expect(res.status).toBe(400);
@@ -226,7 +323,7 @@ describe("Article API Routes", () => {
 	});
 
 	describe("PATCH /api/articles/:slug", () => {
-		it("メタデータを更新できる", async () => {
+		it("有効なJWTでメタデータを更新できる", async () => {
 			const existingArticle: Article = {
 				slug: "test-article",
 				title: "Old Title",
@@ -253,6 +350,8 @@ describe("Article API Routes", () => {
 				updatedArticle,
 			);
 
+			const token = await generateTestJwt("test-secret");
+
 			const res = await app.request("/api/articles/test-article", {
 				method: "PATCH",
 				body: JSON.stringify({
@@ -261,7 +360,7 @@ describe("Article API Routes", () => {
 					status: "published",
 					tags: ["new"],
 				}),
-				headers: new Headers({ "Content-Type": "application/json" }),
+				headers: createAuthHeader(token),
 			});
 
 			expect(res.status).toBe(200);
@@ -270,13 +369,53 @@ describe("Article API Routes", () => {
 			expect(json).toHaveProperty("author", "New Author");
 		});
 
+		it("JWTなしで 401 エラー", async () => {
+			const res = await app.request("/api/articles/test-article", {
+				method: "PATCH",
+				body: JSON.stringify({
+					title: "New Title",
+				}),
+				headers: new Headers({ "Content-Type": "application/json" }),
+			});
+
+			expect(res.status).toBe(401);
+		});
+
+		it("不正なJWTで 401 エラー", async () => {
+			const res = await app.request("/api/articles/test-article", {
+				method: "PATCH",
+				body: JSON.stringify({
+					title: "New Title",
+				}),
+				headers: createAuthHeader("invalid-token"),
+			});
+
+			expect(res.status).toBe(401);
+		});
+
+		it("期限切れJWTで 401 エラー", async () => {
+			const expiredToken = await generateExpiredJwt("test-secret");
+
+			const res = await app.request("/api/articles/test-article", {
+				method: "PATCH",
+				body: JSON.stringify({
+					title: "New Title",
+				}),
+				headers: createAuthHeader(expiredToken),
+			});
+
+			expect(res.status).toBe(401);
+		});
+
 		it("存在しない記事を更新しようとすると404エラー", async () => {
 			vi.mocked(mockRepository.findBySlug).mockResolvedValue(null);
+
+			const token = await generateTestJwt("test-secret");
 
 			const res = await app.request("/api/articles/non-existent", {
 				method: "PATCH",
 				body: JSON.stringify({ title: "New Title" }),
-				headers: new Headers({ "Content-Type": "application/json" }),
+				headers: createAuthHeader(token),
 			});
 
 			expect(res.status).toBe(404);
@@ -284,7 +423,7 @@ describe("Article API Routes", () => {
 	});
 
 	describe("PUT /api/articles/:slug/content", () => {
-		it("コンテンツを更新できる", async () => {
+		it("有効なJWTでコンテンツを更新できる", async () => {
 			const existingArticle: Article = {
 				slug: "test-article",
 				title: "Test Article",
@@ -311,12 +450,14 @@ describe("Article API Routes", () => {
 				updatedArticle,
 			);
 
+			const token = await generateTestJwt("test-secret");
+
 			const res = await app.request("/api/articles/test-article/content", {
 				method: "PUT",
 				body: JSON.stringify({
 					contentBody: "# New Content",
 				}),
-				headers: new Headers({ "Content-Type": "application/json" }),
+				headers: createAuthHeader(token),
 			});
 
 			expect(res.status).toBe(200);
@@ -327,13 +468,53 @@ describe("Article API Routes", () => {
 			);
 		});
 
+		it("JWTなしで 401 エラー", async () => {
+			const res = await app.request("/api/articles/test-article/content", {
+				method: "PUT",
+				body: JSON.stringify({
+					contentBody: "# New Content",
+				}),
+				headers: new Headers({ "Content-Type": "application/json" }),
+			});
+
+			expect(res.status).toBe(401);
+		});
+
+		it("不正なJWTで 401 エラー", async () => {
+			const res = await app.request("/api/articles/test-article/content", {
+				method: "PUT",
+				body: JSON.stringify({
+					contentBody: "# New Content",
+				}),
+				headers: createAuthHeader("invalid-token"),
+			});
+
+			expect(res.status).toBe(401);
+		});
+
+		it("期限切れJWTで 401 エラー", async () => {
+			const expiredToken = await generateExpiredJwt("test-secret");
+
+			const res = await app.request("/api/articles/test-article/content", {
+				method: "PUT",
+				body: JSON.stringify({
+					contentBody: "# New Content",
+				}),
+				headers: createAuthHeader(expiredToken),
+			});
+
+			expect(res.status).toBe(401);
+		});
+
 		it("存在しない記事のコンテンツを更新しようとすると404エラー", async () => {
 			vi.mocked(mockRepository.findBySlug).mockResolvedValue(null);
+
+			const token = await generateTestJwt("test-secret");
 
 			const res = await app.request("/api/articles/non-existent/content", {
 				method: "PUT",
 				body: JSON.stringify({ contentBody: "New Content" }),
-				headers: new Headers({ "Content-Type": "application/json" }),
+				headers: createAuthHeader(token),
 			});
 
 			expect(res.status).toBe(404);
@@ -341,7 +522,7 @@ describe("Article API Routes", () => {
 	});
 
 	describe("DELETE /api/articles/:slug", () => {
-		it("記事を削除できる", async () => {
+		it("有効なJWTで記事を削除できる", async () => {
 			const existingArticle: Article = {
 				slug: "test-article",
 				title: "Test Article",
@@ -356,8 +537,11 @@ describe("Article API Routes", () => {
 
 			vi.mocked(mockRepository.findBySlug).mockResolvedValue(existingArticle);
 
+			const token = await generateTestJwt("test-secret");
+
 			const res = await app.request("/api/articles/test-article", {
 				method: "DELETE",
+				headers: createAuthHeader(token),
 			});
 
 			expect(res.status).toBe(200);
@@ -370,11 +554,42 @@ describe("Article API Routes", () => {
 			expect(json).toHaveProperty("message", "Article deleted successfully");
 		});
 
+		it("JWTなしで 401 エラー", async () => {
+			const res = await app.request("/api/articles/test-article", {
+				method: "DELETE",
+			});
+
+			expect(res.status).toBe(401);
+		});
+
+		it("不正なJWTで 401 エラー", async () => {
+			const res = await app.request("/api/articles/test-article", {
+				method: "DELETE",
+				headers: createAuthHeader("invalid-token"),
+			});
+
+			expect(res.status).toBe(401);
+		});
+
+		it("期限切れJWTで 401 エラー", async () => {
+			const expiredToken = await generateExpiredJwt("test-secret");
+
+			const res = await app.request("/api/articles/test-article", {
+				method: "DELETE",
+				headers: createAuthHeader(expiredToken),
+			});
+
+			expect(res.status).toBe(401);
+		});
+
 		it("存在しない記事を削除しようとすると404エラー", async () => {
 			vi.mocked(mockRepository.findBySlug).mockResolvedValue(null);
 
+			const token = await generateTestJwt("test-secret");
+
 			const res = await app.request("/api/articles/non-existent", {
 				method: "DELETE",
+				headers: createAuthHeader(token),
 			});
 
 			expect(res.status).toBe(404);

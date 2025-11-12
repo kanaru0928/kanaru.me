@@ -2,6 +2,7 @@ import type {
   Article,
   CreateArticleInput,
 } from "../../domain/entities/Article";
+import { ConflictError } from "../../domain/errors/DomainError";
 import type { IArticleRepository } from "../../domain/repositories/IArticleRepository";
 import type { IArticleStorage } from "../../domain/repositories/IArticleStorage";
 
@@ -15,7 +16,9 @@ export class CreateArticleUseCase {
     // 既存記事の重複チェック
     const existing = await this.repository.findBySlug(input.slug);
     if (existing) {
-      throw new Error(`Article with slug "${input.slug}" already exists`);
+      throw new ConflictError(
+        `Article with slug "${input.slug}" already exists`,
+      );
     }
 
     // S3にコンテンツをアップロード

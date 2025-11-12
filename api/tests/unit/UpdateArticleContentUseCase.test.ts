@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { UpdateArticleContentUseCase } from "../../src/application/usecases/UpdateArticleContentUseCase";
+import { NotFoundError } from "../../src/domain/errors/DomainError";
 import { createMockArticleRepository } from "../mocks/repositories";
 import { createMockArticleStorage } from "../mocks/storage";
 import type { Article } from "../../src/domain/entities/Article";
@@ -57,14 +58,15 @@ describe("UpdateArticleContentUseCase", () => {
 		expect(result?.content).toBe("articles/new-hash.md");
 	});
 
-	it("存在しない記事のコンテンツを更新しようとするとnullを返す", async () => {
+	it("存在しない記事のコンテンツを更新しようとするとNotFoundErrorを投げる", async () => {
 		vi.mocked(mockRepository.findBySlug).mockResolvedValue(null);
 
-		const result = await useCase.execute("non-existent", {
-			contentBody: "# Content",
-		});
+		await expect(
+			useCase.execute("non-existent", {
+				contentBody: "# Content",
+			}),
+		).rejects.toThrow(NotFoundError);
 
-		expect(result).toBeNull();
 		expect(mockStorage.uploadContent).not.toHaveBeenCalled();
 		expect(mockRepository.updateContentKey).not.toHaveBeenCalled();
 	});

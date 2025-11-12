@@ -1,4 +1,5 @@
 import type { Article } from "../../domain/entities/Article";
+import { InternalServerError } from "../../domain/errors/DomainError";
 import type { IArticleRepository } from "../../domain/repositories/IArticleRepository";
 import type { IArticleStorage } from "../../domain/repositories/IArticleStorage";
 
@@ -21,7 +22,7 @@ export class GetArticleUseCase {
     // S3からコンテンツを取得
     const contentBody = await this.storage.getContent(article.content);
     if (!contentBody) {
-      throw new Error(`Content not found for article "${slug}"`);
+      throw new InternalServerError(`Content not found for article "${slug}"`);
     }
 
     // PVを自動インクリメント（非同期で実行、エラーは無視）

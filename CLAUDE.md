@@ -6,6 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 React Router v7 (旧Remix) をベースとした個人ポートフォリオサイト。SSR対応のフルスタックアプリケーション。
 
+### モノレポ構成
+
+- `web/` - フロントエンドアプリケーション (React Router v7)
+- `api/` - バックエンドAPI (Hono + AWS Lambda)
+- `infrastructure/` - インフラストラクチャ (AWS CDK)
+- `functions/` - サーバーレス関数
+
 ## 開発コマンド
 
 ### Webアプリケーション (web/)

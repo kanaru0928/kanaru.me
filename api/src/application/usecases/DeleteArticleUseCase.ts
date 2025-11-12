@@ -1,3 +1,4 @@
+import { NotFoundError } from "../../domain/errors/DomainError";
 import type { IArticleRepository } from "../../domain/repositories/IArticleRepository";
 import type { IArticleStorage } from "../../domain/repositories/IArticleStorage";
 
@@ -7,11 +8,11 @@ export class DeleteArticleUseCase {
     private storage: IArticleStorage,
   ) {}
 
-  async execute(slug: string): Promise<boolean> {
+  async execute(slug: string): Promise<void> {
     // 記事の存在確認
     const existing = await this.repository.findBySlug(slug);
     if (!existing) {
-      return false;
+      throw new NotFoundError(`Article with slug "${slug}" not found`);
     }
 
     let deletedFromRepository = false;
@@ -23,8 +24,6 @@ export class DeleteArticleUseCase {
 
       // S3からコンテンツを削除
       await this.storage.deleteContent(existing.content);
-
-      return true;
     } catch (error) {
       // S3削除失敗時のロールバック
       if (deletedFromRepository) {
