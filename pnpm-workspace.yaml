@@ -1,5 +1,7 @@
 packages:
-  - 'web'
-  - 'infrastructure'
+  - "web"
+  - "infrastructure"
+  - "api"
+  - "functions/*"
 onlyBuiltDependencies:
   - esbuild

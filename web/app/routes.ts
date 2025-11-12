@@ -16,15 +16,18 @@ const articleRoutes =
       ).map(
         (file): RouteConfigEntry =>
           route(
-            file.replace("./articles", "/articles").replace(/\.(md|mdx)$/, ""),
+            file.replace("./articles", "/articles").replace(/\.(md|mdx)$/, "/edit"),
             file,
           ),
       )
-    : null;
+    : [];
 
 export default [
   ...(await flatRoutes({
-    ignoredRouteFiles: articleRoutes ? ["**/articles*.tsx"] : [],
+    ignoredRouteFiles: ["**/articles.tsx", "**/articles.$slug.tsx"],
   })),
-  ...(articleRoutes ? [layout("./routes/articles.tsx", articleRoutes)] : []),
+  layout("./routes/articles.tsx", [
+    ...articleRoutes,
+    route("/articles/:slug", "./routes/articles.$slug.tsx"),
+  ]),
 ] satisfies RouteConfig;
