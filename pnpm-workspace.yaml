@@ -3,5 +3,6 @@ packages:
   - "infrastructure"
   - "api"
   - "functions/*"
+  - "cms-cli"
 onlyBuiltDependencies:
   - esbuild
