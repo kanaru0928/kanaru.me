@@ -77,7 +77,6 @@ export class AppStack extends cdk.Stack {
         exclude: ["node_modules", "app"],
       }),
       layers: [this.lambdaLayerVersion],
-      functionName: "kanarume-me-web-function",
       timeout: cdk.Duration.minutes(3),
       memorySize: 1024,
       environment: {
@@ -104,7 +103,6 @@ export class AppStack extends cdk.Stack {
       "LambdaOAC",
       {
         signing: cloudfront.Signing.SIGV4_ALWAYS,
-        originAccessControlName: "kanaru-me-web-lambda-oac",
       },
     );
 
@@ -173,7 +171,6 @@ export class AppStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_22_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("../functions/warmer"),
-      functionName: "kanarume-warmer-function",
       environment: {
         FUNCTION_NAME: this.lambdaFunction.functionName,
       },

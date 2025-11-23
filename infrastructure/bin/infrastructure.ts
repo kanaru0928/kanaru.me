@@ -22,13 +22,12 @@ if (!env.certificateArn || !env.domainName || !env.githubToken || !env.environme
   throw new Error("CERTIFICATE_ARN, DOMAIN_NAME, GITHUB_TOKEN and ENVIRONMENT_NAME must be set in .env file");
 }
 
-new APIStack(app, "APIStack", {
+new APIStack(app, `APIStack-${env.environmentName}`, {
   env,
   environmentName: env.environmentName,
 });
-
-const infraStack = new InfrastructureStack(app, "InfrastructureStack", { env });
-new AppStack(app, "AppStack", {
+const infraStack = new InfrastructureStack(app, `InfrastructureStack-${env.environmentName}`, { env });
+new AppStack(app, `AppStack-${env.environmentName}`, {
   env,
   layerBucketArn: infraStack.getLayerBucketArn(),
   certificateArn: env.certificateArn,
