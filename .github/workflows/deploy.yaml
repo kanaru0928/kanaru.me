@@ -94,7 +94,7 @@ jobs:
         run: cd web && pnpm build
 
       - name: Deploy with CDK
-        run: cd infrastructure && pnpm cdk deploy AppStack-${{ inputs.environment-name }} --require-approval never
+        run: cd infrastructure && pnpm cdk deploy AppStack-${{ inputs.environment-name }} APIStack-${{ inputs.environment-name }} --require-approval never
         env:
           CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
           DOMAIN_NAME: ${{ inputs.environment-name == 'prod' && vars.DOMAIN_NAME || '' }}

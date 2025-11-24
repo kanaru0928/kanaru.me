@@ -20,20 +20,18 @@ export class APIStack extends cdk.Stack {
 
   private createArticleTable() {
     return new dynamodb.TableV2(this, `ArticlesTable-${this.environmentName}`, {
-      tableName: `kanaru-me-articles-table-${this.environmentName}`,
       partitionKey: {
         name: "slug",
         type: dynamodb.AttributeType.STRING,
       },
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
     });
   }
 
   private createArticleBucket() {
     return new s3.Bucket(this, `ArticleBucket-${this.environmentName}`, {
       bucketName: `${this.account}-kanaru-me-articles-storage-${this.environmentName}`,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
+      removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
     });
   }
 }
