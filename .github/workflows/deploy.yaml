@@ -46,6 +46,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Create GitHub Release
+        if: inputs.environment-name == 'prod'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm semantic-release
