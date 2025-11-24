@@ -88,7 +88,7 @@ jobs:
         run: |
           cd web/layer
           zip -r9y layer.zip nodejs
-          aws s3 cp layer.zip s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-layer/layer.zip
+          aws s3 cp layer.zip s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-layer-${{ inputs.environment-name }}/layer.zip
 
       - name: Build web app
         run: cd web && pnpm build
