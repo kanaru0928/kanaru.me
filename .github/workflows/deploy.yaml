@@ -78,7 +78,7 @@ jobs:
         run: cd infrastructure && pnpm cdk deploy InfrastructureStack-${{ inputs.environment-name }} --require-approval never
         env:
           CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
-          DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+          DOMAIN_NAME: ${{ inputs.environment-name == 'prod' && vars.DOMAIN_NAME || '' }}
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
           ENVIRONMENT_NAME: ${{ inputs.environment-name }}
 
@@ -96,7 +96,7 @@ jobs:
         run: cd infrastructure && pnpm cdk deploy AppStack-${{ inputs.environment-name }} --require-approval never
         env:
           CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
-          DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+          DOMAIN_NAME: ${{ inputs.environment-name == 'prod' && vars.DOMAIN_NAME || '' }}
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
           ENVIRONMENT_NAME: ${{ inputs.environment-name }}
 

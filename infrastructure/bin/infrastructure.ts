@@ -18,8 +18,8 @@ const env = {
   environmentName: process.env.ENVIRONMENT_NAME,
 };
 
-if (!env.certificateArn || !env.domainName || !env.githubToken || !env.environmentName) {
-  throw new Error("CERTIFICATE_ARN, DOMAIN_NAME, GITHUB_TOKEN and ENVIRONMENT_NAME must be set in .env file");
+if (!env.certificateArn || !env.githubToken || !env.environmentName) {
+  throw new Error("CERTIFICATE_ARN, GITHUB_TOKEN and ENVIRONMENT_NAME must be set in .env file");
 }
 
 new APIStack(app, `APIStack-${env.environmentName}`, {

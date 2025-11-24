@@ -11,7 +11,7 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 type Props = cdk.StackProps & {
   layerBucketArn: string;
   certificateArn: string;
-  domainName: string;
+  domainName?: string;
   githubToken: string;
 };
 
@@ -24,18 +24,18 @@ export class AppStack extends cdk.Stack {
   private assetBucket: s3.Bucket;
   private distribution: cloudfront.Distribution;
   private certificateArn: string;
-  private domainName: string;
+  private domainName?: string;
   private githubToken: string;
 
   constructor(scope: cdk.App, id: string, props?: Props) {
     super(scope, id, props);
 
-    if (!props?.layerBucketArn || !props?.certificateArn || !props?.domainName || !props?.githubToken) {
-      throw new Error("layerBucketArn, certificateArn, domainName and githubToken are required");
+    if (!props) {
+      throw new Error("Props must be provided");
     }
     this.layerBucketArn = props.layerBucketArn;
     this.certificateArn = props.certificateArn;
-    this.domainName = props.domainName;
+    this.domainName = props.domainName === "" ? undefined : props.domainName;
     this.githubToken = props.githubToken;
 
     this.assetBucket = this.createAssetBucket();
@@ -147,7 +147,7 @@ export class AppStack extends cdk.Stack {
         },
       },
       certificate: certificate,
-      domainNames: [this.domainName],
+      domainNames: this.domainName ? [this.domainName] : undefined,
       enableLogging: false,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_ALL,
     });
