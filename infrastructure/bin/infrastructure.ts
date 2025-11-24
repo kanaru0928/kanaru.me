@@ -26,11 +26,12 @@ new APIStack(app, `APIStack-${env.environmentName}`, {
   env,
   environmentName: env.environmentName,
 });
-const infraStack = new InfrastructureStack(app, `InfrastructureStack-${env.environmentName}`, { env });
+const infraStack = new InfrastructureStack(app, `InfrastructureStack-${env.environmentName}`, { env, environmentName: env.environmentName });
 new AppStack(app, `AppStack-${env.environmentName}`, {
   env,
   layerBucketArn: infraStack.getLayerBucketArn(),
   certificateArn: env.certificateArn,
   domainName: env.domainName,
   githubToken: env.githubToken,
+  environmentName: env.environmentName,
 });

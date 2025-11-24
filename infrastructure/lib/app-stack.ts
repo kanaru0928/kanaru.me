@@ -13,19 +13,22 @@ type Props = cdk.StackProps & {
   certificateArn: string;
   domainName?: string;
   githubToken: string;
+  environmentName: string;
 };
 
 export class AppStack extends cdk.Stack {
-  private lambdaLayerVersion: lambda.LayerVersion;
-  private lambdaFunction: lambda.Function;
-  private functionUrl: lambda.FunctionUrl;
   private layerBucketArn: string;
-  private warmerFunction: lambda.Function;
-  private assetBucket: s3.Bucket;
-  private distribution: cloudfront.Distribution;
   private certificateArn: string;
   private domainName?: string;
   private githubToken: string;
+  private environmentName: string;
+
+  private assetBucket: s3.Bucket;
+  private lambdaLayerVersion: lambda.LayerVersion;
+  private lambdaFunction: lambda.Function;
+  private functionUrl: lambda.FunctionUrl;
+  private warmerFunction: lambda.Function;
+  private distribution: cloudfront.Distribution;
 
   constructor(scope: cdk.App, id: string, props?: Props) {
     super(scope, id, props);
@@ -37,6 +40,7 @@ export class AppStack extends cdk.Stack {
     this.certificateArn = props.certificateArn;
     this.domainName = props.domainName === "" ? undefined : props.domainName;
     this.githubToken = props.githubToken;
+    this.environmentName = props.environmentName;
 
     this.assetBucket = this.createAssetBucket();
     this.lambdaLayerVersion = this.createLambdaLayerVersion();
@@ -50,7 +54,7 @@ export class AppStack extends cdk.Stack {
 
   private createAssetBucket() {
     return new s3.Bucket(this, "WebAssetBucket", {
-      bucketName: `${this.account}-kanaru-me-v2-web-assets`,
+      bucketName: `${this.account}-kanaru-me-v2-web-assets-${this.environmentName}`,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
