@@ -8,13 +8,18 @@ on:
         required: false
         default: false
         type: boolean
+      environment-name:
+        description: "Environment name"
+        required: false
+        default: "prod"
+        type: choice
+        options:
+          - prod
+          - dev
 
 permissions:
   id-token: write
   contents: write
-
-env:
-  ENVIRONMENT_NAME: "prod"
 
 jobs:
   deploy:
@@ -70,12 +75,12 @@ jobs:
 
       - name: Prepare Base Resources
         if: inputs.init-base-resources
-        run: cd infrastructure && pnpm cdk deploy InfrastructureStack-${{ env.ENVIRONMENT_NAME }} --require-approval never
+        run: cd infrastructure && pnpm cdk deploy InfrastructureStack-${{ inputs.environment-name }} --require-approval never
         env:
           CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
-          ENVIRONMENT_NAME: ${{ env.ENVIRONMENT_NAME }}
+          ENVIRONMENT_NAME: ${{ inputs.environment-name }}
 
       - name: Zip and upload Lambda Layer
         if: inputs.init-base-resources || steps.check_package_json.outputs.changed == 'true'
@@ -88,12 +93,12 @@ jobs:
         run: cd web && pnpm build
 
       - name: Deploy with CDK
-        run: cd infrastructure && pnpm cdk deploy AppStack-${{ env.ENVIRONMENT_NAME }} --require-approval never
+        run: cd infrastructure && pnpm cdk deploy AppStack-${{ inputs.environment-name }} --require-approval never
         env:
           CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
           DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
-          ENVIRONMENT_NAME: ${{ env.ENVIRONMENT_NAME }}
+          ENVIRONMENT_NAME: ${{ inputs.environment-name }}
 
       - name: Deploy Client Resources
         run: cd web/build/client/assets && aws s3 sync --delete . s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-assets/assets/
