@@ -11,32 +11,36 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 type Props = cdk.StackProps & {
   layerBucketArn: string;
   certificateArn: string;
-  domainName: string;
+  domainName?: string;
   githubToken: string;
+  environmentName: string;
 };
 
 export class AppStack extends cdk.Stack {
+  private layerBucketArn: string;
+  private certificateArn: string;
+  private domainName?: string;
+  private githubToken: string;
+  private environmentName: string;
+
+  private assetBucket: s3.Bucket;
   private lambdaLayerVersion: lambda.LayerVersion;
   private lambdaFunction: lambda.Function;
   private functionUrl: lambda.FunctionUrl;
-  private layerBucketArn: string;
   private warmerFunction: lambda.Function;
-  private assetBucket: s3.Bucket;
   private distribution: cloudfront.Distribution;
-  private certificateArn: string;
-  private domainName: string;
-  private githubToken: string;
 
   constructor(scope: cdk.App, id: string, props?: Props) {
     super(scope, id, props);
 
-    if (!props?.layerBucketArn || !props?.certificateArn || !props?.domainName || !props?.githubToken) {
-      throw new Error("layerBucketArn, certificateArn, domainName and githubToken are required");
+    if (!props) {
+      throw new Error("Props must be provided");
     }
     this.layerBucketArn = props.layerBucketArn;
     this.certificateArn = props.certificateArn;
-    this.domainName = props.domainName;
+    this.domainName = props.domainName === "" ? undefined : props.domainName;
     this.githubToken = props.githubToken;
+    this.environmentName = props.environmentName;
 
     this.assetBucket = this.createAssetBucket();
     this.lambdaLayerVersion = this.createLambdaLayerVersion();
@@ -50,7 +54,7 @@ export class AppStack extends cdk.Stack {
 
   private createAssetBucket() {
     return new s3.Bucket(this, "WebAssetBucket", {
-      bucketName: `${this.account}-kanaru-me-v2-web-assets`,
+      bucketName: `${this.account}-kanaru-me-v2-web-assets-${this.environmentName}`,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
@@ -77,7 +81,6 @@ export class AppStack extends cdk.Stack {
         exclude: ["node_modules", "app"],
       }),
       layers: [this.lambdaLayerVersion],
-      functionName: "kanarume-me-web-function",
       timeout: cdk.Duration.minutes(3),
       memorySize: 1024,
       environment: {
@@ -104,7 +107,6 @@ export class AppStack extends cdk.Stack {
       "LambdaOAC",
       {
         signing: cloudfront.Signing.SIGV4_ALWAYS,
-        originAccessControlName: "kanaru-me-web-lambda-oac",
       },
     );
 
@@ -149,7 +151,7 @@ export class AppStack extends cdk.Stack {
         },
       },
       certificate: certificate,
-      domainNames: [this.domainName],
+      domainNames: this.domainName ? [this.domainName] : undefined,
       enableLogging: false,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_ALL,
     });
@@ -173,7 +175,6 @@ export class AppStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_22_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("../functions/warmer"),
-      functionName: "kanarume-warmer-function",
       environment: {
         FUNCTION_NAME: this.lambdaFunction.functionName,
       },
