@@ -93,6 +93,9 @@ jobs:
       - name: Build web app
         run: cd web && pnpm build
 
+      - name: Build API
+        run: cd api && pnpm build
+
       - name: Deploy with CDK
         run: cd infrastructure && pnpm cdk deploy AppStack-${{ inputs.environment-name }} APIStack-${{ inputs.environment-name }} --require-approval never
         env:
