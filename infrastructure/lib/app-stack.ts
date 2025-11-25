@@ -131,7 +131,7 @@ export class AppStack extends cdk.Stack {
     const func = new lambda.Function(this, `APIFunction`, {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: "app.handler",
-      code: lambda.Code.fromAsset("../api/dist/index.js"),
+      code: lambda.Code.fromAsset("../api/dist"),
       environment: {
         DYNAMODB_TABLE_NAME: this.articleTable.tableName,
         S3_BUCKET_NAME: this.articleBucket.bucketName,
