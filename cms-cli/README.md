@@ -221,7 +221,3 @@ pnpm test
 ```bash
 pnpm build
 ```
-
-## ライセンス
-
-MIT

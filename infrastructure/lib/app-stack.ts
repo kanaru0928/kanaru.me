@@ -2,6 +2,7 @@ import * as cdk from "aws-cdk-lib";
 import * as acm from "aws-cdk-lib/aws-certificatemanager";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
+import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as events from "aws-cdk-lib/aws-events";
 import * as targets from "aws-cdk-lib/aws-events-targets";
 import * as iam from "aws-cdk-lib/aws-iam";
@@ -17,18 +18,21 @@ type Props = cdk.StackProps & {
 };
 
 export class AppStack extends cdk.Stack {
-  private layerBucketArn: string;
-  private certificateArn: string;
-  private domainName?: string;
-  private githubToken: string;
-  private environmentName: string;
+  private readonly layerBucketArn: string;
+  private readonly certificateArn: string;
+  private readonly domainName?: string;
+  private readonly githubToken: string;
+  private readonly environmentName: string;
 
   private assetBucket: s3.Bucket;
   private lambdaLayerVersion: lambda.LayerVersion;
-  private lambdaFunction: lambda.Function;
+  private webFunction: lambda.Function;
   private functionUrl: lambda.FunctionUrl;
-  private warmerFunction: lambda.Function;
+  private articleTable: dynamodb.TableV2;
+  private articleBucket: s3.Bucket;
+  private apiFunctionUrl: lambda.FunctionUrl;
   private distribution: cloudfront.Distribution;
+  private warmerFunction: lambda.Function;
 
   constructor(scope: cdk.App, id: string, props?: Props) {
     super(scope, id, props);
@@ -43,10 +47,17 @@ export class AppStack extends cdk.Stack {
     this.environmentName = props.environmentName;
 
     this.assetBucket = this.createAssetBucket();
+
     this.lambdaLayerVersion = this.createLambdaLayerVersion();
-    this.lambdaFunction = this.createLambda();
+    this.webFunction = this.createLambda();
     this.functionUrl = this.createFunctionUrl();
+
+    this.articleTable = this.createArticleTable();
+    this.articleBucket = this.createArticleBucket();
+    this.apiFunctionUrl = this.createApiFunction();
+
     this.distribution = this.createDistribution();
+
     this.warmerFunction = this.createWarmerFunction();
     this.createWarmerEventBridge();
     this.grantOACAccess();
@@ -64,12 +75,11 @@ export class AppStack extends cdk.Stack {
     const layerBucket = s3.Bucket.fromBucketArn(
       this,
       "ImportedLayerBucket",
-      this.layerBucketArn,
+      this.layerBucketArn
     );
     return new lambda.LayerVersion(this, "KanarumeWebLayer", {
       code: lambda.Code.fromBucketV2(layerBucket, "layer.zip"),
       compatibleRuntimes: [lambda.Runtime.NODEJS_22_X],
-      description: "Node modules for kanaru.me web app",
     });
   }
 
@@ -93,11 +103,58 @@ export class AppStack extends cdk.Stack {
   }
 
   private createFunctionUrl() {
-    const functionUrl = this.lambdaFunction.addFunctionUrl({
+    const functionUrl = this.webFunction.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.AWS_IAM,
     });
 
     return functionUrl;
+  }
+
+  private createArticleTable() {
+    return new dynamodb.TableV2(this, `ArticlesTable`, {
+      partitionKey: {
+        name: "slug",
+        type: dynamodb.AttributeType.STRING,
+      },
+      removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
+    });
+  }
+
+  private createArticleBucket() {
+    return new s3.Bucket(this, `ArticleBucket`, {
+      bucketName: `${this.account}-kanaru-me-articles-storage-${this.environmentName}`,
+      removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
+    });
+  }
+
+  private createApiFunction() {
+    const func = new lambda.Function(this, `APIFunction`, {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      handler: "app.handler",
+      code: lambda.Code.fromAsset("../api/dist/index.js"),
+      environment: {
+        DYNAMODB_TABLE_NAME: this.articleTable.tableName,
+        S3_BUCKET_NAME: this.articleBucket.bucketName,
+      },
+      initialPolicy: [
+        new iam.PolicyStatement({
+          actions: ["dynamodb:*"],
+          resources: [this.articleTable.tableArn],
+        }),
+        new iam.PolicyStatement({
+          actions: ["s3:*"],
+          resources: [
+            this.articleBucket.bucketArn,
+            `${this.articleBucket.bucketArn}/*`,
+          ],
+        }),
+      ],
+      timeout: cdk.Duration.minutes(1),
+      memorySize: 512,
+      architecture: lambda.Architecture.ARM_64,
+    });
+
+    return func.addFunctionUrl();
   }
 
   private createDistribution() {
@@ -107,16 +164,24 @@ export class AppStack extends cdk.Stack {
       "LambdaOAC",
       {
         signing: cloudfront.Signing.SIGV4_ALWAYS,
-      },
+      }
     );
 
     // Lambda Function URL用のOrigin設定
-    const functionUrlOrigin = new origins.HttpOrigin(
+    const webFunctionUrlOrigin = new origins.HttpOrigin(
       cdk.Fn.select(2, cdk.Fn.split("/", this.functionUrl.url)),
       {
         protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
         originAccessControlId: lambdaOac.originAccessControlId,
-      },
+      }
+    );
+
+    const apiFunctionUrlOrigin = new origins.HttpOrigin(
+      cdk.Fn.select(2, cdk.Fn.split("/", this.apiFunctionUrl.url)),
+      {
+        protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+        originAccessControlId: lambdaOac.originAccessControlId,
+      }
     );
 
     // S3用のOrigin設定（OACで自動的にバケットポリシー設定）
@@ -124,17 +189,21 @@ export class AppStack extends cdk.Stack {
       this.assetBucket
     );
 
+    const articleOrigin = origins.S3BucketOrigin.withOriginAccessControl(
+      this.articleBucket
+    );
+
     // ACM証明書の参照
     const certificate = acm.Certificate.fromCertificateArn(
       this,
       "Certificate",
-      this.certificateArn,
+      this.certificateArn
     );
 
     // CloudFront Distribution作成
     return new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: {
-        origin: functionUrlOrigin,
+        origin: webFunctionUrlOrigin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
         originRequestPolicy:
@@ -144,6 +213,22 @@ export class AppStack extends cdk.Stack {
       additionalBehaviors: {
         "/assets/*": {
           origin: s3Origin,
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+        },
+        "/api/articles/*": {
+          origin: apiFunctionUrlOrigin,
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+          originRequestPolicy:
+            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+        },
+        "/static/articles/*": {
+          origin: articleOrigin,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
@@ -176,21 +261,21 @@ export class AppStack extends cdk.Stack {
       handler: "index.handler",
       code: lambda.Code.fromAsset("../functions/warmer"),
       environment: {
-        FUNCTION_NAME: this.lambdaFunction.functionName,
+        FUNCTION_NAME: this.webFunction.functionName,
       },
       timeout: cdk.Duration.seconds(30),
       architecture: lambda.Architecture.ARM_64,
     });
 
     // Warmer関数にWebFunctionを呼び出す権限を付与
-    this.lambdaFunction.grantInvoke(warmerFunction);
+    this.webFunction.grantInvoke(warmerFunction);
 
     return warmerFunction;
   }
 
   private grantOACAccess() {
     // Lambda Function への OAC アクセス許可
-    this.lambdaFunction.addPermission("CloudFrontInvokePermission", {
+    this.webFunction.addPermission("CloudFrontInvokePermission", {
       principal: new iam.ServicePrincipal("cloudfront.amazonaws.com"),
       action: "lambda:InvokeFunctionUrl",
       functionUrlAuthType: lambda.FunctionUrlAuthType.AWS_IAM,

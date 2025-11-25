@@ -20,8 +20,8 @@ export class S3ArticleStorage implements IArticleStorage {
    * コンテンツからSHA-256ハッシュを生成してS3キーを作成
    */
   private generateContentKey(content: string): string {
-    const hash = createHash("sha256").update(content, "utf-8").digest("hex");
-    return `articles/${hash}.md`;
+    const hash = createHash("sha256").update(content, "utf-8").digest("base64url");
+    return `static/articles/${hash}.md`;
   }
 
   /**

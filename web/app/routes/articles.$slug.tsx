@@ -1,8 +1,8 @@
+import { evaluate } from "@mdx-js/mdx";
+import * as runtime from 'react/jsx-runtime';
 import { useLoaderData } from "react-router";
 import { apiClient } from "~/lib/apiClient";
-import * as runtime from 'react/jsx-runtime';
 import type { Route } from "./+types/articles.$slug";
-import { evaluate } from "@mdx-js/mdx";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const { slug } = params;
