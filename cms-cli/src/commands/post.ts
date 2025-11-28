@@ -9,7 +9,6 @@ import { logger } from "../lib/utils/logger.js";
 
 export interface PostCommandOptions {
 	title?: string;
-	description?: string;
 	tags?: string;
 }
 
@@ -43,8 +42,6 @@ export async function postCommand(
 			path.basename(filePath, path.extname(filePath));
 
 		// その他のメタデータ
-		const _description =
-			parsed.frontmatter.description || options.description || "";
 		const tags =
 			parsed.frontmatter.tags ||
 			(options.tags ? options.tags.split(",").map((t) => t.trim()) : []);

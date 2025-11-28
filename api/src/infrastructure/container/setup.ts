@@ -6,6 +6,7 @@ import { UpdateArticleContentUseCase } from "../../application/usecases/UpdateAr
 import { UpdateArticleMetadataUseCase } from "../../application/usecases/UpdateArticleMetadataUseCase";
 import type { IArticleRepository } from "../../domain/repositories/IArticleRepository";
 import type { IArticleStorage } from "../../domain/repositories/IArticleStorage";
+import type { ISecretRepository } from "../../domain/repositories/ISecretRepository";
 import { DynamoDBArticleRepository } from "../repositories/DynamoDBArticleRepository";
 import { S3ArticleStorage } from "../storage/S3ArticleStorage";
 import { DIContainer } from "./DIContainer";
@@ -18,8 +19,15 @@ export function setupContainer(
   tableName: string,
   bucketName: string,
   region: string,
+  secretRepository: ISecretRepository,
 ): DIContainer {
   const container = new DIContainer();
+
+  // SecretRepositoryを最初に登録
+  container.registerSingleton(
+    DI_TOKENS.SecretRepository,
+    () => secretRepository,
+  );
 
   // Infrastructure層の登録
   container.registerSingleton(

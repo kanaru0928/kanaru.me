@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { ISecretRepository } from "../domain/repositories/ISecretRepository";
 
 // 環境変数のスキーマ定義
 const envSchema = z.object({
@@ -20,8 +21,33 @@ export type Env = z.infer<typeof envSchema>;
  * 環境変数をバリデーションして返す
  * @throws {Error} 環境変数が不正な場合
  */
-export function validateEnv(env: Record<string, string | undefined>): Env {
-  const result = envSchema.safeParse(env);
+export async function validateEnv(
+  env: Record<string, string | undefined>,
+  secretRepository: ISecretRepository,
+): Promise<Env> {
+  // SecretRepositoryからシークレット取得
+  const jwtSecret = await secretRepository.getSecretValue("jwt-secret");
+  const initialBearerToken = await secretRepository.getSecretValue(
+    "initial-bearer-token",
+  );
+
+  if (!jwtSecret) {
+    throw new Error("Failed to retrieve JWT_SECRET from SecretRepository");
+  }
+  if (!initialBearerToken) {
+    throw new Error(
+      "Failed to retrieve INITIAL_BEARER_TOKEN from SecretRepository",
+    );
+  }
+
+  // 環境変数とシークレットを統合
+  const envWithSecrets = {
+    ...env,
+    JWT_SECRET: jwtSecret,
+    INITIAL_BEARER_TOKEN: initialBearerToken,
+  };
+
+  const result = envSchema.safeParse(envWithSecrets);
 
   if (!result.success) {
     const errors = result.error.issues

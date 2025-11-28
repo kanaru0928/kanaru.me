@@ -6,12 +6,23 @@ import type { JwtVariables } from "hono/jwt";
 import type { Env as EnvConfig } from "./config/env";
 import { validateEnv } from "./config/env";
 import { DomainError } from "./domain/errors/DomainError";
+import type { ISecretRepository } from "./domain/repositories/ISecretRepository";
 import { setupContainer } from "./infrastructure/container/setup";
 import { createArticleRouter } from "./interface/routes/articles";
 import { createAuthRouter } from "./interface/routes/auth";
 
 // 再エクスポート（テストで使用）
 export type { EnvConfig };
+
+// モジュールレベル変数でSecretRepositoryを保持
+let secretRepositoryInstance: ISecretRepository | null = null;
+
+/**
+ * SecretRepositoryを設定（エントリポイントから呼び出される）
+ */
+export function setSecretRepository(repository: ISecretRepository): void {
+  secretRepositoryInstance = repository;
+}
 
 // 環境変数の型定義
 export type Env = {
@@ -34,36 +45,27 @@ export type Env = {
 // 環境変数はミドルウェアで動的に取得するため、createApp関数は削除し直接アプリを構築
 const app = new OpenAPIHono<Env>();
 
-// DIコンテナのキャッシュ（初回リクエスト時に作成し再利用）
-let containerCache: ReturnType<typeof setupContainer> | null = null;
-let envCache: EnvConfig | null = null;
-
 // 環境変数取得ミドルウェア（全リクエストで実行）
 app.use("*", async (c, next) => {
-  // キャッシュがあればそれを使用
-  if (containerCache && envCache) {
-    c.set("container", containerCache);
-    c.set("env", envCache);
-    await next();
-    return;
+  if (!secretRepositoryInstance) {
+    throw new Error(
+      "SecretRepository is not set. Call setSecretRepository() in entry point.",
+    );
   }
 
-  // 初回のみ環境変数を取得してコンテナをセットアップ
+  // 毎リクエストで環境変数を取得
   const envVars = env<Env["Bindings"]>(c);
 
-  // 環境変数のバリデーション
-  const validatedEnv = validateEnv(envVars);
+  // 毎リクエストでシークレットを取得（非同期）
+  const validatedEnv = await validateEnv(envVars, secretRepositoryInstance);
 
-  // DIコンテナのセットアップ
+  // DIコンテナのセットアップ（毎リクエスト）
   const container = setupContainer(
     validatedEnv.DYNAMODB_TABLE_NAME,
     validatedEnv.S3_BUCKET_NAME,
     validatedEnv.AWS_REGION,
+    secretRepositoryInstance,
   );
-
-  // キャッシュに保存
-  containerCache = container;
-  envCache = validatedEnv;
 
   // コンテキストに注入
   c.set("container", container);

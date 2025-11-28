@@ -49,6 +49,7 @@
     "@types/node": "^24.10.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "cms-cli": "workspace:*",
     "daisyui": "^5.4.7",
     "openapi-typescript": "^7.10.1",
     "serverless": "^4.23.0",

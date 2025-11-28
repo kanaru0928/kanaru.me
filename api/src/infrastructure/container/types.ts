@@ -4,6 +4,7 @@
 export const DI_TOKENS = {
   ArticleRepository: Symbol.for("ArticleRepository"),
   ArticleStorage: Symbol.for("ArticleStorage"),
+  SecretRepository: Symbol.for("SecretRepository"),
   CreateArticleUseCase: Symbol.for("CreateArticleUseCase"),
   GetArticleUseCase: Symbol.for("GetArticleUseCase"),
   ListArticlesUseCase: Symbol.for("ListArticlesUseCase"),

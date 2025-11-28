@@ -135,6 +135,7 @@ export class AppStack extends cdk.Stack {
       environment: {
         DYNAMODB_TABLE_NAME: this.articleTable.tableName,
         S3_BUCKET_NAME: this.articleBucket.bucketName,
+        
       },
       initialPolicy: [
         new iam.PolicyStatement({

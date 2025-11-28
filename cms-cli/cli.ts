@@ -59,7 +59,6 @@ program
 	.command("post <file>")
 	.description("記事を投稿")
 	.option("--title <title>", "記事タイトル")
-	.option("--description <desc>", "記事の説明")
 	.option("--tags <tags>", "タグ（カンマ区切り）")
 	.action(async (file, options) => {
 		try {
@@ -83,7 +82,6 @@ program
 
 			await postCommand(file, apiClient, {
 				title: options.title,
-				description: options.description,
 				tags: options.tags,
 			});
 		} catch (error) {
