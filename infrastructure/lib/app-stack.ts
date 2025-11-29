@@ -292,7 +292,14 @@ export class AppStack extends cdk.Stack {
 
   private grantOACAccess() {
     // Lambda Function への OAC アクセス許可
-    this.webFunction.addPermission("CloudFrontInvokePermission", {
+    this.webFunction.addPermission("CloudFrontWebInvokePermission", {
+      principal: new iam.ServicePrincipal("cloudfront.amazonaws.com"),
+      action: "lambda:InvokeFunctionUrl",
+      functionUrlAuthType: lambda.FunctionUrlAuthType.AWS_IAM,
+      sourceArn: this.distribution.distributionArn,
+    });
+
+    this.apiFunction.addPermission("CloudFrontApiInvokePermission", {
       principal: new iam.ServicePrincipal("cloudfront.amazonaws.com"),
       action: "lambda:InvokeFunctionUrl",
       functionUrlAuthType: lambda.FunctionUrlAuthType.AWS_IAM,
