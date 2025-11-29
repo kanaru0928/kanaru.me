@@ -32,5 +32,5 @@ function register_parameter() {
     "${args[@]}" > /dev/null
 }
 
-register_parameter "/kanaru.me-v2/$env/jwt-secret" "$(openssl rand -base64 32)"
-register_parameter "/kanaru.me-v2/$env/initial-bearer-token" "$(openssl rand -base64 64)"
+register_parameter "/kanaru.me-v2/$env/jwt-secret" "$(openssl rand 32 | base64 -w 0)"
+register_parameter "/kanaru.me-v2/$env/initial-bearer-token" "$(openssl rand 64 | base64 -w 0)"

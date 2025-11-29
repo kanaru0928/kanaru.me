@@ -153,7 +153,7 @@ export class AppStack extends cdk.Stack {
         new iam.PolicyStatement({
           actions: ["ssm:GetParameter"],
           resources: [
-            `arn:aws:ssm:${this.region}:${this.account}:parameter/kanaru.me-v2/${this.environmentName}/*`,
+            `arn:aws:ssm:${this.region}:${this.account}:*`,
           ],
         }),
       ],
