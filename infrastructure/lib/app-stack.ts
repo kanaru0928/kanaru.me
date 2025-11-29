@@ -90,7 +90,14 @@ export class AppStack extends cdk.Stack {
       code: lambda.Code.fromAsset("../web", {
         exclude: ["node_modules", "app"],
       }),
-      layers: [this.lambdaLayerVersion],
+      layers: [
+        this.lambdaLayerVersion,
+        lambda.LayerVersion.fromLayerVersionArn(
+          this,
+          "AWSLambdaPowertoolsLayer",
+          "arn:aws:lambda:ap-northeast-1:133490724326:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:21"
+        ),
+      ],
       timeout: cdk.Duration.minutes(3),
       memorySize: 1024,
       environment: {
@@ -135,7 +142,6 @@ export class AppStack extends cdk.Stack {
       environment: {
         DYNAMODB_TABLE_NAME: this.articleTable.tableName,
         S3_BUCKET_NAME: this.articleBucket.bucketName,
-        
       },
       initialPolicy: [
         new iam.PolicyStatement({
