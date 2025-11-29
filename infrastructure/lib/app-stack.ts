@@ -8,6 +8,7 @@ import * as targets from "aws-cdk-lib/aws-events-targets";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import * as customResource from "aws-cdk-lib/custom-resources";
 
 type Props = cdk.StackProps & {
   layerBucketArn: string;
@@ -60,11 +61,10 @@ export class AppStack extends cdk.Stack {
 
     this.distribution = this.createDistribution();
 
-    this.setupCorsForApiFunction();
-
     this.warmerFunction = this.createWarmerFunction();
     this.createWarmerEventBridge();
     this.grantOACAccess();
+    this.updateApiFunctionEnv();
   }
 
   private createAssetBucket() {
@@ -136,12 +136,6 @@ export class AppStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("../api/dist"),
-      environment: {
-        DYNAMODB_TABLE_NAME: this.articleTable.tableName,
-        S3_BUCKET_NAME: this.articleBucket.bucketName,
-        SECRET_NAME_PREFIX: `/kanaru.me-v2/${this.environmentName}/`,
-        SSM_PARAMETER_STORE_TTL: "300",
-      },
       initialPolicy: [
         new iam.PolicyStatement({
           actions: ["dynamodb:*"],
@@ -296,16 +290,6 @@ export class AppStack extends cdk.Stack {
     return warmerFunction;
   }
 
-  private setupCorsForApiFunction() {
-    const origin = this.domainName || this.distribution.distributionDomainName;
-    const allowedOrigins = [`https://${origin}`];
-
-    this.apiFunction.addEnvironment(
-      "ALLOWED_ORIGINS",
-      allowedOrigins.join(",")
-    );
-  }
-
   private grantOACAccess() {
     // Lambda Function への OAC アクセス許可
     this.webFunction.addPermission("CloudFrontInvokePermission", {
@@ -314,5 +298,44 @@ export class AppStack extends cdk.Stack {
       functionUrlAuthType: lambda.FunctionUrlAuthType.AWS_IAM,
       sourceArn: this.distribution.distributionArn,
     });
+  }
+
+  private updateApiFunctionEnv() {
+    const domainName =
+      this.domainName || this.distribution.distributionDomainName;
+    const allowedOrigins = [`https://${domainName}`];
+    const apiCutomResource = new customResource.AwsCustomResource(
+      this,
+      "UpdateApiFunctionEnvCR",
+      {
+        onUpdate: {
+          service: "Lambda",
+          action: "updateFunctionConfiguration",
+          parameters: {
+            FunctionName: this.apiFunction.functionName,
+            Environment: {
+              Variables: {
+                DYNAMODB_TABLE_NAME: this.articleTable.tableName,
+                S3_BUCKET_NAME: this.articleBucket.bucketName,
+                SECRET_NAME_PREFIX: `/kanaru.me-v2/${this.environmentName}/`,
+                SSM_PARAMETER_STORE_TTL: "300",
+                CLOUDFRONT_DOMAIN_NAME: allowedOrigins.join(","),
+              },
+            },
+          },
+          physicalResourceId: customResource.PhysicalResourceId.of(
+            `${this.apiFunction.functionName}-env-update`
+          ),
+        },
+        policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
+          resources: [this.apiFunction.functionArn],
+        }),
+      }
+    );
+
+    apiCutomResource.node.addDependency(this.articleTable);
+    apiCutomResource.node.addDependency(this.articleBucket);
+    apiCutomResource.node.addDependency(this.apiFunction);
+    apiCutomResource.node.addDependency(this.distribution);
   }
 }
