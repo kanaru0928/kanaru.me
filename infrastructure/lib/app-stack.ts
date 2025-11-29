@@ -30,6 +30,7 @@ export class AppStack extends cdk.Stack {
   private functionUrl: lambda.FunctionUrl;
   private articleTable: dynamodb.TableV2;
   private articleBucket: s3.Bucket;
+  private apiFunction: lambda.Function;
   private apiFunctionUrl: lambda.FunctionUrl;
   private distribution: cloudfront.Distribution;
   private warmerFunction: lambda.Function;
@@ -54,9 +55,12 @@ export class AppStack extends cdk.Stack {
 
     this.articleTable = this.createArticleTable();
     this.articleBucket = this.createArticleBucket();
-    this.apiFunctionUrl = this.createApiFunction();
+    this.apiFunction = this.createApiFunction();
+    this.apiFunctionUrl = this.createApiFunctionUrl();
 
     this.distribution = this.createDistribution();
+
+    this.setupCorsForApiFunction();
 
     this.warmerFunction = this.createWarmerFunction();
     this.createWarmerEventBridge();
@@ -128,7 +132,7 @@ export class AppStack extends cdk.Stack {
   }
 
   private createApiFunction() {
-    const func = new lambda.Function(this, `APIFunction`, {
+    return new lambda.Function(this, `APIFunction`, {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("../api/dist"),
@@ -152,9 +156,7 @@ export class AppStack extends cdk.Stack {
         }),
         new iam.PolicyStatement({
           actions: ["ssm:GetParameter"],
-          resources: [
-            `arn:aws:ssm:${this.region}:${this.account}:*`,
-          ],
+          resources: [`arn:aws:ssm:${this.region}:${this.account}:*`],
         }),
       ],
       layers: [
@@ -168,8 +170,14 @@ export class AppStack extends cdk.Stack {
       memorySize: 512,
       architecture: lambda.Architecture.ARM_64,
     });
+  }
 
-    return func.addFunctionUrl();
+  private createApiFunctionUrl() {
+    const functionUrl = this.apiFunction.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
+    });
+
+    return functionUrl;
   }
 
   private createDistribution() {
@@ -286,6 +294,16 @@ export class AppStack extends cdk.Stack {
     this.webFunction.grantInvoke(warmerFunction);
 
     return warmerFunction;
+  }
+
+  private setupCorsForApiFunction() {
+    const origin = this.domainName || this.distribution.distributionDomainName;
+    const allowedOrigins = [`https://${origin}`];
+
+    this.apiFunction.addEnvironment(
+      "ALLOWED_ORIGINS",
+      allowedOrigins.join(",")
+    );
   }
 
   private grantOACAccess() {
