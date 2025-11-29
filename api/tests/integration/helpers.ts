@@ -35,13 +35,13 @@ export async function generateExpiredJwt(secret: string): Promise<string> {
 }
 
 /**
- * Authorizationヘッダーを含むHeadersオブジェクトを作成します
+ * KCMS-Authorizationヘッダーを含むHeadersオブジェクトを作成します
  * @param token JWTトークン
  * @returns Headersオブジェクト
  */
 export function createAuthHeader(token: string): Headers {
 	return new Headers({
 		"Content-Type": "application/json",
-		Authorization: `Bearer ${token}`,
+		"KCMS-Authorization": `Bearer ${token}`,
 	});
 }

@@ -124,16 +124,17 @@ app.route("/api/articles", articlesRouter);
 
 // セキュリティスキームの登録
 app.openAPIRegistry.registerComponent("securitySchemes", "InitialBearer", {
-  type: "http",
-  scheme: "bearer",
+  type: "apiKey",
+  in: "header",
+  name: "KCMS-Init-Authorization",
   description: "初期Bearer トークンによる認証（/verify エンドポイント用）",
 });
 
 app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
-  type: "http",
-  scheme: "bearer",
-  bearerFormat: "JWT",
-  description: "JWT トークンによる認証",
+  type: "apiKey",
+  in: "header",
+  name: "KCMS-Authorization",
+  description: "JWT トークンによる認証（記事管理エンドポイント用）",
 });
 
 // OpenAPIドキュメント生成

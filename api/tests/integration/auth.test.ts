@@ -35,7 +35,7 @@ describe("Authentication API", () => {
 			const res = await app.request("/api/verify", {
 				method: "POST",
 				headers: new Headers({
-					Authorization: `Bearer ${mockEnvConfig.INITIAL_BEARER_TOKEN}`,
+					"KCMS-Init-Authorization": `Bearer ${mockEnvConfig.INITIAL_BEARER_TOKEN}`,
 				}),
 			});
 
@@ -57,7 +57,7 @@ describe("Authentication API", () => {
 			expect(exp - iat).toBe(24 * 60 * 60);
 		});
 
-		it("Authorization ヘッダーがない場合は 401 エラー", async () => {
+		it("KCMS-Init-Authorization ヘッダーがない場合は 401 エラー", async () => {
 			const res = await app.request("/api/verify", {
 				method: "POST",
 			});
@@ -65,14 +65,14 @@ describe("Authentication API", () => {
 			expect(res.status).toBe(401);
 
 			const data = await res.json();
-			expect(data).toHaveProperty("error", "Authorization header is required");
+			expect(data).toHaveProperty("error", "KCMS-Init-Authorization header is required");
 		});
 
 		it("Bearer スキームがない場合は 401 エラー", async () => {
 			const res = await app.request("/api/verify", {
 				method: "POST",
 				headers: new Headers({
-					Authorization: mockEnvConfig.INITIAL_BEARER_TOKEN, // "Bearer" なし
+					"KCMS-Init-Authorization": mockEnvConfig.INITIAL_BEARER_TOKEN, // "Bearer" なし
 				}),
 			});
 
@@ -89,7 +89,7 @@ describe("Authentication API", () => {
 			const res = await app.request("/api/verify", {
 				method: "POST",
 				headers: new Headers({
-					Authorization: "Bearer invalid-token",
+					"KCMS-Init-Authorization": "Bearer invalid-token",
 				}),
 			});
 

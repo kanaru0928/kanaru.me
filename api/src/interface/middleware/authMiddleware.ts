@@ -4,14 +4,14 @@ import type { Env } from "../../app";
 
 /**
  * JWT認証ミドルウェア
- * Authorization: Bearer <token> ヘッダーからJWTを検証
+ * KCMS-Authorization: Bearer <token> ヘッダーからJWTを検証
  */
 export const createAuthMiddleware = (): MiddlewareHandler<Env> => {
   return async (c, next) => {
-    // Authorizationヘッダーの明示的なチェック
-    const authHeader = c.req.header("Authorization");
+    // KCMS-Authorizationヘッダーの明示的なチェック
+    const authHeader = c.req.header("KCMS-Authorization");
     if (!authHeader) {
-      return c.json({ error: "Authorization header is required" }, 401);
+      return c.json({ error: "KCMS-Authorization header is required" }, 401);
     }
     if (!authHeader.startsWith("Bearer ")) {
       return c.json(
@@ -23,6 +23,7 @@ export const createAuthMiddleware = (): MiddlewareHandler<Env> => {
     const env = c.get("env");
     const jwtMiddleware = jwt({
       secret: env.JWT_SECRET,
+      headerName: "KCMS-Authorization",
     });
 
     try {
@@ -47,13 +48,12 @@ export const createAuthMiddleware = (): MiddlewareHandler<Env> => {
 
 /**
  * オプショナルなJWT認証ミドルウェア
- * Authorization: Bearer <token> ヘッダーがあれば検証し、なければスキップ
+ * KCMS-Authorization: Bearer <token> ヘッダーがあれば検証し、なければスキップ
  */
 export const createOptionalAuthMiddleware = (): MiddlewareHandler<Env> => {
   return async (c, next) => {
-    const authHeader = c.req.header("Authorization");
-
-    // Authorizationヘッダーがない場合はスキップ
+    const authHeader = c.req.header("KCMS-Authorization");
+    // KCMS-Authorizationヘッダーがない場合はスキップ
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return await next();
     }
@@ -61,6 +61,7 @@ export const createOptionalAuthMiddleware = (): MiddlewareHandler<Env> => {
     const env = c.get("env");
     const jwtMiddleware = jwt({
       secret: env.JWT_SECRET,
+      headerName: "KCMS-Authorization",
     });
 
     try {

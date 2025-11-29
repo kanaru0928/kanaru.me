@@ -45,15 +45,18 @@ export function createAuthRouter() {
   router.openapi(verifyRoute, async (c) => {
     const env = c.get("env");
 
-    // Authorization ヘッダーから Bearer トークンを取得
-    const authHeader = c.req.header("Authorization");
+    // KCMS-Init-Authorization ヘッダーから Bearer トークンを取得
+    const authHeader = c.req.header("KCMS-Init-Authorization");
     if (!authHeader) {
-      return c.json({ error: "Authorization header is required" }, 401);
+      return c.json(
+        { error: "KCMS-Init-Authorization header is required" },
+        401
+      );
     }
     if (!authHeader.startsWith("Bearer ")) {
       return c.json(
         { error: "Invalid authorization format. Expected 'Bearer <token>'" },
-        401,
+        401
       );
     }
 
@@ -78,7 +81,7 @@ export function createAuthRouter() {
       {
         token: jwt,
       },
-      200,
+      200
     );
   });
 
