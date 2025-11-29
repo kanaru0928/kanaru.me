@@ -235,7 +235,7 @@ export class AppStack extends cdk.Stack {
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         },
-        "/api/articles/*": {
+        "/api/articles*": {
           origin: apiFunctionUrlOrigin,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
