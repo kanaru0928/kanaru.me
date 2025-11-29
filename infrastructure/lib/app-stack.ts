@@ -90,14 +90,7 @@ export class AppStack extends cdk.Stack {
       code: lambda.Code.fromAsset("../web", {
         exclude: ["node_modules", "app"],
       }),
-      layers: [
-        this.lambdaLayerVersion,
-        lambda.LayerVersion.fromLayerVersionArn(
-          this,
-          "AWSLambdaPowertoolsLayer",
-          "arn:aws:lambda:ap-northeast-1:133490724326:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:21"
-        ),
-      ],
+      layers: [this.lambdaLayerVersion],
       timeout: cdk.Duration.minutes(3),
       memorySize: 1024,
       environment: {
@@ -142,6 +135,8 @@ export class AppStack extends cdk.Stack {
       environment: {
         DYNAMODB_TABLE_NAME: this.articleTable.tableName,
         S3_BUCKET_NAME: this.articleBucket.bucketName,
+        SECRET_NAME_PREFIX: `kanaru.me-v2/${this.environmentName}/`,
+        SSM_PARAMETER_STORE_TTL: "300",
       },
       initialPolicy: [
         new iam.PolicyStatement({
@@ -155,6 +150,19 @@ export class AppStack extends cdk.Stack {
             `${this.articleBucket.bucketArn}/*`,
           ],
         }),
+        new iam.PolicyStatement({
+          actions: ["ssm:GetParameter"],
+          resources: [
+            `arn:aws:ssm:${this.region}:${this.account}:parameter/kanaru.me-v2/${this.environmentName}/*`,
+          ],
+        }),
+      ],
+      layers: [
+        lambda.LayerVersion.fromLayerVersionArn(
+          this,
+          "AWSLambdaPowertoolsLayer",
+          "arn:aws:lambda:ap-northeast-1:133490724326:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:21"
+        ),
       ],
       timeout: cdk.Duration.minutes(1),
       memorySize: 512,
