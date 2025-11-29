@@ -33,7 +33,6 @@ export class AppStack extends cdk.Stack {
   private articleBucket: s3.Bucket;
   private apiFunction: lambda.Function;
   private apiFunctionUrl: lambda.FunctionUrl;
-  private signerFunction: cloudfront.experimental.EdgeFunction;
   private distribution: cloudfront.Distribution;
   private warmerFunction: lambda.Function;
 
@@ -59,8 +58,6 @@ export class AppStack extends cdk.Stack {
     this.articleBucket = this.createArticleBucket();
     this.apiFunction = this.createApiFunction();
     this.apiFunctionUrl = this.createApiFunctionUrl();
-
-    this.signerFunction = this.createSignerFunction();
 
     this.distribution = this.createDistribution();
 
@@ -177,16 +174,6 @@ export class AppStack extends cdk.Stack {
     return functionUrl;
   }
 
-  private createSignerFunction() {
-    return new cloudfront.experimental.EdgeFunction(this, "SignerFunction", {
-      runtime: lambda.Runtime.NODEJS_22_X,
-      handler: "index.handler",
-      code: lambda.Code.fromAsset("../functions/signer"),
-      memorySize: 128,
-      timeout: cdk.Duration.seconds(5),
-    });
-  }
-
   private createDistribution() {
     // Lambda Function URL用のOAC作成
     const lambdaOac = new cloudfront.FunctionUrlOriginAccessControl(
@@ -256,12 +243,6 @@ export class AppStack extends cdk.Stack {
           originRequestPolicy:
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-          edgeLambdas: [
-            {
-              functionVersion: this.signerFunction.currentVersion,
-              eventType: cloudfront.LambdaEdgeEventType.ORIGIN_REQUEST,
-            },
-          ],
         },
         "/static/articles/*": {
           origin: articleOrigin,

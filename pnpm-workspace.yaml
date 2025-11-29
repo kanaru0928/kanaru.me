@@ -1,8 +1,12 @@
 packages:
-  - "web"
-  - "infrastructure"
-  - "api"
-  - "functions/*"
-  - "cms-cli"
+  - web
+  - infrastructure
+  - api
+  - functions/*
+  - cms-cli
+
+ignoredBuiltDependencies:
+  - aws-sdk
+
 onlyBuiltDependencies:
   - esbuild
