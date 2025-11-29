@@ -135,7 +135,7 @@ export class AppStack extends cdk.Stack {
       environment: {
         DYNAMODB_TABLE_NAME: this.articleTable.tableName,
         S3_BUCKET_NAME: this.articleBucket.bucketName,
-        SECRET_NAME_PREFIX: `kanaru.me-v2/${this.environmentName}/`,
+        SECRET_NAME_PREFIX: `/kanaru.me-v2/${this.environmentName}/`,
         SSM_PARAMETER_STORE_TTL: "300",
       },
       initialPolicy: [
