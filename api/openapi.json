@@ -8,15 +8,16 @@
   "components": {
     "securitySchemes": {
       "InitialBearer": {
-        "type": "http",
-        "scheme": "bearer",
+        "type": "apiKey",
+        "in": "header",
+        "name": "KCMS-Init-Authorization",
         "description": "初期Bearer トークンによる認証（/verify エンドポイント用）"
       },
       "Bearer": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "description": "JWT トークンによる認証"
+        "type": "apiKey",
+        "in": "header",
+        "name": "KCMS-Authorization",
+        "description": "JWT トークンによる認証（記事管理エンドポイント用）"
       }
     },
     "schemas": {
@@ -386,6 +387,16 @@
             "Bearer": []
           }
         ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "x-amz-content-sha256",
+            "in": "header"
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -510,6 +521,14 @@
             "required": true,
             "name": "slug",
             "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "x-amz-content-sha256",
+            "in": "header"
           }
         ],
         "requestBody": {
@@ -584,6 +603,14 @@
             "required": true,
             "name": "slug",
             "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "x-amz-content-sha256",
+            "in": "header"
           }
         ],
         "responses": {
@@ -651,6 +678,14 @@
             "required": true,
             "name": "slug",
             "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "x-amz-content-sha256",
+            "in": "header"
           }
         ],
         "requestBody": {

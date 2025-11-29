@@ -20,8 +20,10 @@
 	"dependencies": {
 		"@aws-sdk/client-lambda": "^3.922.0",
 		"@aws-sdk/client-s3": "^3.929.0",
+		"@aws-sdk/client-ssm": "^3.940.0",
 		"@aws-sdk/credential-providers": "^3.929.0",
 		"commander": "^14.0.2",
+		"dotenv": "^17.2.3",
 		"gray-matter": "^4.0.3",
 		"openapi-fetch": "^0.15.0"
 	},
