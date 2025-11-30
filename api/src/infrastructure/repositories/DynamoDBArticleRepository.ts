@@ -79,6 +79,16 @@ export class DynamoDBArticleRepository implements IArticleRepository {
     return (result.Items || []) as Article[];
   }
 
+  async upsert(article: Article): Promise<Article> {
+    await this.docClient.send(
+      new PutCommand({
+        TableName: this.tableName,
+        Item: article,
+      }),
+    );
+    return article;
+  }
+
   async updateMetadata(
     slug: string,
     input: UpdateArticleMetadataInput,

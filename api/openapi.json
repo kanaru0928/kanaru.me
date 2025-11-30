@@ -90,51 +90,6 @@
           "error"
         ]
       },
-      "CreateArticle": {
-        "type": "object",
-        "properties": {
-          "slug": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 100
-          },
-          "title": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 200
-          },
-          "contentBody": {
-            "type": "string",
-            "minLength": 1
-          },
-          "author": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 100
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "published",
-              "unpublished"
-            ]
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": []
-          }
-        },
-        "required": [
-          "slug",
-          "title",
-          "contentBody",
-          "author",
-          "status"
-        ]
-      },
       "ArticleDetail": {
         "type": "object",
         "properties": {
@@ -197,13 +152,29 @@
           "contentBody"
         ]
       },
-      "UpdateArticleMetadata": {
+      "DeleteSuccess": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Article deleted successfully"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "UpsertArticle": {
         "type": "object",
         "properties": {
           "title": {
             "type": "string",
             "minLength": 1,
             "maxLength": 200
+          },
+          "contentBody": {
+            "type": "string",
+            "minLength": 1
           },
           "author": {
             "type": "string",
@@ -221,32 +192,15 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
-          }
-        }
-      },
-      "UpdateArticleContent": {
-        "type": "object",
-        "properties": {
-          "contentBody": {
-            "type": "string",
-            "minLength": 1
+            },
+            "default": []
           }
         },
         "required": [
-          "contentBody"
-        ]
-      },
-      "DeleteSuccess": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "Article deleted successfully"
-          }
-        },
-        "required": [
-          "message"
+          "title",
+          "contentBody",
+          "author",
+          "status"
         ]
       }
     },
@@ -375,79 +329,6 @@
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Articles"
-        ],
-        "summary": "記事を作成",
-        "description": "新しい記事を作成します（要認証）",
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "name": "x-amz-content-sha256",
-            "in": "header"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateArticle"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "記事の作成に成功",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArticleListItem"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "認証失敗",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "指定されたスラッグの記事が既に存在",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "サーバーエラー",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/api/articles/{slug}": {
@@ -501,88 +382,6 @@
           }
         }
       },
-      "patch": {
-        "tags": [
-          "Articles"
-        ],
-        "summary": "記事のメタデータを更新",
-        "description": "記事のタイトル、著者、ステータス、タグを更新します（要認証）",
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            },
-            "required": true,
-            "name": "slug",
-            "in": "path"
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "name": "x-amz-content-sha256",
-            "in": "header"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateArticleMetadata"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "メタデータの更新に成功",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArticleListItem"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "認証失敗",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "記事が見つからない",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "サーバーエラー",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
       "delete": {
         "tags": [
           "Articles"
@@ -603,14 +402,6 @@
             "required": true,
             "name": "slug",
             "in": "path"
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "name": "x-amz-content-sha256",
-            "in": "header"
           }
         ],
         "responses": {
@@ -655,15 +446,13 @@
             }
           }
         }
-      }
-    },
-    "/api/articles/{slug}/content": {
+      },
       "put": {
         "tags": [
           "Articles"
         ],
-        "summary": "記事のコンテンツを更新",
-        "description": "記事の本文（Markdown）を更新します（要認証）",
+        "summary": "記事を作成または更新",
+        "description": "記事が存在しない場合は新規作成、存在する場合は全体を更新します（要認証）",
         "security": [
           {
             "Bearer": []
@@ -678,28 +467,30 @@
             "required": true,
             "name": "slug",
             "in": "path"
-          },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": false,
-            "name": "x-amz-content-sha256",
-            "in": "header"
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateArticleContent"
+                "$ref": "#/components/schemas/UpsertArticle"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "コンテンツの更新に成功",
+            "description": "記事の更新に成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleListItem"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "記事の作成に成功",
             "content": {
               "application/json": {
                 "schema": {
@@ -710,16 +501,6 @@
           },
           "401": {
             "description": "認証失敗",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "記事が見つからない",
             "content": {
               "application/json": {
                 "schema": {

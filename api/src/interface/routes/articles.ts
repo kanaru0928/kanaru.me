@@ -1,12 +1,10 @@
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 // app.tsからEnvをインポート
 import type { Env } from "../../app";
-import type { CreateArticleUseCase } from "../../application/usecases/CreateArticleUseCase";
 import type { DeleteArticleUseCase } from "../../application/usecases/DeleteArticleUseCase";
 import type { GetArticleUseCase } from "../../application/usecases/GetArticleUseCase";
 import type { ListArticlesUseCase } from "../../application/usecases/ListArticlesUseCase";
-import type { UpdateArticleContentUseCase } from "../../application/usecases/UpdateArticleContentUseCase";
-import type { UpdateArticleMetadataUseCase } from "../../application/usecases/UpdateArticleMetadataUseCase";
+import type { UpsertArticleUseCase } from "../../application/usecases/UpsertArticleUseCase";
 import { DI_TOKENS } from "../../infrastructure/container/types";
 import { toArticleDetail, toArticleListItem } from "../dto/ArticleDTO";
 import {
@@ -20,11 +18,9 @@ import {
   ErrorSchema,
 } from "../schemas/articleSchemas";
 import {
-  createArticleSchema,
   listArticlesQuerySchema,
   slugParamSchema,
-  updateArticleContentSchema,
-  updateArticleMetadataSchema,
+  upsertArticleSchema,
 } from "../validators/articleValidator";
 
 export function createArticleRouter() {
@@ -90,71 +86,6 @@ export function createArticleRouter() {
     );
   });
 
-  // ルート定義: 記事作成
-  const createArticleRoute = createRoute({
-    method: "post",
-    path: "/",
-    tags: ["Articles"],
-    summary: "記事を作成",
-    description: "新しい記事を作成します（要認証）",
-    security: [{ Bearer: [] }],
-    request: {
-      body: {
-        content: {
-          "application/json": {
-            schema: createArticleSchema,
-          },
-        },
-      },
-    },
-    responses: {
-      201: {
-        content: {
-          "application/json": {
-            schema: ArticleListItemSchema,
-          },
-        },
-        description: "記事の作成に成功",
-      },
-      401: {
-        content: {
-          "application/json": {
-            schema: ErrorSchema,
-          },
-        },
-        description: "認証失敗",
-      },
-      409: {
-        content: {
-          "application/json": {
-            schema: ErrorSchema,
-          },
-        },
-        description: "指定されたスラッグの記事が既に存在",
-      },
-      500: {
-        content: {
-          "application/json": {
-            schema: ErrorSchema,
-          },
-        },
-        description: "サーバーエラー",
-      },
-    },
-  });
-
-  app.on(["POST"], "/", createAuthMiddleware());
-  app.openapi(createArticleRoute, async (c) => {
-    const container = c.get("container");
-    const createArticleUseCase = container.resolve<CreateArticleUseCase>(
-      DI_TOKENS.CreateArticleUseCase,
-    );
-
-    const input = c.req.valid("json");
-    const article = await createArticleUseCase.execute(input);
-    return c.json(toArticleListItem(article), 201);
-  });
-
   // ルート定義: 記事詳細取得
   const getArticleRoute = createRoute({
     method: "get",
@@ -207,146 +138,6 @@ export function createArticleRouter() {
     }
 
     return c.json(toArticleDetail(article), 200);
-  });
-
-  // ルート定義: メタデータ更新
-  const updateArticleMetadataRoute = createRoute({
-    method: "patch",
-    path: "/{slug}",
-    tags: ["Articles"],
-    summary: "記事のメタデータを更新",
-    description: "記事のタイトル、著者、ステータス、タグを更新します（要認証）",
-    security: [{ Bearer: [] }],
-    request: {
-      params: slugParamSchema,
-      body: {
-        content: {
-          "application/json": {
-            schema: updateArticleMetadataSchema,
-          },
-        },
-      },
-    },
-    responses: {
-      200: {
-        content: {
-          "application/json": {
-            schema: ArticleListItemSchema,
-          },
-        },
-        description: "メタデータの更新に成功",
-      },
-      401: {
-        content: {
-          "application/json": {
-            schema: ErrorSchema,
-          },
-        },
-        description: "認証失敗",
-      },
-      404: {
-        content: {
-          "application/json": {
-            schema: ErrorSchema,
-          },
-        },
-        description: "記事が見つからない",
-      },
-      500: {
-        content: {
-          "application/json": {
-            schema: ErrorSchema,
-          },
-        },
-        description: "サーバーエラー",
-      },
-    },
-  });
-
-  app.on(["PATCH"], "/:slug", createAuthMiddleware());
-  app.openapi(updateArticleMetadataRoute, async (c) => {
-    const container = c.get("container");
-    const updateArticleMetadataUseCase =
-      container.resolve<UpdateArticleMetadataUseCase>(
-        DI_TOKENS.UpdateArticleMetadataUseCase,
-      );
-
-    const { slug } = c.req.valid("param");
-    const input = c.req.valid("json");
-
-    const article = await updateArticleMetadataUseCase.execute(slug, input);
-
-    return c.json(toArticleListItem(article), 200);
-  });
-
-  // ルート定義: コンテンツ更新
-  const updateArticleContentRoute = createRoute({
-    method: "put",
-    path: "/{slug}/content",
-    tags: ["Articles"],
-    summary: "記事のコンテンツを更新",
-    description: "記事の本文（Markdown）を更新します（要認証）",
-    security: [{ Bearer: [] }],
-    request: {
-      params: slugParamSchema,
-      body: {
-        content: {
-          "application/json": {
-            schema: updateArticleContentSchema,
-          },
-        },
-      },
-    },
-    responses: {
-      200: {
-        content: {
-          "application/json": {
-            schema: ArticleListItemSchema,
-          },
-        },
-        description: "コンテンツの更新に成功",
-      },
-      401: {
-        content: {
-          "application/json": {
-            schema: ErrorSchema,
-          },
-        },
-        description: "認証失敗",
-      },
-      404: {
-        content: {
-          "application/json": {
-            schema: ErrorSchema,
-          },
-        },
-        description: "記事が見つからない",
-      },
-      500: {
-        content: {
-          "application/json": {
-            schema: ErrorSchema,
-          },
-        },
-        description: "サーバーエラー",
-      },
-    },
-  });
-
-  app.on(["PUT"], "/:slug/content", createAuthMiddleware());
-  app.openapi(updateArticleContentRoute, async (c) => {
-    const container = c.get("container");
-    const updateArticleContentUseCase =
-      container.resolve<UpdateArticleContentUseCase>(
-        DI_TOKENS.UpdateArticleContentUseCase,
-      );
-
-    const { slug } = c.req.valid("param");
-    const input = c.req.valid("json");
-
-    const article = await updateArticleContentUseCase.execute(slug, input);
-
-    return c.json(toArticleListItem(article), 200);
   });
 
   // ルート定義: 記事削除
@@ -407,6 +198,76 @@ export function createArticleRouter() {
     await deleteArticleUseCase.execute(slug);
 
     return c.json({ message: "Article deleted successfully" }, 200);
+  });
+
+  // ルート定義: 記事のupsert
+  const upsertArticleRoute = createRoute({
+    method: "put",
+    path: "/{slug}",
+    tags: ["Articles"],
+    summary: "記事を作成または更新",
+    description:
+      "記事が存在しない場合は新規作成、存在する場合は全体を更新します（要認証）",
+    security: [{ Bearer: [] }],
+    request: {
+      params: slugParamSchema,
+      body: {
+        content: {
+          "application/json": {
+            schema: upsertArticleSchema,
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            schema: ArticleListItemSchema,
+          },
+        },
+        description: "記事の更新に成功",
+      },
+      201: {
+        content: {
+          "application/json": {
+            schema: ArticleListItemSchema,
+          },
+        },
+        description: "記事の作成に成功",
+      },
+      401: {
+        content: {
+          "application/json": {
+            schema: ErrorSchema,
+          },
+        },
+        description: "認証失敗",
+      },
+      500: {
+        content: {
+          "application/json": {
+            schema: ErrorSchema,
+          },
+        },
+        description: "サーバーエラー",
+      },
+    },
+  });
+
+  app.on(["PUT"], "/:slug", createAuthMiddleware());
+  app.openapi(upsertArticleRoute, async (c) => {
+    const container = c.get("container");
+    const upsertArticleUseCase = container.resolve<UpsertArticleUseCase>(
+      DI_TOKENS.UpsertArticleUseCase,
+    );
+
+    const { slug } = c.req.valid("param");
+    const input = c.req.valid("json");
+
+    const { article, isNew } = await upsertArticleUseCase.execute(slug, input);
+
+    return c.json(toArticleListItem(article), isNew ? 201 : 200);
   });
 
   return app;

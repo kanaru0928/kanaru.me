@@ -32,6 +32,14 @@ export interface UpdateArticleContentInput {
   contentBody: string;
 }
 
+export interface UpsertArticleInput {
+  title: string;
+  contentBody: string;
+  author: string;
+  status: "published" | "unpublished";
+  tags: string[];
+}
+
 /**
  * 記事のバリデーション制約
  */

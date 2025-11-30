@@ -8,6 +8,7 @@ export interface IArticleRepository {
   create(article: Article): Promise<void>;
   findBySlug(slug: string): Promise<Article | null>;
   findAll(options?: FindAllOptions): Promise<Article[]>;
+  upsert(article: Article): Promise<Article>;
   updateMetadata(
     slug: string,
     input: UpdateArticleMetadataInput,
