@@ -1,11 +1,13 @@
-import { evaluate } from "@mdx-js/mdx";
-import * as runtime from "react/jsx-runtime";
-import { useLoaderData } from "react-router";
-import { apiClient } from "~/lib/apiClient";
-import type { Route } from "./+types/articles.$slug";
+"use client";
+
+import { compile, run } from "@mdx-js/mdx";
 import rehypeShiki from "@shikijs/rehype";
+import { Fragment, useEffect, useState } from "react";
+import * as runtime from "react/jsx-runtime";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
+import { apiClient } from "~/lib/apiClient";
+import type { Route } from "./+types/articles.$slug";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const { slug } = params;
@@ -18,18 +20,43 @@ export async function loader({ params }: Route.LoaderArgs) {
     throw new Response("Article not found", { status: 404 });
   }
 
-  return { article };
+  const code = String(
+    await compile(article.contentBody, {
+      remarkPlugins: [remarkFrontmatter, remarkGfm],
+      rehypePlugins: [[rehypeShiki, { theme: "catppuccin-mocha" }]],
+      outputFormat: "function-body",
+    })
+  );
+
+  return { article, code };
 }
 
-export default async function ArticlesSlugRoute() {
-  const { article } = useLoaderData<typeof loader>();
+export function meta({ loaderData }: Route.MetaArgs) {
+  const { article } = loaderData;
+  return [
+    { title: article.title },
+    {
+      name: "description",
+      content: article.contentBody.slice(0, 150).replace(/\n/g, " "),
+    },
+  ]
+}
 
-  const { default: MDXContent } = await evaluate(article.contentBody, {
-    ...runtime,
-    development: false,
-    rehypePlugins: [[rehypeShiki, { theme: "catppuccin-mocha" }]],
-    remarkPlugins: [remarkFrontmatter, remarkGfm],
-  });
+export default function ArticlesSlugRoute({
+  loaderData,
+}: Route.ComponentProps) {
+  const { code } = loaderData;
 
-  return <MDXContent />;
+  const [mdxModule, setMdxModule] = useState<Awaited<
+    ReturnType<typeof run>
+  > | null>(null);
+  const Content = mdxModule ? mdxModule.default : Fragment;
+
+  useEffect(() => {
+    (async () => {
+      setMdxModule(await run(code, { ...runtime, baseUrl: import.meta.url }));
+    })();
+  }, [code]);
+
+  return <Content />;
 }
