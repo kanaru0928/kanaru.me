@@ -1,4 +1,4 @@
-import { Briefcase, History, PanelsTopLeft, User, Wrench } from "lucide-react";
+import { Briefcase, History, Newspaper, PanelsTopLeft, User, Wrench } from "lucide-react";
 import { type ReactNode, useId } from "react";
 import { Link, NavLink } from "react-router";
 import { cn } from "~/lib/utils";
@@ -49,31 +49,74 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
               <summary>Portfolio</summary>
               <ul>
                 <li>
-                  <NavLink to="/portfolio/about">
+                  <NavLink
+                    to="/portfolio/about"
+                    className={({ isActive, isPending }) =>
+                      cn(
+                        isActive && "bg-base-300",
+                        isPending && "animate-pulse"
+                      )
+                    }
+                  >
                     <User className="h-4 w-4" />
                     About
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/portfolio/works">
+                  <NavLink
+                    to="/portfolio/works"
+                    className={({ isActive, isPending }) =>
+                      cn(
+                        isActive && "bg-base-300",
+                        isPending && "animate-pulse"
+                      )
+                    }
+                  >
                     <Briefcase className="h-4 w-4" />
                     Works
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/portfolio/history">
+                  <NavLink
+                    to="/portfolio/history"
+                    className={({ isActive, isPending }) =>
+                      cn(
+                        isActive && "bg-base-300",
+                        isPending && "animate-pulse"
+                      )
+                    }
+                  >
                     <History className="h-4 w-4" />
                     History
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/portfolio/skills">
+                  <NavLink
+                    to="/portfolio/skills"
+                    className={({ isActive, isPending }) =>
+                      cn(
+                        isActive && "bg-base-300",
+                        isPending && "animate-pulse"
+                      )
+                    }
+                  >
                     <Wrench className="h-4 w-4" />
                     Skills
                   </NavLink>
                 </li>
               </ul>
             </details>
+          </li>
+          <li>
+            <NavLink
+              to="/articles"
+              className={({ isActive, isPending }) =>
+                cn(isActive && "bg-base-300", isPending && "animate-pulse")
+              }
+            >
+              <Newspaper className="h-4 w-4" />
+              Articles
+            </NavLink>
           </li>
         </ul>
       </div>
