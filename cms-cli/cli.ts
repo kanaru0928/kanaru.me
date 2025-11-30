@@ -5,7 +5,11 @@ import { syncCommand } from "./src/commands/sync.js";
 import { createAuthManager } from "./src/lib/api/auth.js";
 import { createApiClient } from "./src/lib/api/client.js";
 import { getEnvConfig } from "./src/lib/utils/env.js";
+import { loadEnvFiles } from "./src/lib/utils/load-env.js";
 import { logger } from "./src/lib/utils/logger.js";
+
+// 環境変数を読み込む（コマンドパース前に実行）
+loadEnvFiles();
 
 const program = new Command();
 
@@ -16,7 +20,8 @@ program
 	)
 	.version("1.0.0")
 	.option("--profile <name>", "AWS プロファイル名")
-	.option("--function <name>", "Lambda 関数名");
+	.option("--function <name>", "Lambda 関数名")
+	.option("--env <name>", "環境名 (デフォルト: prod)");
 
 // listコマンド
 program
@@ -26,9 +31,10 @@ program
 	.action(async (options) => {
 		try {
 			const globalOpts = program.opts();
-			const envConfig = getEnvConfig({
+			const envConfig = await getEnvConfig({
 				profile: globalOpts.profile,
 				functionName: globalOpts.function,
+				env: globalOpts.env,
 			});
 
 			const authManager = createAuthManager({
@@ -63,9 +69,10 @@ program
 	.action(async (file, options) => {
 		try {
 			const globalOpts = program.opts();
-			const envConfig = getEnvConfig({
+			const envConfig = await getEnvConfig({
 				profile: globalOpts.profile,
 				functionName: globalOpts.function,
+				env: globalOpts.env,
 			});
 
 			const authManager = createAuthManager({
@@ -99,9 +106,10 @@ program
 	.action(async (directory) => {
 		try {
 			const globalOpts = program.opts();
-			const envConfig = getEnvConfig({
+			const envConfig = await getEnvConfig({
 				profile: globalOpts.profile,
 				functionName: globalOpts.function,
+				env: globalOpts.env,
 			});
 
 			const authManager = createAuthManager({

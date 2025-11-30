@@ -14,14 +14,19 @@ export default {
 		// AWS SDK
 		"@aws-sdk/client-lambda",
 		"@aws-sdk/client-s3",
+		"@aws-sdk/client-ssm",
+		"@aws-sdk/credential-providers",
 		// 他の外部依存関係
 		"commander",
 		"gray-matter",
 		"openapi-fetch",
+		"dotenv",
 		// Node.js組み込みモジュール
 		"node:fs/promises",
+		"node:fs",
 		"node:path",
 		"node:crypto",
+		"node:url",
 	],
 	plugins: [
 		resolve({

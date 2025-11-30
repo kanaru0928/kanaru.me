@@ -33,7 +33,7 @@ export async function invokeVerify(
 		httpMethod: "POST",
 		path: "/api/verify",
 		headers: {
-			Authorization: `Bearer ${initialToken}`,
+			"KCMS-Init-Authorization": `Bearer ${initialToken}`,
 		},
 		body: null,
 	};
