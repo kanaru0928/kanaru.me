@@ -31,7 +31,7 @@ export class S3ArticleStorage implements IArticleStorage {
     const hash = createHash("sha256")
       .update(content, "utf-8")
       .digest("base64url");
-    return `static/articles/${hash}.mdx`;
+    return `${hash}.mdx`;
   }
 
   /**

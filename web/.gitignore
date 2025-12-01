@@ -12,3 +12,4 @@
 # Articles
 /app/articles/**/*.md
 /app/articles/**/*.mdx
+/app/articles/images/*

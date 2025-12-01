@@ -16,15 +16,15 @@ const __dirname = dirname(__filename);
  * 4. シェル環境変数
  */
 export function loadEnvFiles(): void {
-  // カレントディレクトリ（CLIを実行した場所）
-  const currentDir = process.cwd();
+	// カレントディレクトリ（CLIを実行した場所）
+	const currentDir = process.cwd();
 
-  // カレントディレクトリの .env
-  const currentEnvPath = resolve(currentDir, ".env");
+	// カレントディレクトリの .env
+	const currentEnvPath = resolve(currentDir, ".env");
 
-  // 2. カレントディレクトリの .env を読み込む（最優先）
-  // cms-cliディレクトリと同じ場合はスキップ
-  if (existsSync(currentEnvPath)) {
-    dotenv.config({ path: currentEnvPath, override: true });
-  }
+	// 2. カレントディレクトリの .env を読み込む（最優先）
+	// cms-cliディレクトリと同じ場合はスキップ
+	if (existsSync(currentEnvPath)) {
+		dotenv.config({ path: currentEnvPath, override: true });
+	}
 }
