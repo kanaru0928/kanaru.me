@@ -85,7 +85,7 @@ export class AppStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_22_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("../web", {
-        exclude: ["node_modules", "app", "layer", "server"],
+        exclude: ["node_modules", "app", "layer"],
       }),
       layers: [this.lambdaLayerVersion],
       timeout: cdk.Duration.minutes(3),
