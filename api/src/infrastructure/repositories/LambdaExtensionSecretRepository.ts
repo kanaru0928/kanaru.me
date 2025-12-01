@@ -24,7 +24,7 @@ export class LambdaExtensionSecretRepository implements ISecretRepository {
       const url = `${
         this.extensionEndpoint
       }/systemsmanager/parameters/get?name=${encodeURIComponent(
-        fullSecretName
+        fullSecretName,
       )}&withDecryption=true`;
 
       const response = await fetch(url, {
@@ -53,7 +53,7 @@ export class LambdaExtensionSecretRepository implements ISecretRepository {
       }
 
       console.error(
-        `Failed to get secret value for "${fullSecretName}": HTTP ${response.status}`
+        `Failed to get secret value for "${fullSecretName}": HTTP ${response.status}`,
       );
       return null;
     } catch (error) {
@@ -62,7 +62,10 @@ export class LambdaExtensionSecretRepository implements ISecretRepository {
       if (error instanceof Error && error.name === "AbortError") {
         console.error(`Request timeout for "${fullSecretName}"`);
       } else {
-        console.error(`Failed to get secret value for "${fullSecretName}":`, error);
+        console.error(
+          `Failed to get secret value for "${fullSecretName}":`,
+          error,
+        );
       }
 
       return null;

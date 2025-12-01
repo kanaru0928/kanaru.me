@@ -9,7 +9,9 @@ export class EnvironmentVariableSecretRepository implements ISecretRepository {
   async getSecretValue(secretName: string): Promise<string | null> {
     const envVarName = secretNameEnvVarMap[secretName];
     if (!envVarName) {
-      console.error(`No environment variable mapping found for secret "${secretName}"`);
+      console.error(
+        `No environment variable mapping found for secret "${secretName}"`,
+      );
       return null;
     }
 

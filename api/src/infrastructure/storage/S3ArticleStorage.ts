@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import {
   DeleteObjectCommand,
   PutObjectCommand,
-  S3Client
+  S3Client,
 } from "@aws-sdk/client-s3";
 import type { IArticleStorage } from "../../domain/repositories/IArticleStorage";
 
@@ -16,7 +16,7 @@ export class S3ArticleStorage implements IArticleStorage {
     bucketName: string,
     originUrl: string,
     keyPrefix: string,
-    region = "ap-northeast-1"
+    region = "ap-northeast-1",
   ) {
     this.client = new S3Client({ region });
     this.bucketName = bucketName;
@@ -46,7 +46,7 @@ export class S3ArticleStorage implements IArticleStorage {
         Key: `${this.keyPrefix}${key}`,
         Body: content,
         ContentType: "text/markdown; charset=utf-8",
-      })
+      }),
     );
 
     return key;
@@ -65,7 +65,7 @@ export class S3ArticleStorage implements IArticleStorage {
 
       if (!response.ok) {
         throw new Error(
-          `Failed to fetch content from S3: ${response.statusText}`
+          `Failed to fetch content from S3: ${response.statusText}`,
         );
       }
 
@@ -90,7 +90,7 @@ export class S3ArticleStorage implements IArticleStorage {
       new DeleteObjectCommand({
         Bucket: this.bucketName,
         Key: `${this.keyPrefix}${key}`,
-      })
+      }),
     );
   }
 }

@@ -14,6 +14,8 @@ describe("Authentication API", () => {
 		JWT_SECRET: "test-secret-key",
 		JWT_EXPIRES_IN: 86400,
 		INITIAL_BEARER_TOKEN: "test-initial-token",
+    S3_ORIGIN_URL: "https://test-bucket.s3.amazonaws.com",
+    S3_KEY_PREFIX: "test-prefix/",
 	};
 
 	beforeEach(() => {

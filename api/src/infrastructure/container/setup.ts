@@ -18,6 +18,8 @@ export function setupContainer(
   bucketName: string,
   region: string,
   secretRepository: ISecretRepository,
+  originUrl: string,
+  keyPrefix: string,
 ): DIContainer {
   const container = new DIContainer();
 
@@ -34,7 +36,7 @@ export function setupContainer(
   );
   container.registerSingleton(
     DI_TOKENS.ArticleStorage,
-    () => new S3ArticleStorage(bucketName, region),
+    () => new S3ArticleStorage(bucketName, originUrl, keyPrefix, region),
   );
 
   // Application層の登録

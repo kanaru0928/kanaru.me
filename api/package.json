@@ -10,7 +10,11 @@
     "test:ui": "vitest --ui",
     "type-check": "pnpm tsc --noEmit",
     "dev": "tsx watch --env-file=.env src/dev-server.ts",
-    "generate-openapi": "tsx src/openapi.ts"
+    "generate-openapi": "tsx src/openapi.ts",
+    "ci": "biome ci",
+    "lint": "biome lint",
+    "format": "biome format",
+    "check": "biome check"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.7",

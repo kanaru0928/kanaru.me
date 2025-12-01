@@ -50,13 +50,13 @@ export function createAuthRouter() {
     if (!authHeader) {
       return c.json(
         { error: "KCMS-Init-Authorization header is required" },
-        401
+        401,
       );
     }
     if (!authHeader.startsWith("Bearer ")) {
       return c.json(
         { error: "Invalid authorization format. Expected 'Bearer <token>'" },
-        401
+        401,
       );
     }
 
@@ -81,7 +81,7 @@ export function createAuthRouter() {
       {
         token: jwt,
       },
-      200
+      200,
     );
   });
 

@@ -67,6 +67,8 @@ app.use("*", async (c, next) => {
     validatedEnv.S3_BUCKET_NAME,
     validatedEnv.AWS_REGION,
     secretRepositoryInstance,
+    validatedEnv.S3_ORIGIN_URL,
+    validatedEnv.S3_KEY_PREFIX,
   );
 
   // コンテキストに注入
