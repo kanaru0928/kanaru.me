@@ -11,7 +11,6 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as customResource from "aws-cdk-lib/custom-resources";
 
 type Props = cdk.StackProps & {
-  layerBucketArn: string;
   certificateArn: string;
   domainName?: string;
   githubToken: string;
@@ -19,7 +18,6 @@ type Props = cdk.StackProps & {
 };
 
 export class AppStack extends cdk.Stack {
-  private readonly layerBucketArn: string;
   private readonly certificateArn: string;
   private readonly domainName?: string;
   private readonly githubToken: string;
@@ -42,7 +40,6 @@ export class AppStack extends cdk.Stack {
     if (!props) {
       throw new Error("Props must be provided");
     }
-    this.layerBucketArn = props.layerBucketArn;
     this.certificateArn = props.certificateArn;
     this.domainName = props.domainName === "" ? undefined : props.domainName;
     this.githubToken = props.githubToken;
