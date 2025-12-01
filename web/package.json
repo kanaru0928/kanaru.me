@@ -8,7 +8,8 @@
     "start": "node server.js",
     "typecheck": "react-router typegen && tsc",
     "ci": "biome ci",
-    "generate-types": "openapi-typescript ../api/openapi.json -o ./app/lib/api.d.ts"
+    "generate-types": "openapi-typescript ../api/openapi.json -o ./app/lib/api.d.ts",
+    "check": "biome check"
   },
   "dependencies": {
     "@catppuccin/highlightjs": "^1.0.1",

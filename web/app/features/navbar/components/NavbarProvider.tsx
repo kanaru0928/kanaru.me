@@ -1,4 +1,11 @@
-import { Briefcase, History, Newspaper, PanelsTopLeft, User, Wrench } from "lucide-react";
+import {
+  Briefcase,
+  History,
+  Newspaper,
+  PanelsTopLeft,
+  User,
+  Wrench,
+} from "lucide-react";
 import { type ReactNode, useId } from "react";
 import { Link, NavLink } from "react-router";
 import { cn } from "~/lib/utils";
@@ -54,7 +61,7 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
                     className={({ isActive, isPending }) =>
                       cn(
                         isActive && "bg-base-300",
-                        isPending && "animate-pulse"
+                        isPending && "animate-pulse",
                       )
                     }
                   >
@@ -68,7 +75,7 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
                     className={({ isActive, isPending }) =>
                       cn(
                         isActive && "bg-base-300",
-                        isPending && "animate-pulse"
+                        isPending && "animate-pulse",
                       )
                     }
                   >
@@ -82,7 +89,7 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
                     className={({ isActive, isPending }) =>
                       cn(
                         isActive && "bg-base-300",
-                        isPending && "animate-pulse"
+                        isPending && "animate-pulse",
                       )
                     }
                   >
@@ -96,7 +103,7 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
                     className={({ isActive, isPending }) =>
                       cn(
                         isActive && "bg-base-300",
-                        isPending && "animate-pulse"
+                        isPending && "animate-pulse",
                       )
                     }
                   >

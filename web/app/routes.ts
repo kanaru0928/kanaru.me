@@ -16,7 +16,9 @@ const articleRoutes =
       ).map(
         (file): RouteConfigEntry =>
           route(
-            file.replace("./articles", "/articles").replace(/\.(md|mdx)$/, "/edit"),
+            file
+              .replace("./articles", "/articles")
+              .replace(/\.(md|mdx)$/, "/edit"),
             file,
           ),
       )

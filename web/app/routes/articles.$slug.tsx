@@ -25,7 +25,7 @@ export async function loader({ params }: Route.LoaderArgs) {
       remarkPlugins: [remarkFrontmatter, remarkGfm],
       rehypePlugins: [[rehypeShiki, { theme: "catppuccin-mocha" }]],
       outputFormat: "function-body",
-    })
+    }),
   );
 
   return { article, code };
@@ -39,7 +39,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
       name: "description",
       content: article.contentBody.slice(0, 150).replace(/\n/g, " "),
     },
-  ]
+  ];
 }
 
 export default function ArticlesSlugRoute({

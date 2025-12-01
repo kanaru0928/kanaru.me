@@ -10,8 +10,8 @@
 
 @theme {
   --font-sans:
-    "avenir-next-lt-pro", "m-plus-2c", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    "avenir-next-lt-pro", "m-plus-2c", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 html,
