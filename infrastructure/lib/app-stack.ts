@@ -65,6 +65,7 @@ export class AppStack extends cdk.Stack {
     this.createWarmerEventBridge();
     this.grantOACAccess();
     this.updateApiFunctionEnv();
+    this.updateWebFunctionEnv();
   }
 
   private createAssetBucket() {
@@ -92,9 +93,6 @@ export class AppStack extends cdk.Stack {
       layers: [this.lambdaLayerVersion],
       timeout: cdk.Duration.minutes(3),
       memorySize: 1024,
-      environment: {
-        GITHUB_TOKEN: this.githubToken,
-      },
       architecture: lambda.Architecture.ARM_64,
     });
 
@@ -310,25 +308,6 @@ export class AppStack extends cdk.Stack {
       this,
       "UpdateApiFunctionEnvCR",
       {
-        onCreate: {
-          service: "Lambda",
-          action: "updateFunctionConfiguration",
-          parameters: {
-            FunctionName: this.apiFunction.functionName,
-            Environment: {
-              Variables: {
-                DYNAMODB_TABLE_NAME: this.articleTable.tableName,
-                S3_BUCKET_NAME: this.articleBucket.bucketName,
-                SECRET_NAME_PREFIX: `/kanaru.me-v2/${this.environmentName}/`,
-                SSM_PARAMETER_STORE_TTL: "300",
-                ALLOWED_ORIGINS: allowedOrigins.join(","),
-              },
-            },
-          },
-          physicalResourceId: customResource.PhysicalResourceId.of(
-            `${this.apiFunction.functionName}-env-update`
-          ),
-        },
         onUpdate: {
           service: "Lambda",
           action: "updateFunctionConfiguration",
@@ -360,5 +339,38 @@ export class AppStack extends cdk.Stack {
     apiCutomResource.node.addDependency(this.articleBucket);
     apiCutomResource.node.addDependency(this.apiFunction);
     apiCutomResource.node.addDependency(this.distribution);
+  }
+
+  private updateWebFunctionEnv() {
+    const domainName =
+      this.domainName || this.distribution.distributionDomainName;
+    const webCutomResource = new customResource.AwsCustomResource(
+      this,
+      "UpdateWebFunctionEnvCR",
+      {
+        onUpdate: {
+          service: "Lambda",
+          action: "updateFunctionConfiguration",
+          parameters: {
+            FunctionName: this.webFunction.functionName,
+            Environment: {
+              Variables: {
+                GITHUB_TOKEN: this.githubToken,
+                API_BASE_URL: `https://${domainName}/`,
+              },
+            },
+          },
+          physicalResourceId: customResource.PhysicalResourceId.of(
+            `${this.webFunction.functionName}-env-update`
+          ),
+        },
+        policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
+          resources: [this.webFunction.functionArn],
+        }),
+      }
+    );
+
+    webCutomResource.node.addDependency(this.webFunction);
+    webCutomResource.node.addDependency(this.distribution);
   }
 }
