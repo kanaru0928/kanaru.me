@@ -4,370 +4,370 @@
  */
 
 export interface paths {
-    "/api/verify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * JWT トークンを発行
-         * @description 初期Bearer トークンを検証し、成功時にJWT トークンを発行します
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description JWT トークンの発行に成功 */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /**
-                             * @description JWT トークン
-                             * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                             */
-                            token: string;
-                        };
-                    };
-                };
-                /** @description 認証失敗 */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /**
-                             * @description エラーメッセージ
-                             * @example Unauthorized
-                             */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/articles": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 記事一覧を取得
-         * @description 記事の一覧を取得します。認証されていない場合は公開済み記事のみ返却されます。
-         */
-        get: {
-            parameters: {
-                query?: {
-                    tag?: string;
-                    sortBy?: "createdAt" | "updatedAt";
-                    order?: "asc" | "desc";
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description 記事一覧の取得に成功 */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ArticleListItem"][];
-                    };
-                };
-                /** @description サーバーエラー */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/articles/{slug}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 記事詳細を取得
-         * @description 指定されたスラッグの記事詳細を取得します
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    slug: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description 記事詳細の取得に成功 */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ArticleDetail"];
-                    };
-                };
-                /** @description 記事が見つからない */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-                /** @description サーバーエラー */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        /**
-         * 記事を作成または更新
-         * @description 記事が存在しない場合は新規作成、存在する場合は全体を更新します（要認証）
-         */
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    slug: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": components["schemas"]["UpsertArticle"];
-                };
-            };
-            responses: {
-                /** @description 記事の更新に成功 */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ArticleListItem"];
-                    };
-                };
-                /** @description 記事の作成に成功 */
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ArticleListItem"];
-                    };
-                };
-                /** @description 認証失敗 */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-                /** @description サーバーエラー */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        post?: never;
-        /**
-         * 記事を削除
-         * @description 指定されたスラッグの記事を削除します（要認証）
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    slug: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description 記事の削除に成功 */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["DeleteSuccess"];
-                    };
-                };
-                /** @description 認証失敗 */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-                /** @description 記事が見つからない */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-                /** @description サーバーエラー */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+	"/api/verify": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * JWT トークンを発行
+		 * @description 初期Bearer トークンを検証し、成功時にJWT トークンを発行します
+		 */
+		post: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description JWT トークンの発行に成功 */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							/**
+							 * @description JWT トークン
+							 * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+							 */
+							token: string;
+						};
+					};
+				};
+				/** @description 認証失敗 */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": {
+							/**
+							 * @description エラーメッセージ
+							 * @example Unauthorized
+							 */
+							error: string;
+						};
+					};
+				};
+			};
+		};
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/articles": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * 記事一覧を取得
+		 * @description 記事の一覧を取得します。認証されていない場合は公開済み記事のみ返却されます。
+		 */
+		get: {
+			parameters: {
+				query?: {
+					tag?: string;
+					sortBy?: "createdAt" | "updatedAt";
+					order?: "asc" | "desc";
+				};
+				header?: never;
+				path?: never;
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description 記事一覧の取得に成功 */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["ArticleListItem"][];
+					};
+				};
+				/** @description サーバーエラー */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["Error"];
+					};
+				};
+			};
+		};
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	"/api/articles/{slug}": {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * 記事詳細を取得
+		 * @description 指定されたスラッグの記事詳細を取得します
+		 */
+		get: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					slug: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description 記事詳細の取得に成功 */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["ArticleDetail"];
+					};
+				};
+				/** @description 記事が見つからない */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["Error"];
+					};
+				};
+				/** @description サーバーエラー */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["Error"];
+					};
+				};
+			};
+		};
+		/**
+		 * 記事を作成または更新
+		 * @description 記事が存在しない場合は新規作成、存在する場合は全体を更新します（要認証）
+		 */
+		put: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					slug: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: {
+				content: {
+					"application/json": components["schemas"]["UpsertArticle"];
+				};
+			};
+			responses: {
+				/** @description 記事の更新に成功 */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["ArticleListItem"];
+					};
+				};
+				/** @description 記事の作成に成功 */
+				201: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["ArticleListItem"];
+					};
+				};
+				/** @description 認証失敗 */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["Error"];
+					};
+				};
+				/** @description サーバーエラー */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["Error"];
+					};
+				};
+			};
+		};
+		post?: never;
+		/**
+		 * 記事を削除
+		 * @description 指定されたスラッグの記事を削除します（要認証）
+		 */
+		delete: {
+			parameters: {
+				query?: never;
+				header?: never;
+				path: {
+					slug: string;
+				};
+				cookie?: never;
+			};
+			requestBody?: never;
+			responses: {
+				/** @description 記事の削除に成功 */
+				200: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["DeleteSuccess"];
+					};
+				};
+				/** @description 認証失敗 */
+				401: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["Error"];
+					};
+				};
+				/** @description 記事が見つからない */
+				404: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["Error"];
+					};
+				};
+				/** @description サーバーエラー */
+				500: {
+					headers: {
+						[name: string]: unknown;
+					};
+					content: {
+						"application/json": components["schemas"]["Error"];
+					};
+				};
+			};
+		};
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        ArticleListItem: {
-            /** @example my-first-article */
-            slug: string;
-            /** @example 私の最初の記事 */
-            title: string;
-            /** @example 山田太郎 */
-            author: string;
-            /**
-             * @example published
-             * @enum {string}
-             */
-            status: "published" | "unpublished";
-            /** @example 42 */
-            pv: number;
-            /** @example 2025-01-01T00:00:00.000Z */
-            createdAt: string;
-            /** @example 2025-01-02T12:34:56.000Z */
-            updatedAt: string;
-            /**
-             * @example [
-             *       "TypeScript",
-             *       "Hono"
-             *     ]
-             */
-            tags: string[];
-        };
-        Error: {
-            /** @example Article not found */
-            error: string;
-        };
-        ArticleDetail: {
-            /** @example my-first-article */
-            slug: string;
-            /** @example 私の最初の記事 */
-            title: string;
-            /** @example 山田太郎 */
-            author: string;
-            /**
-             * @example published
-             * @enum {string}
-             */
-            status: "published" | "unpublished";
-            /** @example 42 */
-            pv: number;
-            /** @example 2025-01-01T00:00:00.000Z */
-            createdAt: string;
-            /** @example 2025-01-02T12:34:56.000Z */
-            updatedAt: string;
-            /**
-             * @example [
-             *       "TypeScript",
-             *       "Hono"
-             *     ]
-             */
-            tags: string[];
-            /**
-             * @example # はじめに
-             *
-             *     これは記事本文です。
-             */
-            contentBody: string;
-        };
-        DeleteSuccess: {
-            /** @example Article deleted successfully */
-            message: string;
-        };
-        UpsertArticle: {
-            title: string;
-            contentBody: string;
-            author: string;
-            /** @enum {string} */
-            status: "published" | "unpublished";
-            /** @default [] */
-            tags: string[];
-        };
-    };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+	schemas: {
+		ArticleListItem: {
+			/** @example my-first-article */
+			slug: string;
+			/** @example 私の最初の記事 */
+			title: string;
+			/** @example 山田太郎 */
+			author: string;
+			/**
+			 * @example published
+			 * @enum {string}
+			 */
+			status: "published" | "unpublished";
+			/** @example 42 */
+			pv: number;
+			/** @example 2025-01-01T00:00:00.000Z */
+			createdAt: string;
+			/** @example 2025-01-02T12:34:56.000Z */
+			updatedAt: string;
+			/**
+			 * @example [
+			 *       "TypeScript",
+			 *       "Hono"
+			 *     ]
+			 */
+			tags: string[];
+		};
+		Error: {
+			/** @example Article not found */
+			error: string;
+		};
+		ArticleDetail: {
+			/** @example my-first-article */
+			slug: string;
+			/** @example 私の最初の記事 */
+			title: string;
+			/** @example 山田太郎 */
+			author: string;
+			/**
+			 * @example published
+			 * @enum {string}
+			 */
+			status: "published" | "unpublished";
+			/** @example 42 */
+			pv: number;
+			/** @example 2025-01-01T00:00:00.000Z */
+			createdAt: string;
+			/** @example 2025-01-02T12:34:56.000Z */
+			updatedAt: string;
+			/**
+			 * @example [
+			 *       "TypeScript",
+			 *       "Hono"
+			 *     ]
+			 */
+			tags: string[];
+			/**
+			 * @example # はじめに
+			 *
+			 *     これは記事本文です。
+			 */
+			contentBody: string;
+		};
+		DeleteSuccess: {
+			/** @example Article deleted successfully */
+			message: string;
+		};
+		UpsertArticle: {
+			title: string;
+			contentBody: string;
+			author: string;
+			/** @enum {string} */
+			status: "published" | "unpublished";
+			/** @default [] */
+			tags: string[];
+		};
+	};
+	responses: never;
+	parameters: never;
+	requestBodies: never;
+	headers: never;
+	pathItems: never;
 }
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

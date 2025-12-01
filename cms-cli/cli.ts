@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { listCommand } from "./src/commands/list.js";
 import { postCommand } from "./src/commands/post.js";
 import { syncCommand } from "./src/commands/sync.js";
+import { uploadImageCommand } from "./src/commands/upload-image.js";
 import { createAuthManager } from "./src/lib/api/auth.js";
 import { createApiClient } from "./src/lib/api/client.js";
 import { getEnvConfig } from "./src/lib/utils/env.js";
@@ -125,6 +126,37 @@ program
 			});
 
 			await syncCommand(directory, apiClient, {});
+		} catch (error) {
+			if (error instanceof Error) {
+				logger.error(error.message);
+			}
+			process.exit(1);
+		}
+	});
+
+// upload-imageコマンド
+program
+	.command("upload-image <file>")
+	.description("画像をWebPに変換してS3にアップロード")
+	.option("--max-size <number>", "最大サイズ（デフォルト: 1000）", "1000")
+	.option("--quality <number>", "WebP品質（0-100、デフォルト: 80）", "80")
+	.action(async (file, options) => {
+		try {
+			const globalOpts = program.opts();
+			const envConfig = await getEnvConfig({
+				profile: globalOpts.profile,
+				functionName: globalOpts.function,
+				env: globalOpts.env,
+			});
+
+			await uploadImageCommand(
+				file,
+				{
+					maxSize: Number.parseInt(options.maxSize, 10),
+					quality: Number.parseInt(options.quality, 10),
+				},
+				envConfig,
+			);
 		} catch (error) {
 			if (error instanceof Error) {
 				logger.error(error.message);

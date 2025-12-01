@@ -21,6 +21,7 @@ export default {
 		"gray-matter",
 		"openapi-fetch",
 		"dotenv",
+		"sharp",
 		// Node.js組み込みモジュール
 		"node:fs/promises",
 		"node:fs",
