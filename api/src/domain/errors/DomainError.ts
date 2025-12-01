@@ -47,3 +47,12 @@ export class InternalServerError extends DomainError {
     super(message, 500);
   }
 }
+
+/**
+ * 認証エラー
+ */
+export class UnauthorizedError extends DomainError {
+  constructor(message = "Unauthorized") {
+    super(message, 401);
+  }
+}

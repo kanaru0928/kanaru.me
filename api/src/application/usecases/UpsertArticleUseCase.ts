@@ -1,42 +1,48 @@
 import type {
   Article,
-  CreateArticleInput,
+  UpsertArticleInput,
 } from "../../domain/entities/Article";
 import type { IArticleRepository } from "../../domain/repositories/IArticleRepository";
 import type { IArticleStorage } from "../../domain/repositories/IArticleStorage";
 
-export class CreateArticleUseCase {
+export interface UpsertArticleResult {
+  article: Article;
+  isNew: boolean;
+}
+
+export class UpsertArticleUseCase {
   constructor(
     private repository: IArticleRepository,
     private storage: IArticleStorage,
   ) {}
 
-  async execute(input: CreateArticleInput): Promise<Article> {
-    // 既存記事の重複チェック
-    const existing = await this.repository.findBySlug(input.slug);
-    if (existing) {
-      throw new Error(`Article with slug "${input.slug}" already exists`);
-    }
+  async execute(
+    slug: string,
+    input: UpsertArticleInput,
+  ): Promise<UpsertArticleResult> {
+    // 既存記事を取得
+    const existing = await this.repository.findBySlug(slug);
 
-    // S3にコンテンツをアップロード
+    // S3に新しいコンテンツをアップロード
     const contentKey = await this.storage.uploadContent(input.contentBody);
 
-    // メタデータをDynamoDBに保存
+    // メタデータを構築
     const now = new Date().toISOString();
     const article: Article = {
-      slug: input.slug,
+      slug,
       title: input.title,
       content: contentKey,
       author: input.author,
       status: input.status,
-      pv: 0,
-      createdAt: now,
+      pv: existing?.pv ?? 0,
+      createdAt: existing?.createdAt ?? now,
       updatedAt: now,
       tags: input.tags,
     };
 
-    await this.repository.create(article);
+    // DynamoDBにupsert
+    await this.repository.upsert(article);
 
-    return article;
+    return { article, isNew: !existing };
   }
 }

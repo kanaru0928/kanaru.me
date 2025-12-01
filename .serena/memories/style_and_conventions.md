@@ -1,0 +1,5 @@
+- TypeScript everywhere; prefer ES modules. React Router v7 features on the web side, TailwindCSS for styling with Catppuccin/DaisyUI theme helpers.
+- API built with Hono + Zod validators, OpenAPI spec generated via `pnpm --filter api generate-openapi` for client typings (`web/app/lib/api.d.ts`).
+- Formatting/linting enforced via Biome configs per package; `.editorconfig` enforces LF, UTF-8, spaces=2. Commit messages checked via commitlint/husky.
+- Infrastructure defined via AWS CDK v2 in TypeScript; env secrets via dotenv.
+- Keep code comments minimal, rely on type safety; follow workspace-specific tsconfig/biome rules.

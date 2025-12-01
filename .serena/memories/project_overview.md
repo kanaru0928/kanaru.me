@@ -1,0 +1,3 @@
+- Monorepo managed with pnpm workspaces for the kanaru.me site/backends, containing web (React Router + Express SSR app), api (Hono-based serverless API), infrastructure (AWS CDK stacks), plus supporting folders like cms-cli, docs, and github workflows.
+- TypeScript is used across packages (React frontend, Node lambdas, CDK). API generates OpenAPI definitions consumed by the web client.
+- CI/CD handled via GitHub Actions (build/deploy workflows) and CDK for AWS infrastructure; repo also has docs/diagrams for architecture.

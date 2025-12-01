@@ -1,9 +1,7 @@
-import { CreateArticleUseCase } from "../../src/application/usecases/CreateArticleUseCase";
 import { DeleteArticleUseCase } from "../../src/application/usecases/DeleteArticleUseCase";
 import { GetArticleUseCase } from "../../src/application/usecases/GetArticleUseCase";
 import { ListArticlesUseCase } from "../../src/application/usecases/ListArticlesUseCase";
-import { UpdateArticleContentUseCase } from "../../src/application/usecases/UpdateArticleContentUseCase";
-import { UpdateArticleMetadataUseCase } from "../../src/application/usecases/UpdateArticleMetadataUseCase";
+import { UpsertArticleUseCase } from "../../src/application/usecases/UpsertArticleUseCase";
 import { DIContainer } from "../../src/infrastructure/container/DIContainer";
 import { DI_TOKENS } from "../../src/infrastructure/container/types";
 import type { createMockArticleRepository } from "./repositories";
@@ -24,11 +22,6 @@ export function createMockContainer(
 
 	// UseCaseを登録（モックリポジトリとストレージを注入）
 	container.registerSingleton(
-		DI_TOKENS.CreateArticleUseCase,
-		() => new CreateArticleUseCase(mockRepository, mockStorage),
-	);
-
-	container.registerSingleton(
 		DI_TOKENS.GetArticleUseCase,
 		() => new GetArticleUseCase(mockRepository, mockStorage),
 	);
@@ -39,13 +32,8 @@ export function createMockContainer(
 	);
 
 	container.registerSingleton(
-		DI_TOKENS.UpdateArticleMetadataUseCase,
-		() => new UpdateArticleMetadataUseCase(mockRepository),
-	);
-
-	container.registerSingleton(
-		DI_TOKENS.UpdateArticleContentUseCase,
-		() => new UpdateArticleContentUseCase(mockRepository, mockStorage),
+		DI_TOKENS.UpsertArticleUseCase,
+		() => new UpsertArticleUseCase(mockRepository, mockStorage),
 	);
 
 	container.registerSingleton(

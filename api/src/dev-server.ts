@@ -1,5 +1,10 @@
 import { serve } from "@hono/node-server";
-import { app } from "./app";
+import { app, setSecretRepository } from "./app";
+import { EnvironmentVariableSecretRepository } from "./infrastructure/repositories/EnvironmentVariableSecretRepository";
+
+// 開発環境用のSecretRepositoryを作成
+const secretRepository = new EnvironmentVariableSecretRepository();
+setSecretRepository(secretRepository);
 
 serve(
   {

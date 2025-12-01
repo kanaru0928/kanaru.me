@@ -7,7 +7,7 @@ import iconImage from "~/features/top-page/images/icon@512.webp";
 export default function AboutPage() {
   return (
     <div className="flex min-h-full flex-col gap-8">
-      <h1 className="font-bold text-3xl">About</h1>
+      <h1 className="font-extrabold text-3xl">About</h1>
 
       <div className="columns-1 gap-6 space-y-6 sm:columns-2">
         {/* プロフィールカード */}

@@ -3,11 +3,6 @@ name: Deploy
 on:
   workflow_dispatch:
     inputs:
-      init-base-resources:
-        description: "Initialize base resources"
-        required: false
-        default: false
-        type: boolean
       environment-name:
         description: "Environment name"
         required: false
@@ -65,7 +60,7 @@ jobs:
           fi
 
       - name: Prepare Lambda Layer
-        if: inputs.init-base-resources || steps.check_package_json.outputs.changed == 'true'
+        if: steps.check_package_json.outputs.changed == 'true'
         run: pnpm deploy:layer
 
       - name: Configure AWS credentials
@@ -74,24 +69,17 @@ jobs:
           role-to-assume: ${{ vars.ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
 
-      - name: Prepare Base Resources
-        if: inputs.init-base-resources
-        run: cd infrastructure && pnpm cdk deploy InfrastructureStack-${{ inputs.environment-name }} --require-approval never
-        env:
-          CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
-          DOMAIN_NAME: ${{ inputs.environment-name == 'prod' && vars.DOMAIN_NAME || '' }}
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
-          ENVIRONMENT_NAME: ${{ inputs.environment-name }}
-
-      - name: Zip and upload Lambda Layer
-        if: inputs.init-base-resources || steps.check_package_json.outputs.changed == 'true'
+      - name: Zip Lambda Layer
+        if: steps.check_package_json.outputs.changed == 'true'
         run: |
           cd web/layer
-          zip -r9y layer.zip nodejs
-          aws s3 cp layer.zip s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-layer-${{ inputs.environment-name }}/layer.zip
+          zip -rq9y layer.zip nodejs
 
       - name: Build web app
         run: cd web && pnpm build
+
+      - name: Build API
+        run: cd api && pnpm build
 
       - name: Deploy with CDK
         run: cd infrastructure && pnpm cdk deploy AppStack-${{ inputs.environment-name }} --require-approval never
@@ -102,4 +90,4 @@ jobs:
           ENVIRONMENT_NAME: ${{ inputs.environment-name }}
 
       - name: Deploy Client Resources
-        run: cd web/build/client/assets && aws s3 sync --delete . s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-assets/assets/
+        run: cd web/build/client/assets && aws s3 sync --delete . s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-assets-${{ inputs.environment-name }}/assets/

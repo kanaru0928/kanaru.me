@@ -6,6 +6,7 @@ export function createMockArticleRepository(): IArticleRepository {
 		create: vi.fn().mockResolvedValue(undefined),
 		findBySlug: vi.fn().mockResolvedValue(null),
 		findAll: vi.fn().mockResolvedValue([]),
+		upsert: vi.fn().mockImplementation((article) => Promise.resolve(article)),
 		updateMetadata: vi.fn().mockResolvedValue(null),
 		updateContentKey: vi.fn().mockResolvedValue(null),
 		incrementPV: vi.fn().mockResolvedValue(undefined),

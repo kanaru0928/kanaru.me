@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
 import { config } from "dotenv";
-import { APIStack } from "../lib/api-stack";
 import { AppStack } from "../lib/app-stack";
-import { InfrastructureStack } from "../lib/infrastructure-stack";
 
 config({ path: `${__dirname}/../.env` });
 
@@ -22,14 +20,8 @@ if (!env.certificateArn || !env.githubToken || !env.environmentName) {
   throw new Error("CERTIFICATE_ARN, GITHUB_TOKEN and ENVIRONMENT_NAME must be set in .env file");
 }
 
-new APIStack(app, `APIStack-${env.environmentName}`, {
-  env,
-  environmentName: env.environmentName,
-});
-const infraStack = new InfrastructureStack(app, `InfrastructureStack-${env.environmentName}`, { env, environmentName: env.environmentName });
 new AppStack(app, `AppStack-${env.environmentName}`, {
   env,
-  layerBucketArn: infraStack.getLayerBucketArn(),
   certificateArn: env.certificateArn,
   domainName: env.domainName,
   githubToken: env.githubToken,

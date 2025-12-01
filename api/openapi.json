@@ -1,0 +1,527 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Kanaru.me API",
+    "version": "1.0.0",
+    "description": "Kanaru.me のバックエンドAPIドキュメント"
+  },
+  "components": {
+    "securitySchemes": {
+      "InitialBearer": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "KCMS-Init-Authorization",
+        "description": "初期Bearer トークンによる認証（/verify エンドポイント用）"
+      },
+      "Bearer": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "KCMS-Authorization",
+        "description": "JWT トークンによる認証（記事管理エンドポイント用）"
+      }
+    },
+    "schemas": {
+      "ArticleListItem": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "example": "my-first-article"
+          },
+          "title": {
+            "type": "string",
+            "example": "私の最初の記事"
+          },
+          "author": {
+            "type": "string",
+            "example": "山田太郎"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "published",
+              "unpublished"
+            ],
+            "example": "published"
+          },
+          "pv": {
+            "type": "number",
+            "example": 42
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2025-01-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2025-01-02T12:34:56.000Z"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "TypeScript",
+              "Hono"
+            ]
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "author",
+          "status",
+          "pv",
+          "createdAt",
+          "updatedAt",
+          "tags"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Article not found"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "ArticleDetail": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "example": "my-first-article"
+          },
+          "title": {
+            "type": "string",
+            "example": "私の最初の記事"
+          },
+          "author": {
+            "type": "string",
+            "example": "山田太郎"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "published",
+              "unpublished"
+            ],
+            "example": "published"
+          },
+          "pv": {
+            "type": "number",
+            "example": 42
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2025-01-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2025-01-02T12:34:56.000Z"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "TypeScript",
+              "Hono"
+            ]
+          },
+          "contentBody": {
+            "type": "string",
+            "example": "# はじめに\n\nこれは記事本文です。"
+          }
+        },
+        "required": [
+          "slug",
+          "title",
+          "author",
+          "status",
+          "pv",
+          "createdAt",
+          "updatedAt",
+          "tags",
+          "contentBody"
+        ]
+      },
+      "DeleteSuccess": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Article deleted successfully"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "UpsertArticle": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "contentBody": {
+            "type": "string",
+            "minLength": 1
+          },
+          "author": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "published",
+              "unpublished"
+            ]
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": []
+          }
+        },
+        "required": [
+          "title",
+          "contentBody",
+          "author",
+          "status"
+        ]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/api/verify": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "JWT トークンを発行",
+        "description": "初期Bearer トークンを検証し、成功時にJWT トークンを発行します",
+        "security": [
+          {
+            "InitialBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JWT トークンの発行に成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "JWT トークン",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    }
+                  },
+                  "required": [
+                    "token"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "認証失敗",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "エラーメッセージ",
+                      "example": "Unauthorized"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles": {
+      "get": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "記事一覧を取得",
+        "description": "記事の一覧を取得します。認証されていない場合は公開済み記事のみ返却されます。",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "tag",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "createdAt",
+                "updatedAt"
+              ]
+            },
+            "required": false,
+            "name": "sortBy",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "required": false,
+            "name": "order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "記事一覧の取得に成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleListItem"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "サーバーエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{slug}": {
+      "get": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "記事詳細を取得",
+        "description": "指定されたスラッグの記事詳細を取得します",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "slug",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "記事詳細の取得に成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "記事が見つからない",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "サーバーエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "記事を削除",
+        "description": "指定されたスラッグの記事を削除します（要認証）",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "slug",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "記事の削除に成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteSuccess"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "認証失敗",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "記事が見つからない",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "サーバーエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Articles"
+        ],
+        "summary": "記事を作成または更新",
+        "description": "記事が存在しない場合は新規作成、存在する場合は全体を更新します（要認証）",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "slug",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertArticle"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "記事の更新に成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleListItem"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "記事の作成に成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleListItem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "認証失敗",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "サーバーエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {}
+}
