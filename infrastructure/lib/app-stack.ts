@@ -329,12 +329,9 @@ export class AppStack extends cdk.Stack {
             `${this.apiFunction.functionName}-env-update`
           ),
         },
-        policy: customResource.AwsCustomResourcePolicy.fromStatements([
-          new iam.PolicyStatement({
-            actions: ["lambda:UpdateFunctionConfiguration"],
-            resources: [this.apiFunction.functionArn],
-          }),
-        ]),
+        policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
+          resources: [this.apiFunction.functionArn],
+        }),
       }
     );
 
@@ -367,12 +364,9 @@ export class AppStack extends cdk.Stack {
             `${this.webFunction.functionName}-env-update`
           ),
         },
-        policy: customResource.AwsCustomResourcePolicy.fromStatements([
-          new iam.PolicyStatement({
-            actions: ["lambda:UpdateFunctionConfiguration"],
-            resources: [this.webFunction.functionArn],
-          }),
-        ]),
+        policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
+          resources: [this.webFunction.functionArn],
+        }),
       }
     );
 
