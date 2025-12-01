@@ -1,0 +1,6 @@
+- Install deps: `pnpm install` at repo root (workspace-aware).
+- Web app: `pnpm --filter web dev` (Express dev server + HMR), `pnpm --filter web build`, `pnpm --filter web typecheck`, `pnpm --filter web ci` (Biome lint), `pnpm --filter web generate-types` (refresh OpenAPI client d.ts).
+- API: `pnpm --filter api dev` (tsx watch server), `pnpm --filter api build`, `pnpm --filter api test` or `test:ui`, `pnpm --filter api type-check`, `pnpm --filter api generate-openapi`.
+- Infrastructure (CDK): `pnpm --filter infrastructure build`, `pnpm --filter infrastructure test`, `pnpm --filter infrastructure cdk <cmd>` (deploy/diff/synth) after `pnpm install` inside folder.
+- Lambda layer deploy helper: `pnpm deploy:layer` from repo root (calls pnpm deploy in web workspace).
+- General linting: use each package's `biome.json` via `pnpm --filter <pkg> biome ci` if defined.

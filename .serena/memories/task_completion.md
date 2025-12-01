@@ -1,0 +1,4 @@
+- After edits, run affected package checks (e.g., `pnpm --filter web typecheck && pnpm --filter web ci`, `pnpm --filter api test`, or `pnpm --filter infrastructure test`) plus any relevant build steps to ensure deployment readiness.
+- Keep OpenAPI contract in sync: regenerate spec in api (`generate-openapi`) and client types in web when touching API schemas.
+- Mention if infrastructure/CDK changes require `cdk diff`/`cdk deploy` or updated AWS context; highlight any secrets/env vars needed.
+- Summarize impacted files and suggest next actions (tests, `pnpm deploy:layer`, etc.) in final responses.
