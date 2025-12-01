@@ -3,6 +3,11 @@ name: Deploy
 on:
   workflow_dispatch:
     inputs:
+      force-layer-update:
+        description: "Force update Lambda Layer"
+        required: true
+        default: false
+        type: boolean
       environment-name:
         description: "Environment name"
         required: false
@@ -60,7 +65,7 @@ jobs:
           fi
 
       - name: Prepare Lambda Layer
-        if: steps.check_package_json.outputs.changed == 'true'
+        if: steps.check_package_json.outputs.changed == 'true' || inputs.force-layer-update == true
         run: pnpm deploy:layer
 
       - name: Configure AWS credentials
@@ -70,7 +75,7 @@ jobs:
           aws-region: ap-northeast-1
 
       - name: Zip Lambda Layer
-        if: steps.check_package_json.outputs.changed == 'true'
+        if: steps.check_package_json.outputs.changed == 'true' || inputs.force-layer-update == true
         run: |
           cd web/layer
           zip -rq9y layer.zip nodejs
