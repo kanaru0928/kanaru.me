@@ -29,6 +29,8 @@ export type Env = {
   Bindings: {
     DYNAMODB_TABLE_NAME: string;
     S3_BUCKET_NAME: string;
+    S3_ORIGIN_URL: string;
+    S3_KEY_PREFIX: string;
     AWS_REGION: string;
     ALLOWED_ORIGINS: string;
     JWT_SECRET: string;

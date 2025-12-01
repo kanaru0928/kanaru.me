@@ -67,6 +67,8 @@ describe("Article API Routes", () => {
 			const mockEnvConfig: EnvConfig = {
 				DYNAMODB_TABLE_NAME: "test-table",
 				S3_BUCKET_NAME: "test-bucket",
+				S3_ORIGIN_URL: "https://test-bucket.s3.amazonaws.com",
+				S3_KEY_PREFIX: "static/",
 				AWS_REGION: "us-east-1",
 				ALLOWED_ORIGINS: ["http://localhost:3000"],
 				JWT_SECRET: "test-secret",

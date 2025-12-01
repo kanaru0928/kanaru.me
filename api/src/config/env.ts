@@ -5,6 +5,8 @@ import type { ISecretRepository } from "../domain/repositories/ISecretRepository
 const envSchema = z.object({
   DYNAMODB_TABLE_NAME: z.string().min(1, "DYNAMODB_TABLE_NAME is required"),
   S3_BUCKET_NAME: z.string().min(1, "S3_BUCKET_NAME is required"),
+  S3_ORIGIN_URL: z.string().url("S3_ORIGIN_URL must be a valid URL"),
+  S3_KEY_PREFIX: z.string().min(1, "S3_KEY_PREFIX is required"),
   AWS_REGION: z.string().min(1, "AWS_REGION is required"),
   ALLOWED_ORIGINS: z
     .string()
