@@ -338,6 +338,8 @@ export class AppStack extends cdk.Stack {
               Variables: {
                 DYNAMODB_TABLE_NAME: this.articleTable.tableName,
                 S3_BUCKET_NAME: this.articleBucket.bucketName,
+                S3_ORIGIN_URL: `https://${domainName}`,
+                S3_KEY_PREFIX: "static/articles/",
                 SECRET_NAME_PREFIX: `/kanaru.me-v2/${this.environmentName}/`,
                 SSM_PARAMETER_STORE_TTL: "300",
                 ALLOWED_ORIGINS: allowedOrigins.join(","),
