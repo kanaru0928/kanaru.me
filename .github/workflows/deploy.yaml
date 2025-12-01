@@ -3,11 +3,6 @@ name: Deploy
 on:
   workflow_dispatch:
     inputs:
-      init-base-resources:
-        description: "Initialize base resources"
-        required: false
-        default: false
-        type: boolean
       environment-name:
         description: "Environment name"
         required: false
@@ -65,7 +60,7 @@ jobs:
           fi
 
       - name: Prepare Lambda Layer
-        if: inputs.init-base-resources || steps.check_package_json.outputs.changed == 'true'
+        if: steps.check_package_json.outputs.changed == 'true'
         run: pnpm deploy:layer
 
       - name: Configure AWS credentials
@@ -75,7 +70,7 @@ jobs:
           aws-region: ap-northeast-1
 
       - name: Zip Lambda Layer
-        if: inputs.init-base-resources || steps.check_package_json.outputs.changed == 'true'
+        if: steps.check_package_json.outputs.changed == 'true'
         run: |
           cd web/layer
           zip -rq9y layer.zip nodejs
