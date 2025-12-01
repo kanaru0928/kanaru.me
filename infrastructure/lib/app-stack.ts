@@ -339,35 +339,35 @@ export class AppStack extends cdk.Stack {
   }
 
   private updateWebFunctionEnv() {
-    const domainName =
-      this.domainName || this.distribution.distributionDomainName;
-    const webCutomResource = new customResource.AwsCustomResource(
-      this,
-      "UpdateWebFunctionEnvCR",
-      {
-        onUpdate: {
-          service: "Lambda",
-          action: "updateFunctionConfiguration",
-          parameters: {
-            FunctionName: this.webFunction.functionName,
-            Environment: {
-              Variables: {
-                GITHUB_TOKEN: this.githubToken,
-                API_BASE_URL: `https://${domainName}/`,
-              },
-            },
-          },
-          physicalResourceId: customResource.PhysicalResourceId.of(
-            `${this.webFunction.functionName}-env-update`
-          ),
-        },
-        policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
-          resources: [this.webFunction.functionArn],
-        }),
-      }
-    );
+    // const domainName =
+    //   this.domainName || this.distribution.distributionDomainName;
+    // const webCutomResource = new customResource.AwsCustomResource(
+    //   this,
+    //   "UpdateWebFunctionEnvCR",
+    //   {
+    //     onUpdate: {
+    //       service: "Lambda",
+    //       action: "updateFunctionConfiguration",
+    //       parameters: {
+    //         FunctionName: this.webFunction.functionName,
+    //         Environment: {
+    //           Variables: {
+    //             GITHUB_TOKEN: this.githubToken,
+    //             API_BASE_URL: `https://${domainName}/`,
+    //           },
+    //         },
+    //       },
+    //       physicalResourceId: customResource.PhysicalResourceId.of(
+    //         `${this.webFunction.functionName}-env-update`
+    //       ),
+    //     },
+    //     policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
+    //       resources: [this.webFunction.functionArn],
+    //     }),
+    //   }
+    // );
 
-    webCutomResource.node.addDependency(this.webFunction);
-    webCutomResource.node.addDependency(this.distribution);
+    // webCutomResource.node.addDependency(this.webFunction);
+    // webCutomResource.node.addDependency(this.distribution);
   }
 }
