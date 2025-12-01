@@ -76,13 +76,8 @@ export class AppStack extends cdk.Stack {
   }
 
   private createLambdaLayerVersion() {
-    const layerBucket = s3.Bucket.fromBucketArn(
-      this,
-      "ImportedLayerBucket",
-      this.layerBucketArn
-    );
     return new lambda.LayerVersion(this, "KanarumeWebLayer", {
-      code: lambda.Code.fromBucketV2(layerBucket, "layer.zip"),
+      code: lambda.Code.fromAsset("../web/layer/layer.zip"),
       compatibleRuntimes: [lambda.Runtime.NODEJS_22_X],
     });
   }
