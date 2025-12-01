@@ -31,7 +31,7 @@ export class S3ArticleStorage implements IArticleStorage {
     const hash = createHash("sha256")
       .update(content, "utf-8")
       .digest("base64url");
-    return `static/articles/${hash}.md`;
+    return `static/articles/${hash}.mdx`;
   }
 
   /**
@@ -57,7 +57,9 @@ export class S3ArticleStorage implements IArticleStorage {
    */
   async getContent(key: string): Promise<string | null> {
     try {
-      const response = await fetch(`${this.originUrl}/${this.keyPrefix}${key}`);
+      const url = `${this.originUrl}/${this.keyPrefix}${key}`
+      console.log("Fetching content from URL:", url);
+      const response = await fetch(url);
 
       if (response.status === 404) {
         return null;
