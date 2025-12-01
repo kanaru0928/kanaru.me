@@ -194,6 +194,9 @@ importers:
 
   web:
     dependencies:
+      '@catppuccin/highlightjs':
+        specifier: ^1.0.1
+        version: 1.0.1
       '@mdx-js/mdx':
         specifier: ^3.1.1
         version: 3.1.1
@@ -270,9 +273,6 @@ importers:
       '@catppuccin/daisyui':
         specifier: ^2.1.1
         version: 2.1.1(tailwindcss@4.1.17)
-      '@catppuccin/highlightjs':
-        specifier: ^1.0.1
-        version: 1.0.1
       '@mdx-js/rollup':
         specifier: ^3.1.1
         version: 3.1.1(rollup@4.53.2)
