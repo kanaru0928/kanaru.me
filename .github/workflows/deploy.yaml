@@ -3,11 +3,6 @@ name: Deploy
 on:
   workflow_dispatch:
     inputs:
-      force-layer-update:
-        description: "Force update Lambda Layer"
-        required: true
-        default: false
-        type: boolean
       environment-name:
         description: "Environment name"
         required: false
@@ -51,21 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm semantic-release
 
-      - name: Check web/package.json changes
-        id: check_package_json
-        run: |
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          if [ -z "$LAST_TAG" ]; then
-            # タグが存在しない場合は常に実行
-            echo "changed=true" >> $GITHUB_OUTPUT
-          elif git diff --name-only $LAST_TAG HEAD | grep -q "^web/package.json$"; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Prepare Lambda Layer
-        if: steps.check_package_json.outputs.changed == 'true' || inputs.force-layer-update == true
         run: pnpm deploy:layer
 
       - name: Configure AWS credentials
@@ -75,7 +56,6 @@ jobs:
           aws-region: ap-northeast-1
 
       - name: Zip Lambda Layer
-        if: steps.check_package_json.outputs.changed == 'true' || inputs.force-layer-update == true
         run: |
           cd web/layer
           zip -rq9y layer.zip nodejs
