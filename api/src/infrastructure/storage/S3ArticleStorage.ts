@@ -57,7 +57,7 @@ export class S3ArticleStorage implements IArticleStorage {
    */
   async getContent(key: string): Promise<string | null> {
     try {
-      const url = `${this.originUrl}/${key}`
+      const url = `${this.originUrl}/${this.keyPrefix}${key}`
       console.log("Fetching content from URL:", url);
       const response = await fetch(url);
 
