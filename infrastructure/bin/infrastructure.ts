@@ -2,6 +2,7 @@
 import * as cdk from "aws-cdk-lib";
 import { config } from "dotenv";
 import { AppStack } from "../lib/app-stack";
+import { BaseStack } from "../lib/base-stack";
 
 config({ path: `${__dirname}/../.env` });
 
@@ -14,11 +15,17 @@ const env = {
   domainName: process.env.DOMAIN_NAME,
   githubToken: process.env.GITHUB_TOKEN,
   environmentName: process.env.ENVIRONMENT_NAME,
+  layerHash: process.env.LAYER_HASH,
 };
 
-if (!env.certificateArn || !env.githubToken || !env.environmentName) {
-  throw new Error("CERTIFICATE_ARN, GITHUB_TOKEN and ENVIRONMENT_NAME must be set in .env file");
+if (!env.certificateArn || !env.githubToken || !env.environmentName || !env.layerHash) {
+  throw new Error("CERTIFICATE_ARN, GITHUB_TOKEN, ENVIRONMENT_NAME and LAYER_HASH must be set");
 }
+
+const baseStack = new BaseStack(app, `BaseStack-${env.environmentName}`, {
+  env,
+  environmentName: env.environmentName,
+});
 
 new AppStack(app, `AppStack-${env.environmentName}`, {
   env,
@@ -26,4 +33,6 @@ new AppStack(app, `AppStack-${env.environmentName}`, {
   domainName: env.domainName,
   githubToken: env.githubToken,
   environmentName: env.environmentName,
+  layerBucketName: baseStack.getLayerBucketName(),
+  layerHash: env.layerHash,
 });

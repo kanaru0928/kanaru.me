@@ -11,10 +11,12 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as customResource from "aws-cdk-lib/custom-resources";
 
 type Props = cdk.StackProps & {
+  layerBucketName: string;
   certificateArn: string;
   domainName?: string;
   githubToken: string;
   environmentName: string;
+  layerHash: string;
 };
 
 export class AppStack extends cdk.Stack {
@@ -22,6 +24,8 @@ export class AppStack extends cdk.Stack {
   private readonly domainName?: string;
   private readonly githubToken: string;
   private readonly environmentName: string;
+  private readonly layerBucketName: string;
+  private readonly layerHash: string;
 
   private assetBucket: s3.Bucket;
   private lambdaLayerVersion: lambda.LayerVersion;
@@ -44,6 +48,8 @@ export class AppStack extends cdk.Stack {
     this.domainName = props.domainName === "" ? undefined : props.domainName;
     this.githubToken = props.githubToken;
     this.environmentName = props.environmentName;
+    this.layerBucketName = props.layerBucketName;
+    this.layerHash = props.layerHash;
 
     this.assetBucket = this.createAssetBucket();
 
@@ -74,9 +80,19 @@ export class AppStack extends cdk.Stack {
   }
 
   private createLambdaLayerVersion() {
+    const layerBucket = s3.Bucket.fromBucketName(
+      this,
+      "LambdaLayerBucket",
+      this.layerBucketName,
+    );
+
     return new lambda.LayerVersion(this, "KanarumeWebLayer", {
-      code: lambda.Code.fromAsset("../web/layer/layer.zip"),
+      code: lambda.Code.fromBucketV2(
+        layerBucket,
+        `layer-${this.layerHash}.zip`
+      ),
       compatibleRuntimes: [lambda.Runtime.NODEJS_22_X],
+      description: `Layer from package.json hash: ${this.layerHash}`,
     });
   }
 
