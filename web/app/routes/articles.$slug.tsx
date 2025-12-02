@@ -69,7 +69,10 @@ export default function ArticlesSlugRoute({
         <p className="text-sm">{article.pv} views</p>
         <div className="mt-2 mb-8 flex flex-wrap gap-2">
           {article.tags.map((tag) => (
-            <div key={tag} className="badge badge-sm lg:badge-md">
+            <div
+              key={tag}
+              className="badge badge-sm lg:badge-md overflow-hidden text-ellipsis whitespace-nowrap"
+            >
               {tag}
             </div>
           ))}

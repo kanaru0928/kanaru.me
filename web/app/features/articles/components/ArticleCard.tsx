@@ -24,9 +24,12 @@ export function ArticleCard({
             <div className="card-title">
               <h2>{title}</h2>
             </div>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
-                <div className="badge badge-sm" key={tag}>
+                <div
+                  className="badge badge-sm overflow-hidden text-ellipsis whitespace-nowrap"
+                  key={tag}
+                >
                   {tag}
                 </div>
               ))}
