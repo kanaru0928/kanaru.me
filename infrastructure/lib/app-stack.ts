@@ -91,6 +91,14 @@ export class AppStack extends cdk.Stack {
       timeout: cdk.Duration.minutes(3),
       memorySize: 1024,
       architecture: lambda.Architecture.ARM_64,
+      environment: {
+        GITHUB_TOKEN: this.githubToken,
+        ...(this.domainName
+          ? {
+              API_BASE_URL: `https://${this.domainName}`,
+            }
+          : {}),
+      },
     });
 
     return lambdaFunction;
@@ -353,7 +361,7 @@ export class AppStack extends cdk.Stack {
             Environment: {
               Variables: {
                 GITHUB_TOKEN: this.githubToken,
-                API_BASE_URL: `https://${domainName}/`,
+                API_BASE_URL: `https://${domainName}`,
               },
             },
           },
