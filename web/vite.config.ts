@@ -15,6 +15,7 @@ export default defineConfig(({ isSsrBuild }) => ({
     mdx({
       remarkPlugins: [remarkFrontmatter, remarkGfm],
       rehypePlugins: [[rehypeShiki, { theme: "catppuccin-mocha" }]],
+      providerImportSource: "@mdx-js/react",
     }),
     tailwindcss(),
     reactRouter(),

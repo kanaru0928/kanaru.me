@@ -12,7 +12,7 @@ export default function ArticlesRoute() {
           "prose-h3:before:mr-2 prose-h3:before:text-lg prose-h3:before:text-secondary-content/60 prose-h3:before:content-['###']",
           "prose-h4:before:mr-2 prose-h4:before:text-secondary-content/60 prose-h4:before:text-sm prose-h4:before:content-['####']",
           "prose-img:block prose-img:h-auto prose-img:w-full has-prose-img:w-full has-prose-img:max-w-[600px]",
-          "prose-blockquote:*:before:content-none prose-blockquote:*:after:content-none",
+          "prose-blockquote:*:before:content-none prose-blockquote:*:after:content-none"
         )}
       >
         <Outlet />

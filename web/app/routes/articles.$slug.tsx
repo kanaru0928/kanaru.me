@@ -8,6 +8,7 @@ import * as runtime from "react/jsx-runtime";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { apiClient } from "~/lib/apiClient";
+import { mdxComponents } from "~/features/mdx/mdx-components";
 import type { Route } from "./+types/articles.$slug";
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -55,7 +56,15 @@ export default function ArticlesSlugRoute({
 
   useEffect(() => {
     (async () => {
-      setMdxModule(await run(code, { ...runtime, baseUrl: import.meta.url }));
+      const useMDXComponents = () => mdxComponents;
+
+      setMdxModule(
+        await run(code, {
+          ...runtime,
+          baseUrl: import.meta.url,
+          useMDXComponents,
+        }),
+      );
     })();
   }, [code]);
 
