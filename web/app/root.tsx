@@ -1,3 +1,4 @@
+import { MDXProvider } from "@mdx-js/react";
 import {
   isRouteErrorResponse,
   Links,
@@ -7,9 +8,9 @@ import {
   ScrollRestoration,
   useLocation,
 } from "react-router";
-
 import type { Route } from "./+types/root";
 import "./app.css";
+import { mdxComponents } from "./features/mdx/mdx-components";
 import { NavbarProvider } from "./features/navbar/components/NavbarProvider";
 import { useTypekit } from "./hooks/useTypekit";
 
@@ -39,7 +40,9 @@ export default function App() {
 
   return (
     <NavbarProvider defaultOpen={drawerDefaultOpen}>
-      <Outlet />
+      <MDXProvider components={mdxComponents}>
+        <Outlet />
+      </MDXProvider>
     </NavbarProvider>
   );
 }

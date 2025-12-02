@@ -7,6 +7,7 @@ import { Fragment, useEffect, useState } from "react";
 import * as runtime from "react/jsx-runtime";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
+import { mdxComponents } from "~/features/mdx/mdx-components";
 import { apiClient } from "~/lib/apiClient";
 import type { Route } from "./+types/articles.$slug";
 
@@ -55,7 +56,15 @@ export default function ArticlesSlugRoute({
 
   useEffect(() => {
     (async () => {
-      setMdxModule(await run(code, { ...runtime, baseUrl: import.meta.url }));
+      const useMDXComponents = () => mdxComponents;
+
+      setMdxModule(
+        await run(code, {
+          ...runtime,
+          baseUrl: import.meta.url,
+          useMDXComponents,
+        }),
+      );
     })();
   }, [code]);
 
