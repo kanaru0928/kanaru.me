@@ -2,6 +2,7 @@
 
 import { compile, run } from "@mdx-js/mdx";
 import rehypeShiki from "@shikijs/rehype";
+import { formatISO9075 } from "date-fns";
 import { Fragment, useEffect, useState } from "react";
 import * as runtime from "react/jsx-runtime";
 import remarkFrontmatter from "remark-frontmatter";
@@ -25,7 +26,7 @@ export async function loader({ params }: Route.LoaderArgs) {
       remarkPlugins: [remarkFrontmatter, remarkGfm],
       rehypePlugins: [[rehypeShiki, { theme: "catppuccin-mocha" }]],
       outputFormat: "function-body",
-    }),
+    })
   );
 
   return { article, code };
@@ -45,7 +46,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
 export default function ArticlesSlugRoute({
   loaderData,
 }: Route.ComponentProps) {
-  const { code } = loaderData;
+  const { article, code } = loaderData;
 
   const [mdxModule, setMdxModule] = useState<Awaited<
     ReturnType<typeof run>
@@ -58,5 +59,23 @@ export default function ArticlesSlugRoute({
     })();
   }, [code]);
 
-  return <Content />;
+  return (
+    <>
+      <div className="not-prose">
+        <p className="text-sm">作成日: {formatISO9075(article.createdAt)}</p>
+        {article.createdAt !== article.updatedAt && (
+          <p className="text-sm">更新日: {formatISO9075(article.updatedAt)}</p>
+        )}
+        <p className="text-sm">{article.pv} views</p>
+        <div className="mt-2 mb-8 flex flex-wrap gap-2">
+          {article.tags.map((tag) => (
+            <div key={tag} className="badge badge-sm lg:badge-md">
+              {tag}
+            </div>
+          ))}
+        </div>
+      </div>
+      <Content />
+    </>
+  );
 }
