@@ -1,3 +1,4 @@
+import { MDXProvider } from "@mdx-js/react";
 import {
   isRouteErrorResponse,
   Links,
@@ -7,8 +8,6 @@ import {
   ScrollRestoration,
   useLocation,
 } from "react-router";
-
-import { MDXProvider } from "@mdx-js/react";
 import type { Route } from "./+types/root";
 import "./app.css";
 import { mdxComponents } from "./features/mdx/mdx-components";

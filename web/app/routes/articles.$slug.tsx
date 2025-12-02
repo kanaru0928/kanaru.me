@@ -7,8 +7,8 @@ import { Fragment, useEffect, useState } from "react";
 import * as runtime from "react/jsx-runtime";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
-import { apiClient } from "~/lib/apiClient";
 import { mdxComponents } from "~/features/mdx/mdx-components";
+import { apiClient } from "~/lib/apiClient";
 import type { Route } from "./+types/articles.$slug";
 
 export async function loader({ params }: Route.LoaderArgs) {
