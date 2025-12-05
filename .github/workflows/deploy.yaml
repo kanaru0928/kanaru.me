@@ -3,6 +3,11 @@ name: Deploy
 on:
   workflow_dispatch:
     inputs:
+      force-layer-update:
+        description: "Force update Lambda Layer"
+        required: true
+        default: false
+        type: boolean
       environment-name:
         description: "Environment name"
         required: false
@@ -46,7 +51,33 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm semantic-release
 
+      - name: Build web app
+        run: cd web && pnpm build
+
+      - name: Build API
+        run: cd api && pnpm build
+
+      - name: Check web/package.json changes
+        id: check_package_json
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            # タグが存在しない場合は常に実行
+            echo "changed=true" >> $GITHUB_OUTPUT
+          elif git diff --name-only $LAST_TAG HEAD | grep -q "^web/package.json$"; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Calculate package.json hash
+        id: calculate_hash
+        run: |
+          HASH=$(md5sum web/package.json | awk '{print $1}')
+          echo "hash=${HASH}" >> $GITHUB_OUTPUT
+
       - name: Prepare Lambda Layer
+        if: steps.check_package_json.outputs.changed == 'true' || inputs.force-layer-update == true
         run: pnpm deploy:layer
 
       - name: Configure AWS credentials
@@ -55,16 +86,21 @@ jobs:
           role-to-assume: ${{ vars.ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
 
+      - name: Deploy Base Resources with CDK
+        run: cd infrastructure && pnpm cdk deploy BaseStack-${{ inputs.environment-name }} --require-approval never
+        env:
+          CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
+          DOMAIN_NAME: ${{ inputs.environment-name == 'prod' && vars.DOMAIN_NAME || '' }}
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
+          ENVIRONMENT_NAME: ${{ inputs.environment-name }}
+          LAYER_HASH: ${{ steps.calculate_hash.outputs.hash }}
+
       - name: Zip Lambda Layer
+        if: steps.check_package_json.outputs.changed == 'true' || inputs.force-layer-update == true
         run: |
           cd web/layer
-          zip -rq9y layer.zip nodejs
-
-      - name: Build web app
-        run: cd web && pnpm build
-
-      - name: Build API
-        run: cd api && pnpm build
+          zip -rq9y layer.zip nodejs/node_modules nodejs/package.json nodejs/pnpm-lock.yaml
+          aws s3 cp layer.zip s3://${{ vars.AWS_ACCOUNT_ID }}-kanarume-v2-${{ inputs.environment-name }}-lambda-layers/layer-${{ steps.calculate_hash.outputs.hash }}.zip
 
       - name: Deploy with CDK
         run: cd infrastructure && pnpm cdk deploy AppStack-${{ inputs.environment-name }} --require-approval never
@@ -73,6 +109,7 @@ jobs:
           DOMAIN_NAME: ${{ inputs.environment-name == 'prod' && vars.DOMAIN_NAME || '' }}
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
           ENVIRONMENT_NAME: ${{ inputs.environment-name }}
+          LAYER_HASH: ${{ steps.calculate_hash.outputs.hash }}
 
       - name: Deploy Client Resources
         run: cd web/build/client/assets && aws s3 sync --delete . s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-assets-${{ inputs.environment-name }}/assets/
