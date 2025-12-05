@@ -206,6 +206,9 @@ importers:
       '@react-router/node':
         specifier: ^7.9.5
         version: 7.9.5(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.3)
+      compression:
+        specifier: ^1.8.1
+        version: 1.8.1
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -282,9 +285,6 @@ importers:
       cms-cli:
         specifier: workspace:*
         version: file:cms-cli
-      compression:
-        specifier: ^1.8.1
-        version: 1.8.1
       daisyui:
         specifier: ^5.4.7
         version: 5.4.7
