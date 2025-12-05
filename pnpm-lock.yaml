@@ -197,12 +197,6 @@ importers:
 
   web:
     dependencies:
-      '@mdx-js/mdx':
-        specifier: ^3.1.1
-        version: 3.1.1
-      '@mdx-js/react':
-        specifier: ^3.1.1
-        version: 3.1.1(@types/react@19.2.2)(react@19.2.0)
       '@react-router/express':
         specifier: ^7.9.5
         version: 7.9.5(express@5.1.0)(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.3)
@@ -212,36 +206,21 @@ importers:
       '@react-router/node':
         specifier: ^7.9.5
         version: 7.9.5(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(typescript@5.9.3)
-      '@shikijs/rehype':
-        specifier: ^3.15.0
-        version: 3.15.0
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
       compression:
         specifier: ^1.8.1
         version: 1.8.1
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
-      date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
       express:
         specifier: ^5.1.0
         version: 5.1.0
       isbot:
         specifier: ^5.1.32
         version: 5.1.32
-      lucide-react:
-        specifier: ^0.553.0
-        version: 0.553.0(react@19.2.0)
       morgan:
         specifier: ^1.10.1
         version: 1.10.1
-      openapi-fetch:
-        specifier: ^0.15.0
-        version: 0.15.0
       react:
         specifier: ^19.2.0
         version: 19.2.0
@@ -251,18 +230,9 @@ importers:
       react-router:
         specifier: ^7.9.5
         version: 7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      remark-frontmatter:
-        specifier: ^5.0.0
-        version: 5.0.0
-      remark-gfm:
-        specifier: ^4.0.1
-        version: 4.0.1
       serverless-http:
         specifier: ^4.0.0
         version: 4.0.0
-      tailwind-merge:
-        specifier: ^3.3.1
-        version: 3.3.1
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.4
@@ -273,12 +243,21 @@ importers:
       '@catppuccin/highlightjs':
         specifier: ^1.0.1
         version: 1.0.1
+      '@mdx-js/mdx':
+        specifier: ^3.1.1
+        version: 3.1.1
+      '@mdx-js/react':
+        specifier: ^3.1.1
+        version: 3.1.1(@types/react@19.2.2)(react@19.2.0)
       '@mdx-js/rollup':
         specifier: ^3.1.1
         version: 3.1.1(rollup@4.53.2)
       '@react-router/dev':
         specifier: ^7.9.5
         version: 7.9.5(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(react-router@7.9.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(tsx@4.20.6)(typescript@5.9.3)(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6)(yaml@2.8.1))(yaml@2.8.1)
+      '@shikijs/rehype':
+        specifier: ^3.15.0
+        version: 3.15.0
       '@tailwindcss/typography':
         specifier: ^0.5.19
         version: 0.5.19(tailwindcss@4.1.17)
@@ -303,18 +282,36 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.2
         version: 19.2.2(@types/react@19.2.2)
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       cms-cli:
         specifier: workspace:*
         version: file:cms-cli
       daisyui:
         specifier: ^5.4.7
         version: 5.4.7
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       highlight.js:
         specifier: ^11.11.1
         version: 11.11.1
+      lucide-react:
+        specifier: ^0.553.0
+        version: 0.553.0(react@19.2.0)
+      openapi-fetch:
+        specifier: ^0.15.0
+        version: 0.15.0
       openapi-typescript:
         specifier: ^7.10.1
         version: 7.10.1(typescript@5.9.3)
+      remark-frontmatter:
+        specifier: ^5.0.0
+        version: 5.0.0
+      remark-gfm:
+        specifier: ^4.0.1
+        version: 4.0.1
       remark-mdx-frontmatter:
         specifier: ^5.2.0
         version: 5.2.0
@@ -324,6 +321,9 @@ importers:
       serverless-offline:
         specifier: ^14.4.0
         version: 14.4.0(serverless@4.23.0)
+      tailwind-merge:
+        specifier: ^3.3.1
+        version: 3.3.1
       tailwindcss:
         specifier: ^4.1.17
         version: 4.1.17
