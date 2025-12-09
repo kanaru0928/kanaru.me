@@ -7,6 +7,7 @@ import { Fragment, useEffect, useState } from "react";
 import * as runtime from "react/jsx-runtime";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
+import { mdxComponents } from "~/features/mdx/mdx-components";
 import { apiClient } from "~/lib/apiClient";
 import type { Route } from "./+types/articles.$slug";
 
@@ -26,7 +27,6 @@ export async function loader({ params }: Route.LoaderArgs) {
       remarkPlugins: [remarkFrontmatter, remarkGfm],
       rehypePlugins: [[rehypeShiki, { theme: "catppuccin-mocha" }]],
       outputFormat: "function-body",
-      providerImportSource: "@mdx-js/react",
     }),
   );
 
@@ -84,7 +84,7 @@ export default function ArticlesSlugRoute({
           ))}
         </div>
       </div>
-      <Content />
+      <Content components={mdxComponents} />
     </>
   );
 }
