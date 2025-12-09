@@ -56,13 +56,10 @@ export default function ArticlesSlugRoute({
 
   useEffect(() => {
     (async () => {
-      const useMDXComponents = () => mdxComponents;
-
       setMdxModule(
         await run(code, {
           ...runtime,
           baseUrl: import.meta.url,
-          useMDXComponents,
         }),
       );
     })();
@@ -87,7 +84,7 @@ export default function ArticlesSlugRoute({
           ))}
         </div>
       </div>
-      <Content />
+      <Content components={mdxComponents} />
     </>
   );
 }
