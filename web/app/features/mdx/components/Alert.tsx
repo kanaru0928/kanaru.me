@@ -41,7 +41,7 @@ export function Alert({ children, type = "neutral" }: AlertProps) {
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-lg px-6 text-sm",
+        "relative my-4 overflow-hidden rounded-lg px-6 text-sm",
         "before:absolute before:top-0 before:bottom-0 before:left-0 before:h-full before:w-1.5 before:rounded-l-lg before:content-['']",
         style,
       )}
