@@ -57,6 +57,9 @@ jobs:
       - name: Build API
         run: cd api && pnpm build
 
+      - name: Install Lambda dependencies
+        run: cd api && pnpm build:lambda-deps
+
       - name: Check web/package.json changes
         id: check_package_json
         run: |
