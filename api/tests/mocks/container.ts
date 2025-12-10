@@ -1,4 +1,5 @@
 import { DeleteArticleUseCase } from "../../src/application/usecases/DeleteArticleUseCase";
+import { GenerateOgImageUseCase } from "../../src/application/usecases/GenerateOgImageUseCase";
 import { GetArticleUseCase } from "../../src/application/usecases/GetArticleUseCase";
 import { ListArticlesUseCase } from "../../src/application/usecases/ListArticlesUseCase";
 import { UpsertArticleUseCase } from "../../src/application/usecases/UpsertArticleUseCase";
@@ -39,6 +40,11 @@ export function createMockContainer(
 	container.registerSingleton(
 		DI_TOKENS.DeleteArticleUseCase,
 		() => new DeleteArticleUseCase(mockRepository, mockStorage),
+	);
+
+	container.registerSingleton(
+		DI_TOKENS.GenerateOgImageUseCase,
+		() => new GenerateOgImageUseCase(mockRepository),
 	);
 
 	return container;
