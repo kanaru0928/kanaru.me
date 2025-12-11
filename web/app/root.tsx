@@ -30,7 +30,7 @@ export function meta({ location }: Route.MetaArgs) {
     },
     {
       property: "og:type",
-      content: "website"
+      content: "website",
     },
     {
       property: "og:url",
@@ -39,9 +39,35 @@ export function meta({ location }: Route.MetaArgs) {
     {
       property: "og:image",
       content: `${process.env.PUBLIC_BASE_URL}/public/og-image.png`,
-    }
+    },
   ];
 }
+
+export const links: Route.LinksFunction = () => {
+  return [
+    {
+      rel: "apple-touch-icon",
+      sizes: "180x180",
+      href: "/apple-touch-icon.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "32x32",
+      href: "/favicon-32x32.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "16x16",
+      href: "/favicon-16x16.png",
+    },
+    {
+      rel: "manifest",
+      href: "/site.webmanifest",
+    }
+  ];
+};
 
 export function Layout({ children }: { children: React.ReactNode }) {
   useTypekit();

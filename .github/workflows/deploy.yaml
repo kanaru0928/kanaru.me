@@ -115,4 +115,4 @@ jobs:
           LAYER_HASH: ${{ steps.calculate_hash.outputs.hash }}
 
       - name: Deploy Client Resources
-        run: cd web/build/client/assets && aws s3 sync --delete . s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-assets-${{ inputs.environment-name }}/assets/
+        run: cd web/build/client && aws s3 sync --delete . s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-assets-${{ inputs.environment-name }}/
