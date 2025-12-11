@@ -14,14 +14,47 @@ import { mdxComponents } from "./features/mdx/mdx-components";
 import { NavbarProvider } from "./features/navbar/components/NavbarProvider";
 import { useTypekit } from "./hooks/useTypekit";
 
+export function meta({ location }: Route.MetaArgs) {
+  return [
+    {
+      name: "description",
+      content: "My homepage 🏠",
+    },
+    {
+      property: "og:title",
+      content: "kanaru.me",
+    },
+    {
+      property: "og:description",
+      content: "My homepage 🏠",
+    },
+    {
+      property: "og:type",
+      content: "website"
+    },
+    {
+      property: "og:url",
+      content: `${process.env.PUBLIC_BASE_URL}${location.pathname}`,
+    },
+    {
+      property: "og:image",
+      content: `${process.env.PUBLIC_BASE_URL}/public/og-image.png`,
+    }
+  ];
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   useTypekit();
 
   return (
-    <html lang="en">
+    <html lang="ja">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@kanaru0928" />
+        <meta name="twitter:creator" content="@kanaru0928" />
+        <meta property="og:site_name" content="kanaru.me" />
         <Meta />
         <Links />
       </head>

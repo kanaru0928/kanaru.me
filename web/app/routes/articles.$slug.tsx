@@ -41,6 +41,22 @@ export function meta({ loaderData }: Route.MetaArgs) {
       name: "description",
       content: article.contentBody.slice(0, 150).replace(/\n/g, " "),
     },
+    {
+      property: "og:title",
+      content: article.title,
+    },
+    {
+      property: "og:description",
+      content: article.contentBody.slice(0, 150).replace(/\n/g, " "),
+    },
+    {
+      property: "og:type",
+      content: "article",
+    },
+    {
+      property: "og:image",
+      content: `${process.env.PUBLIC_BASE_URL}/api/og/articles/${article.slug}`,
+    }
   ];
 }
 
