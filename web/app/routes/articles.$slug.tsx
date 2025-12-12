@@ -27,7 +27,7 @@ export async function loader({ params }: Route.LoaderArgs) {
       remarkPlugins: [remarkFrontmatter, remarkGfm],
       rehypePlugins: [[rehypeShiki, { theme: "catppuccin-mocha" }]],
       outputFormat: "function-body",
-    })
+    }),
   );
 
   return { article, code };
@@ -49,7 +49,7 @@ export default function ArticlesSlugRoute({
         await run(code, {
           ...runtime,
           baseUrl: import.meta.url,
-        })
+        }),
       );
     })();
   }, [code]);

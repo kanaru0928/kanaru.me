@@ -25,7 +25,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
       <meta property="og:title" content="kanaru.me" />
       <meta property="og:type" content="website" />
       <meta property="og:description" content="My homepage 🏠" />
-      <HeroSection gitHubContributionData={loaderData.githubData} />;
+      <HeroSection gitHubContributionData={loaderData.githubData} />
     </>
   );
 }
