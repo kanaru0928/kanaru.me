@@ -60,7 +60,7 @@ export default function ArticlesSlugRoute({
       <meta property="og:title" content={article.title} />
       <meta
         property="og:image"
-        content={`${import.meta.env.VITE_BASE_URL}/api/og/${article.slug}`}
+        content={`${import.meta.env.VITE_BASE_URL}/api/og/articles/${article.slug}`}
       />
       <meta property="og:type" content="article" />
       <meta property="og:description" content={"kanaru.me の投稿記事"} />
