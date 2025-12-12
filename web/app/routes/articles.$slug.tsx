@@ -27,37 +27,10 @@ export async function loader({ params }: Route.LoaderArgs) {
       remarkPlugins: [remarkFrontmatter, remarkGfm],
       rehypePlugins: [[rehypeShiki, { theme: "catppuccin-mocha" }]],
       outputFormat: "function-body",
-    }),
+    })
   );
 
   return { article, code };
-}
-
-export function meta({ loaderData }: Route.MetaArgs) {
-  const { article } = loaderData;
-  return [
-    { title: article.title },
-    {
-      name: "description",
-      content: article.contentBody.slice(0, 150).replace(/\n/g, " "),
-    },
-    {
-      property: "og:title",
-      content: article.title,
-    },
-    {
-      property: "og:description",
-      content: article.contentBody.slice(0, 150).replace(/\n/g, " "),
-    },
-    {
-      property: "og:type",
-      content: "article",
-    },
-    {
-      property: "og:image",
-      content: `${process.env.PUBLIC_BASE_URL}/api/og/articles/${article.slug}`,
-    }
-  ];
 }
 
 export default function ArticlesSlugRoute({
@@ -76,13 +49,21 @@ export default function ArticlesSlugRoute({
         await run(code, {
           ...runtime,
           baseUrl: import.meta.url,
-        }),
+        })
       );
     })();
   }, [code]);
 
   return (
     <>
+      <title>{article.title}</title>
+      <meta property="og:title" content={article.title} />
+      <meta
+        property="og:image"
+        content={`${import.meta.env.VITE_BASE_URL}/api/og/${article.slug}`}
+      />
+      <meta property="og:type" content="article" />
+      <meta property="og:description" content={"kanaru.me の投稿記事"} />
       <div className="not-prose">
         <p className="text-sm">作成日: {formatISO9075(article.createdAt)}</p>
         {article.createdAt !== article.updatedAt && (

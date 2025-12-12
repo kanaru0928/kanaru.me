@@ -16,5 +16,16 @@ export async function loader() {
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  return <HeroSection gitHubContributionData={loaderData.githubData} />;
+  return (
+    <>
+      <meta
+        property="og:image"
+        content={`${import.meta.env.VITE_BASE_URL}/og-image.png`}
+      />
+      <meta property="og:title" content="kanaru.me" />
+      <meta property="og:type" content="website" />
+      <meta property="og:description" content="My homepage 🏠" />
+      <HeroSection gitHubContributionData={loaderData.githubData} />;
+    </>
+  );
 }

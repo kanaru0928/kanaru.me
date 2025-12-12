@@ -53,6 +53,8 @@ jobs:
 
       - name: Build web app
         run: cd web && pnpm build
+        env:
+          VITE_BASE_URL: ${{ inputs.environment-name == 'prod' && format('https://{0}', vars.DOMAIN_NAME) || vars.DEV_BASE_URL }}
 
       - name: Build API
         run: cd api && pnpm build
