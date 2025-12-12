@@ -83,7 +83,7 @@ export class AppStack extends cdk.Stack {
     const layerBucket = s3.Bucket.fromBucketName(
       this,
       "LambdaLayerBucket",
-      this.layerBucketName,
+      this.layerBucketName
     );
 
     return new lambda.LayerVersion(this, "KanarumeWebLayer", {
@@ -232,7 +232,7 @@ export class AppStack extends cdk.Stack {
     );
 
     // CloudFront Distribution作成
-    return new cloudfront.Distribution(this, "Distribution", {
+    const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: {
         origin: webFunctionUrlOrigin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -248,6 +248,24 @@ export class AppStack extends cdk.Stack {
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+        },
+        "/*.data": {
+          origin: webFunctionUrlOrigin,
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          originRequestPolicy:
+            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+        },
+        "/api/og/*": {
+          origin: apiFunctionUrlOrigin,
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          originRequestPolicy:
+            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
         },
         "/api/articles*": {
           origin: apiFunctionUrlOrigin,
@@ -271,6 +289,14 @@ export class AppStack extends cdk.Stack {
       enableLogging: false,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_ALL,
     });
+
+    distribution.addBehavior("/*.*", s3Origin, {
+      viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+      cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+      allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+    })
+
+    return distribution;
   }
 
   private createWarmerEventBridge() {

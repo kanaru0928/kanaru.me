@@ -2,7 +2,10 @@
   "name": "api",
   "type": "module",
   "scripts": {
-    "build": "esbuild --bundle --outfile=./dist/index.js --platform=node ./src/handler.ts",
+    "build": "run-s build:esbuild build:copy-assets",
+    "build:esbuild": "esbuild --bundle --outfile=./dist/index.mjs --platform=node --format=esm --external:@napi-rs/canvas --external:@aws-sdk/* ./src/handler.ts",
+    "build:copy-assets": "mkdir -p dist/assets/fonts && cp -r assets/* dist/assets/",
+    "build:lambda-deps": "docker run --rm --platform linux/arm64 -v $(pwd):/workspace -w /workspace public.ecr.aws/amazonlinux/amazonlinux:2023 sh -c 'dnf install -y nodejs npm && npm install --prefix /workspace/dist --omit=dev --no-package-lock @napi-rs/canvas@0.1.84'",
     "zip": "zip -j lambda.zip dist/index.js",
     "update": "aws lambda update-function-code --zip-file fileb://lambda.zip --function-name hello",
     "deploy": "run-s build zip update",
@@ -33,6 +36,7 @@
     "@hono/swagger-ui": "^0.5.2",
     "@hono/zod-openapi": "^1.1.5",
     "@hono/zod-validator": "^0.7.5",
+    "@napi-rs/canvas": "^0.1.84",
     "hono": "^4.10.6",
     "zod": "^4.1.13"
   }

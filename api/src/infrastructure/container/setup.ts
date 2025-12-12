@@ -1,4 +1,5 @@
 import { DeleteArticleUseCase } from "../../application/usecases/DeleteArticleUseCase";
+import { GenerateOgImageUseCase } from "../../application/usecases/GenerateOgImageUseCase";
 import { GetArticleUseCase } from "../../application/usecases/GetArticleUseCase";
 import { ListArticlesUseCase } from "../../application/usecases/ListArticlesUseCase";
 import { UpsertArticleUseCase } from "../../application/usecases/UpsertArticleUseCase";
@@ -75,6 +76,13 @@ export function setupContainer(
       DI_TOKENS.ArticleStorage,
     );
     return new DeleteArticleUseCase(repository, storage);
+  });
+
+  container.registerSingleton(DI_TOKENS.GenerateOgImageUseCase, () => {
+    const repository = container.resolve<IArticleRepository>(
+      DI_TOKENS.ArticleRepository,
+    );
+    return new GenerateOgImageUseCase(repository);
   });
 
   return container;

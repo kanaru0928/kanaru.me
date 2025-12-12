@@ -33,17 +33,6 @@ export async function loader({ params }: Route.LoaderArgs) {
   return { article, code };
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
-  const { article } = loaderData;
-  return [
-    { title: article.title },
-    {
-      name: "description",
-      content: article.contentBody.slice(0, 150).replace(/\n/g, " "),
-    },
-  ];
-}
-
 export default function ArticlesSlugRoute({
   loaderData,
 }: Route.ComponentProps) {
@@ -67,6 +56,14 @@ export default function ArticlesSlugRoute({
 
   return (
     <>
+      <title>{article.title}</title>
+      <meta property="og:title" content={article.title} />
+      <meta
+        property="og:image"
+        content={`${import.meta.env.VITE_BASE_URL}/api/og/articles/${article.slug}`}
+      />
+      <meta property="og:type" content="article" />
+      <meta property="og:description" content={"kanaru.me の投稿記事"} />
       <div className="not-prose">
         <p className="text-sm">作成日: {formatISO9075(article.createdAt)}</p>
         {article.createdAt !== article.updatedAt && (

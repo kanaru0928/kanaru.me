@@ -10,6 +10,7 @@ import type { ISecretRepository } from "./domain/repositories/ISecretRepository"
 import { setupContainer } from "./infrastructure/container/setup";
 import { createArticleRouter } from "./interface/routes/articles";
 import { createAuthRouter } from "./interface/routes/auth";
+import { createOgRouter } from "./interface/routes/og";
 
 // 再エクスポート（テストで使用）
 export type { EnvConfig };
@@ -126,6 +127,10 @@ app.route("/api", authRouter);
 const articlesRouter = createArticleRouter();
 app.route("/api/articles", articlesRouter);
 
+// OGP画像生成ルートをマウント
+const ogRouter = createOgRouter();
+app.route("/api/og", ogRouter);
+
 // セキュリティスキームの登録
 app.openAPIRegistry.registerComponent("securitySchemes", "InitialBearer", {
   type: "apiKey",
@@ -157,6 +162,10 @@ app.doc("/api/openapi.json", {
     {
       name: "Articles",
       description: "記事の作成、取得、更新、削除",
+    },
+    {
+      name: "OGP",
+      description: "OGP画像の生成",
     },
   ],
 });

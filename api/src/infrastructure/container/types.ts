@@ -9,6 +9,7 @@ export const DI_TOKENS = {
   ListArticlesUseCase: Symbol.for("ListArticlesUseCase"),
   UpsertArticleUseCase: Symbol.for("UpsertArticleUseCase"),
   DeleteArticleUseCase: Symbol.for("DeleteArticleUseCase"),
+  GenerateOgImageUseCase: Symbol.for("GenerateOgImageUseCase"),
 } as const;
 
 export type DIToken = (typeof DI_TOKENS)[keyof typeof DI_TOKENS];
