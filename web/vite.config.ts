@@ -6,6 +6,7 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { remarkLinkCard } from "./app/features/mdx/plugins/remark-link-card";
 
 export default defineConfig(({ isSsrBuild }) => ({
   build: {
@@ -13,7 +14,7 @@ export default defineConfig(({ isSsrBuild }) => ({
   },
   plugins: [
     mdx({
-      remarkPlugins: [remarkFrontmatter, remarkGfm],
+      remarkPlugins: [remarkFrontmatter, remarkGfm, remarkLinkCard],
       rehypePlugins: [[rehypeShiki, { theme: "catppuccin-mocha" }]],
       providerImportSource: "@mdx-js/react",
     }),
