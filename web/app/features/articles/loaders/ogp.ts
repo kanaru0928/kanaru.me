@@ -3,7 +3,6 @@ import ogs from "open-graph-scraper";
 export type OGPData = {
   url: string;
   title?: string;
-  description?: string;
   image?: string;
   siteName?: string;
 };
@@ -47,7 +46,6 @@ export async function fetchOGP(url: string): Promise<OGPResult> {
     const ogpData: OGPData = {
       url,
       title: result.ogTitle,
-      description: result.ogDescription,
       image: result.ogImage?.[0]?.url,
       siteName: result.ogSiteName,
     };
@@ -81,7 +79,6 @@ export async function fetchMultipleOGP(
       ogpMap.set(result.url, {
         url: result.url,
         title: result.url,
-        description: undefined,
         image: undefined,
         siteName: undefined,
       });

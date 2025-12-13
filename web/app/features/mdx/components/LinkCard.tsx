@@ -3,7 +3,6 @@ import { ExternalLink } from "lucide-react";
 type LinkCardProps = {
   url: string;
   title?: string;
-  description?: string;
   image?: string;
   siteName?: string;
 };
@@ -14,7 +13,6 @@ type LinkCardProps = {
 export function LinkCard({
   url,
   title,
-  description,
   image,
   siteName,
 }: LinkCardProps) {
@@ -37,11 +35,6 @@ export function LinkCard({
         )}
         <div className="card-body">
           <h3 className="card-title line-clamp-2 text-base">{title || url}</h3>
-          {description && (
-            <p className="line-clamp-3 text-base-content/70 text-sm">
-              {description}
-            </p>
-          )}
           <div className="mt-auto flex items-center gap-2 text-base-content/50 text-xs">
             {siteName && <span>{siteName}</span>}
             {siteName && <span>•</span>}
