@@ -4,10 +4,10 @@ import { run } from "@mdx-js/mdx";
 import { formatISO9075 } from "date-fns";
 import { Fragment, useEffect, useState } from "react";
 import * as runtime from "react/jsx-runtime";
+import { compileArticleWithOGP } from "~/features/articles/loaders/article-loader";
 import { LinkCard } from "~/features/mdx/components/LinkCard";
 import { mdxComponents } from "~/features/mdx/mdx-components";
 import { apiClient } from "~/lib/apiClient";
-import { compileArticleWithOGP } from "~/features/articles/loaders/article-loader";
 import type { Route } from "./+types/articles.$slug";
 
 export async function loader({ params }: Route.LoaderArgs) {

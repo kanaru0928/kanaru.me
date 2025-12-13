@@ -10,12 +10,7 @@ type LinkCardProps = {
 /**
  * OGP情報を表示するリンクカードコンポーネント
  */
-export function LinkCard({
-  url,
-  title,
-  image,
-  siteName,
-}: LinkCardProps) {
+export function LinkCard({ url, title, image, siteName }: LinkCardProps) {
   return (
     <a
       href={url}
