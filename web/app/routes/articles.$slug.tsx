@@ -1,14 +1,13 @@
 "use client";
 
-import { compile, run } from "@mdx-js/mdx";
-import rehypeShiki from "@shikijs/rehype";
+import { run } from "@mdx-js/mdx";
 import { formatISO9075 } from "date-fns";
 import { Fragment, useEffect, useState } from "react";
 import * as runtime from "react/jsx-runtime";
-import remarkFrontmatter from "remark-frontmatter";
-import remarkGfm from "remark-gfm";
+import { LinkCard } from "~/features/mdx/components/LinkCard";
 import { mdxComponents } from "~/features/mdx/mdx-components";
 import { apiClient } from "~/lib/apiClient";
+import { compileArticleWithOGP } from "~/lib/article-loader";
 import type { Route } from "./+types/articles.$slug";
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -22,21 +21,16 @@ export async function loader({ params }: Route.LoaderArgs) {
     throw new Response("Article not found", { status: 404 });
   }
 
-  const code = String(
-    await compile(article.contentBody, {
-      remarkPlugins: [remarkFrontmatter, remarkGfm],
-      rehypePlugins: [[rehypeShiki, { theme: "catppuccin-mocha" }]],
-      outputFormat: "function-body",
-    }),
-  );
+  // 共通関数を使用
+  const { code, ogpMap } = await compileArticleWithOGP(article.contentBody);
 
-  return { article, code };
+  return { article, code, ogpMap };
 }
 
 export default function ArticlesSlugRoute({
   loaderData,
 }: Route.ComponentProps) {
-  const { article, code } = loaderData;
+  const { article, code, ogpMap } = loaderData;
 
   const [mdxModule, setMdxModule] = useState<Awaited<
     ReturnType<typeof run>
@@ -53,6 +47,12 @@ export default function ArticlesSlugRoute({
       );
     })();
   }, [code]);
+
+  // OGP情報を注入したmdxComponentsを作成
+  const customComponents = {
+    ...mdxComponents,
+
+  };
 
   return (
     <>
@@ -81,7 +81,7 @@ export default function ArticlesSlugRoute({
           ))}
         </div>
       </div>
-      <Content components={mdxComponents} />
+      <Content components={customComponents} />
     </>
   );
 }
