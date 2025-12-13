@@ -51,7 +51,10 @@ export default function ArticlesSlugRoute({
   // OGP情報を注入したmdxComponentsを作成
   const customComponents = {
     ...mdxComponents,
-
+    LinkCard: ({ url }: { url: string }) => {
+      const ogpData = ogpMap.get(url);
+      return <LinkCard url={url} {...ogpData} />;
+    },
   };
 
   return (
