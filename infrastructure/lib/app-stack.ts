@@ -302,8 +302,8 @@ export class AppStack extends cdk.Stack {
   private createWarmerEventBridge() {
     // 5分ごとにトリガーするEventBridge Ruleを作成
     const rule = new events.Rule(this, "KanarumeWarmerScheduleRule", {
-      schedule: events.Schedule.rate(cdk.Duration.minutes(5)),
-      description: "Trigger warmer function every 5 minutes",
+      schedule: events.Schedule.rate(cdk.Duration.minutes(3)),
+      description: "Trigger warmer function every 3 minutes",
     });
 
     // Warmer関数をターゲットとして追加
