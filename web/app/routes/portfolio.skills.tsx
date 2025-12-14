@@ -1,8 +1,10 @@
-import { Form, useSubmit, useSearchParams } from "react-router";
+import { Search } from "lucide-react";
+import { useMemo } from "react";
+import { Flipped, Flipper } from "react-flip-toolkit";
+import { Form, useLoaderData, useSubmit } from "react-router";
 import { SkillCard } from "~/features/skills/components/SkillCard";
 import { allTags, skills } from "~/features/skills/contents/contents";
 import type { Route } from "./+types/portfolio.skills";
-import { Search } from "lucide-react";
 
 export function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
@@ -12,23 +14,30 @@ export function loader({ request }: Route.LoaderArgs) {
   return { tag, keywords };
 }
 
-export default function SkillsPage({ loaderData }: Route.ComponentProps) {
-  const { tag, keywords } = loaderData;
+export default function SkillsPage() {
+  const { tag, keywords } = useLoaderData<typeof loader>();
 
-  const tagFilteredSkills = tag
-    ? skills.filter((skill) => skill.tags.includes(tag))
-    : skills;
+  const tagFilteredSkills = useMemo(
+    () => (tag ? skills.filter((skill) => skill.tags.includes(tag)) : skills),
+    [tag]
+  );
 
-  const filteredSkillss = keywords
-    ? tagFilteredSkills.filter(
-        (skill) =>
-          skill.name.toLowerCase().includes(keywords.toLowerCase()) ||
-          (skill.description?.toLowerCase().includes(keywords.toLowerCase())) ||
-          skill.tags.some((t) =>
-            t.toLowerCase().includes(keywords.toLowerCase())
+  const filteredSkills = useMemo(
+    () =>
+      keywords
+        ? tagFilteredSkills.filter(
+            (skill) =>
+              skill.name.toLowerCase().includes(keywords.toLowerCase()) ||
+              skill.description
+                ?.toLowerCase()
+                .includes(keywords.toLowerCase()) ||
+              skill.tags.some((t) =>
+                t.toLowerCase().includes(keywords.toLowerCase())
+              )
           )
-      )
-    : tagFilteredSkills;
+        : tagFilteredSkills,
+    [keywords, tagFilteredSkills]
+  );
 
   const submit = useSubmit();
 
@@ -122,18 +131,21 @@ export default function SkillsPage({ loaderData }: Route.ComponentProps) {
           </div>
         </fieldset>
       </Form>
-      <div className="grid gap-4 md:grid-cols-[repeat(auto-fit,minmax(22em,1fr))]">
-        {filteredSkillss.map((skill) => (
-          <SkillCard
-            key={skill.name}
-            name={skill.name}
-            tags={skill.tags}
-            proficiency={skill.proficiency}
-            description={skill.description}
-            Icon={skill.Icon}
-          />
-        ))}
-      </div>
+      <Flipper flipKey={filteredSkills.map((skill) => skill.name).join(",")}>
+        <div className="grid gap-4 md:grid-cols-[repeat(auto-fit,minmax(22em,1fr))]">
+          {filteredSkills.map((skill) => (
+            <Flipped key={skill.name} flipId={skill.name}>
+              <SkillCard
+                name={skill.name}
+                tags={skill.tags}
+                proficiency={skill.proficiency}
+                description={skill.description}
+                Icon={skill.Icon}
+              />
+            </Flipped>
+          ))}
+        </div>
+      </Flipper>
     </div>
   );
 }
