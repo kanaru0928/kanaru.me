@@ -13,6 +13,7 @@ import "./app.css";
 import { mdxComponents } from "./features/mdx/mdx-components";
 import { NavbarProvider } from "./features/navbar/components/NavbarProvider";
 import { useTypekit } from "./hooks/useTypekit";
+import "devicon/devicon.min.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   useTypekit();
