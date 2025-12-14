@@ -294,7 +294,7 @@ export class AppStack extends cdk.Stack {
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
       allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
-    })
+    });
 
     return distribution;
   }
@@ -302,8 +302,8 @@ export class AppStack extends cdk.Stack {
   private createWarmerEventBridge() {
     // 5分ごとにトリガーするEventBridge Ruleを作成
     const rule = new events.Rule(this, "KanarumeWarmerScheduleRule", {
-      schedule: events.Schedule.rate(cdk.Duration.minutes(5)),
-      description: "Trigger warmer function every 5 minutes",
+      schedule: events.Schedule.rate(cdk.Duration.minutes(3)),
+      description: "Trigger warmer function every 3 minutes",
     });
 
     // Warmer関数をターゲットとして追加
@@ -318,14 +318,17 @@ export class AppStack extends cdk.Stack {
       handler: "index.handler",
       code: lambda.Code.fromAsset("../functions/warmer"),
       environment: {
-        FUNCTION_NAME: this.webFunction.functionName,
+        FUNCTION_NAMES: [
+          this.webFunction.functionName,
+          this.apiFunction.functionName,
+        ].join(","),
       },
       timeout: cdk.Duration.seconds(30),
       architecture: lambda.Architecture.ARM_64,
     });
 
-    // Warmer関数にWebFunctionを呼び出す権限を付与
     this.webFunction.grantInvoke(warmerFunction);
+    this.apiFunction.grantInvoke(warmerFunction);
 
     return warmerFunction;
   }
