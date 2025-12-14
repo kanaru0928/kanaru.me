@@ -38,3 +38,7 @@ export const skills = [
     description: "主にフレームワークとしてこのサイトで使用しています。",
   },
 ] satisfies Skill[];
+
+export const allTags = Array.from(
+  new Set(skills.flatMap((skill) => skill.tags))
+).sort();

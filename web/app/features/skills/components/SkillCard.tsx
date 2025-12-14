@@ -24,7 +24,7 @@ export function SkillCard({
         </div>
         <div className="min-w-18 flex-1 space-y-2">
           <div className="flex flex-wrap items-center gap-4">
-            <h2 className="font-bold text-lg">{name}</h2>
+            <h2 className="card-title">{name}</h2>
             <div className="flex gap-1">
               {Array.from({ length: proficiencyMap[proficiency].level }).map(
                 (_, index) => (
