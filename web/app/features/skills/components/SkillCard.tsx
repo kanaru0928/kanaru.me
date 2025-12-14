@@ -1,7 +1,10 @@
+import { cn } from "~/lib/utils";
+import { type Proficiency, proficiencyMap } from "../contents/types";
+
 type SkillCardProps = {
   name: string;
   tags: string[];
-  proficiency: string;
+  proficiency: Proficiency;
   description?: string;
   Icon: React.ReactNode;
 };
@@ -14,16 +17,44 @@ export function SkillCard({
   Icon,
 }: SkillCardProps) {
   return (
-    <div className="card">
-      <div className="flex items-center gap-4">
-        <div className="text-7xl">{Icon}</div>
-        <div>
-          <h2>{name}</h2>
-          <p>{proficiency}</p>
-          <p>{description}</p>
-          <div>
+    <div className="card bg-base-100 shadow-sm">
+      <div className="card-body flex flex-row flex-wrap items-center gap-8">
+        <div className="flex items-center justify-center rounded-md bg-white p-4 text-5xl">
+          {Icon}
+        </div>
+        <div className="min-w-18 flex-1 space-y-2">
+          <div className="flex flex-wrap items-center gap-4">
+            <h2 className="font-bold text-lg">{name}</h2>
+            <div className="flex gap-1">
+              {Array.from({ length: proficiencyMap[proficiency].level }).map(
+                (_, index) => (
+                  <div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: 個数を表現するためだけの配列なので問題ない
+                    key={index}
+                    className={cn(
+                      "h-4 w-2 rounded-full hover:scale-125",
+                      proficiencyMap[proficiency].bgColor
+                    )}
+                  />
+                )
+              )}
+              {Array.from({
+                length: 5 - proficiencyMap[proficiency].level,
+              }).map((_, index) => (
+                <div
+                  // biome-ignore lint/suspicious/noArrayIndexKey: 個数を表現するためだけの配列なので問題ない
+                  key={index}
+                  className="h-4 w-2 rounded-full bg-base-300"
+                />
+              ))}
+            </div>
+          </div>
+          <p className="text-base-content/70">{description}</p>
+          <div className="flex flex-wrap gap-2">
             {tags.map((tag) => (
-              <span key={tag}>{tag}</span>
+              <div key={tag} className="badge">
+                {tag}
+              </div>
             ))}
           </div>
         </div>
