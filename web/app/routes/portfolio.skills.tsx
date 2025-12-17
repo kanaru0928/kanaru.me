@@ -135,13 +135,16 @@ export default function SkillsPage() {
         <div className="grid gap-4 md:grid-cols-[repeat(auto-fit,minmax(22em,1fr))]">
           {filteredSkills.map((skill) => (
             <Flipped key={skill.name} flipId={skill.name}>
-              <SkillCard
-                name={skill.name}
-                tags={skill.tags}
-                proficiency={skill.proficiency}
-                description={skill.description}
-                Icon={skill.Icon}
-              />
+              {(flippedProps) => (
+                <SkillCard
+                  name={skill.name}
+                  tags={skill.tags}
+                  proficiency={skill.proficiency}
+                  description={skill.description}
+                  Icon={skill.Icon}
+                  {...flippedProps}
+                />
+              )}
             </Flipped>
           ))}
         </div>

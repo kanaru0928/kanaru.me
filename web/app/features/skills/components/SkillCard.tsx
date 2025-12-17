@@ -7,7 +7,7 @@ type SkillCardProps = {
   proficiency: Proficiency;
   description?: string;
   Icon: React.ReactNode;
-};
+} & object;
 
 export function SkillCard({
   name,
@@ -33,10 +33,20 @@ export function SkillCard({
                     // biome-ignore lint/suspicious/noArrayIndexKey: 個数を表現するためだけの配列なので問題ない
                     key={index}
                     className={cn(
-                      "h-4 w-2 rounded-full hover:scale-125",
+                      "tooltip tooltip-secondary h-4 w-2 rounded-full hover:scale-125",
                       proficiencyMap[proficiency].bgColor
                     )}
-                  />
+                  >
+                    <div className="tooltip-content">
+                      <span className="text-[0.67rem]">
+                        {
+                          Object.values(proficiencyMap).find(
+                            (p) => p.level === index + 1
+                          )?.description
+                        }
+                      </span>
+                    </div>
+                  </div>
                 )
               )}
               {Array.from({
