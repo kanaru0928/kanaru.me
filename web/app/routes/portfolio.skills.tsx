@@ -12,7 +12,7 @@ export default function SkillsPage() {
 
   const tagFilteredSkills = useMemo(
     () => (tag ? skills.filter((skill) => skill.tags.includes(tag)) : skills),
-    [tag]
+    [tag],
   );
 
   const filteredSkills = useMemo(
@@ -25,11 +25,11 @@ export default function SkillsPage() {
                 ?.toLowerCase()
                 .includes(keywords.toLowerCase()) ||
               skill.tags.some((t) =>
-                t.toLowerCase().includes(keywords.toLowerCase())
-              )
+                t.toLowerCase().includes(keywords.toLowerCase()),
+              ),
           )
         : tagFilteredSkills,
-    [keywords, tagFilteredSkills]
+    [keywords, tagFilteredSkills],
   );
 
   const submit = useSubmit();
@@ -50,7 +50,7 @@ export default function SkillsPage() {
               defaultValue={keywords ?? ""}
               onChange={(event) => {
                 const formData = new FormData(
-                  event.currentTarget.form ?? undefined
+                  event.currentTarget.form ?? undefined,
                 );
                 const value = event.currentTarget.value.trim();
 
@@ -83,7 +83,7 @@ export default function SkillsPage() {
               defaultChecked={tag === null}
               onChange={() => {
                 const formData = new FormData(
-                  document.getElementById("search-form") as HTMLFormElement
+                  document.getElementById("search-form") as HTMLFormElement,
                 );
                 formData.delete("tag");
 
@@ -106,7 +106,7 @@ export default function SkillsPage() {
                 aria-label={t}
                 onChange={(event) => {
                   const formData = new FormData(
-                    event.currentTarget.form ?? undefined
+                    event.currentTarget.form ?? undefined,
                   );
 
                   // 空のkeywordsを削除

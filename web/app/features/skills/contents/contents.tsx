@@ -83,7 +83,8 @@ export const skills = [
         className="h-12"
       />
     ),
-    description: "Web バックエンドや強化学習、NN、競技プログラミングなど幅広く使用しています。",
+    description:
+      "Web バックエンドや強化学習、NN、競技プログラミングなど幅広く使用しています。",
   },
   {
     name: "FastAPI",
@@ -345,5 +346,5 @@ export const skills = [
 ] satisfies Skill[];
 
 export const allTags = Array.from(
-  new Set(skills.flatMap((skill) => skill.tags))
+  new Set(skills.flatMap((skill) => skill.tags)),
 ).sort();

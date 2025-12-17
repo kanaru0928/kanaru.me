@@ -34,20 +34,20 @@ export function SkillCard({
                     key={index}
                     className={cn(
                       "tooltip tooltip-secondary h-4 w-2 rounded-full hover:scale-125",
-                      proficiencyMap[proficiency].bgColor
+                      proficiencyMap[proficiency].bgColor,
                     )}
                   >
                     <div className="tooltip-content">
                       <span className="text-[0.67rem]">
                         {
                           Object.values(proficiencyMap).find(
-                            (p) => p.level === index + 1
+                            (p) => p.level === index + 1,
                           )?.description
                         }
                       </span>
                     </div>
                   </div>
-                )
+                ),
               )}
               {Array.from({
                 length: 5 - proficiencyMap[proficiency].level,

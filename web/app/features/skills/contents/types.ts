@@ -4,7 +4,7 @@ type ProficiencyContent = {
   level: number;
   description: string;
   bgColor: string;
-}
+};
 
 export const proficiencyMap = {
   beginner: {
