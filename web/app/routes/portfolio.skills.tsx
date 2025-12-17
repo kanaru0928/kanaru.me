@@ -1,21 +1,14 @@
 import { Search } from "lucide-react";
 import { useMemo } from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
-import { Form, useLoaderData, useSubmit } from "react-router";
+import { Form, useSearchParams, useSubmit } from "react-router";
 import { SkillCard } from "~/features/skills/components/SkillCard";
 import { allTags, skills } from "~/features/skills/contents/contents";
-import type { Route } from "./+types/portfolio.skills";
-
-export function loader({ request }: Route.LoaderArgs) {
-  const url = new URL(request.url);
-  const tag = url.searchParams.get("tag")?.trim() || null;
-  const keywords = url.searchParams.get("keywords")?.trim() || null;
-
-  return { tag, keywords };
-}
 
 export default function SkillsPage() {
-  const { tag, keywords } = useLoaderData<typeof loader>();
+  const [searchParams] = useSearchParams();
+  const tag = searchParams.get("tag");
+  const keywords = searchParams.get("keywords");
 
   const tagFilteredSkills = useMemo(
     () => (tag ? skills.filter((skill) => skill.tags.includes(tag)) : skills),
