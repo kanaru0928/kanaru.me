@@ -18,7 +18,7 @@ export function SkillCard({
   ...flippedProps
 }: SkillCardProps) {
   return (
-    <div className="card bg-base-100 shadow-sm" {...flippedProps}>
+    <div className="card break-normal bg-base-100 shadow-sm" {...flippedProps}>
       <div className="card-body flex flex-row flex-wrap items-center gap-8">
         <div className="flex items-center justify-center rounded-md bg-white p-4 text-5xl">
           {Icon}

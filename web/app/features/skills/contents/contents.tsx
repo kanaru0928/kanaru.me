@@ -1,3 +1,4 @@
+import { Database } from "lucide-react";
 import afterEffectsLogo from "../logos/ae.svg";
 import illustratorLogo from "../logos/ai.svg";
 import claudeLogo from "../logos/claude.svg";
@@ -57,6 +58,13 @@ export const skills = [
     description: "コンポーネント開発に使用しています。",
   },
   {
+    name: "React Native",
+    tags: ["フレームワーク", "モバイル"],
+    proficiency: "beginner",
+    Icon: <i className="devicon-react-original colored" />,
+    description: "Expo を併用してモバイルアプリ開発に使用しています。",
+  },
+  {
     name: "NestJS",
     tags: ["フレームワーク", "Web", "バックエンド"],
     proficiency: "intermediate",
@@ -71,6 +79,13 @@ export const skills = [
     Icon: <img src={honoLogo} alt="Hono" className="h-12" />,
     description:
       "一部のプロジェクトでバックエンドフレームワークとして使用しています。",
+  },
+  {
+    name: "Swift",
+    tags: ["言語", "モバイル"],
+    proficiency: "beginner",
+    Icon: <i className="devicon-swift-plain colored"></i>,
+    description: "SwiftUI を使用した iOS アプリ開発に使用しています。",
   },
   {
     name: "Python",
@@ -106,6 +121,14 @@ export const skills = [
       />
     ),
     description: "主に NN や強化学習の研究・開発で使用しています。",
+  },
+  {
+    name: "Rust",
+    tags: ["言語"],
+    proficiency: "intermediate",
+    Icon: <i className="devicon-rust-original colored"></i>,
+    description:
+      "個人開発で使用しています。Tauri を使用したデスクトップアプリ開発の経験があります。",
   },
   {
     name: "Ruby",
@@ -183,6 +206,14 @@ export const skills = [
     proficiency: "proficient",
     Icon: <i className="devicon-go-original-wordmark colored"></i>,
     description: "インターンで使用しました。",
+  },
+  {
+    name: "SQL",
+    tags: ["言語", "データベース"],
+    proficiency: "proficient",
+    Icon: <Database size={48} />,
+    description:
+      "PostgreSQL や SQLite を使用した RDB の設計・構築の経験があります。ほとんどの場合で ORM を使用しています。",
   },
   {
     name: "Docker",
@@ -346,5 +377,5 @@ export const skills = [
 ] satisfies Skill[];
 
 export const allTags = Array.from(
-  new Set(skills.flatMap((skill) => skill.tags)),
+  new Set(skills.flatMap((skill) => skill.tags))
 ).sort();
