@@ -40,9 +40,9 @@ export function WorkCard({
             {techs.map((tech) => (
               <Link
                 key={tech}
-                className="btn btn-xs btn-outline btn-secondary text-base-content"
+                className="btn btn-xs btn-outline btn-secondary rounded-sm text-base-content"
                 role="button"
-                to={`/portfolio/skills?keywords=${tech}`}
+                to={`/portfolio/skills?keywords=${encodeURIComponent(tech)}`}
               >
                 {tech}
               </Link>
@@ -60,7 +60,7 @@ export function WorkCard({
                   title={name}
                   className={cn(
                     "btn btn-square btn-sm btn-soft",
-                    color && `btn-${color}`,
+                    color && `btn-${color}`
                   )}
                   target="_blank"
                   rel="noopener noreferrer"

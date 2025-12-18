@@ -2,6 +2,7 @@ import { BookText, Link, Megaphone } from "lucide-react";
 import kanarumeImage from "../images/kanarume.png";
 import moImage from "../images/mo.png";
 import osansakuImage from "../images/osansaku.png";
+import riatoraImage from "../images/riatora.png";
 import vbcImage from "../images/vbc.png";
 import githubLogo from "../logos/github-mark.svg";
 import type { Work } from "./types";
@@ -75,8 +76,24 @@ export const works = [
   },
   {
     name: "Osansaku",
-    description: "ランダムな散策をサポートするアプリケーションです。",
+    description:
+      "ランダムな散策をサポートするアプリケーションです。2023 年度 U☆PoC たましん賞受賞。",
     techs: ["Python", "FastAPI", "React Native", "AWS"],
     image: osansakuImage,
+  },
+  {
+    name: "りあとら",
+    description:
+      "スマホカメラの映像から人物の骨格を推定し、リアルタイムで MMD モデルに反映するアプリケーションです。2022 年度中高生情報学研究コンテスト入賞。",
+    links: [
+      {
+        name: "リポジトリ",
+        to: "https://github.com/kanaru0928/3DTracking_PostProcessing",
+        Icon: <img src={githubLogo} alt="GitHub" className="h-4 w-4" />,
+        color: "secondary",
+      },
+    ],
+    techs: ["Python", "C#"],
+    image: riatoraImage,
   },
 ] satisfies Work[];
