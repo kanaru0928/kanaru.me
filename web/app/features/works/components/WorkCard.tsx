@@ -60,7 +60,7 @@ export function WorkCard({
                   title={name}
                   className={cn(
                     "btn btn-square btn-sm btn-soft",
-                    color && `btn-${color}`
+                    color && `btn-${color}`,
                   )}
                   target="_blank"
                   rel="noopener noreferrer"

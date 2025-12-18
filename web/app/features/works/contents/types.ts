@@ -12,5 +12,3 @@ export type Work = {
   techs?: string[];
   image: string;
 };
-
-

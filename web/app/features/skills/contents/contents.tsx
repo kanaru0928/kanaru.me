@@ -377,5 +377,5 @@ export const skills = [
 ] satisfies Skill[];
 
 export const allTags = Array.from(
-  new Set(skills.flatMap((skill) => skill.tags))
+  new Set(skills.flatMap((skill) => skill.tags)),
 ).sort();

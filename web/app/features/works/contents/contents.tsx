@@ -40,7 +40,16 @@ export const works = [
         color: "primary",
       },
     ],
-    techs: ["TypeScript", "React", "Next.js", "NestJS", "Storybook", "SQL", "AWS", "CDK"],
+    techs: [
+      "TypeScript",
+      "React",
+      "Next.js",
+      "NestJS",
+      "Storybook",
+      "SQL",
+      "AWS",
+      "CDK",
+    ],
     image: moImage,
   },
   {
