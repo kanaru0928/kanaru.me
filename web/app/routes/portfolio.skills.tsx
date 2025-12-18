@@ -37,6 +37,10 @@ export default function SkillsPage() {
   return (
     <div className="space-y-8">
       <h1 className="font-extrabold text-3xl">Skills</h1>
+      <p className="break-normal text-base-content/70">
+        経験のある技術の一覧です。ここ 3
+        年程度で使用歴のある技術の一部を掲載しています。以前に使用していた技術や、特別アウトプットのない技術は含まれていません。
+      </p>
       <Form role="search" id="search-form" className="flex flex-wrap gap-2">
         <fieldset className="fieldset">
           <legend className="fieldset-legend">検索</legend>
