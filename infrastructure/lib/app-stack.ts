@@ -167,13 +167,6 @@ export class AppStack extends cdk.Stack {
           resources: [`arn:aws:ssm:${this.region}:${this.account}:*`],
         }),
       ],
-      layers: [
-        lambda.LayerVersion.fromLayerVersionArn(
-          this,
-          "AWSLambdaPowertoolsLayer",
-          "arn:aws:lambda:ap-northeast-1:133490724326:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:21"
-        ),
-      ],
       timeout: cdk.Duration.minutes(1),
       memorySize: 512,
       architecture: lambda.Architecture.ARM_64,
@@ -253,7 +246,7 @@ export class AppStack extends cdk.Stack {
           origin: webFunctionUrlOrigin,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
           originRequestPolicy:
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
@@ -300,7 +293,6 @@ export class AppStack extends cdk.Stack {
   }
 
   private createWarmerEventBridge() {
-    // 5分ごとにトリガーするEventBridge Ruleを作成
     const rule = new events.Rule(this, "KanarumeWarmerScheduleRule", {
       schedule: events.Schedule.rate(cdk.Duration.minutes(3)),
       description: "Trigger warmer function every 3 minutes",

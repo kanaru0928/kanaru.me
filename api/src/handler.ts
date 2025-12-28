@@ -1,9 +1,9 @@
 import { handle } from "hono/aws-lambda";
 import { app, setSecretRepository } from "./app";
-import { LambdaExtensionSecretRepository } from "./infrastructure/repositories/LambdaExtensionSecretRepository";
+import { SsmSecretRepository } from "./infrastructure/repositories/SsmSecretRepository";
 
 // Lambda環境用のSecretRepositoryを作成
-const secretRepository = new LambdaExtensionSecretRepository();
+const secretRepository = new SsmSecretRepository();
 setSecretRepository(secretRepository);
 
 export const handler = handle(app);
