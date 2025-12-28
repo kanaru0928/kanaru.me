@@ -3,8 +3,8 @@ import rehypeShiki from "@shikijs/rehype";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { remarkLinkCard } from "~/features/mdx/plugins/remark-link-card";
-import { extractURLsFromMarkdown, fetchMultipleOGP } from "./ogp";
 import { logger } from "~/lib/logger";
+import { extractURLsFromMarkdown, fetchMultipleOGP } from "./ogp";
 
 export async function compileArticleWithOGP(contentBody: string) {
   logger.debug("Extracting URLs from markdown content");
