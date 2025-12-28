@@ -12,7 +12,7 @@ export async function compileArticleWithOGP(contentBody: string) {
   // URL抽出
   const urls = extractURLsFromMarkdown(contentBody);
 
-  logger.debug("Promissing OGP data for extracted URLs:", urls);
+  logger.debug("Promissing OGP data for extracted URLs");
 
   // OGP取得
   const ogpMap = fetchMultipleOGP(urls);

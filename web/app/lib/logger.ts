@@ -1,13 +1,10 @@
-import { formatISO } from "date-fns";
+import { format } from "date-fns";
 
 function print(
   func: (...args: unknown[]) => void,
   ...args: unknown[]
 ) {
-  const timestamp = formatISO(new Date(), {
-    representation: "time",
-    format: "extended",
-  });
+  const timestamp = format(new Date(), "HH:mm:ss.SSS");
   func(`[${timestamp}]`, ...args);
 }
 
