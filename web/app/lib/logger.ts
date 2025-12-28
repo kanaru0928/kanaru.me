@@ -1,9 +1,6 @@
 import { format } from "date-fns";
 
-function print(
-  func: (...args: unknown[]) => void,
-  ...args: unknown[]
-) {
+function print(func: (...args: unknown[]) => void, ...args: unknown[]) {
   const timestamp = format(new Date(), "HH:mm:ss.SSS");
   func(`[${timestamp}]`, ...args);
 }

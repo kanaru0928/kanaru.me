@@ -4,7 +4,10 @@ import { runSync } from "@mdx-js/mdx";
 import { formatISO9075 } from "date-fns";
 import { use, useMemo } from "react";
 import * as runtime from "react/jsx-runtime";
-import { fetchArticleCode, fetchArticleContent } from "~/features/articles/loaders/article-client";
+import {
+  fetchArticleCode,
+  fetchArticleContent,
+} from "~/features/articles/loaders/article-client";
 import { fetchOgpMap } from "~/features/articles/loaders/article-loader";
 import { SuspenseLinkCard } from "~/features/mdx/components/SuspenseLinkCard";
 import { mdxComponents } from "~/features/mdx/mdx-components";

@@ -15,10 +15,10 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   console.log(
     "Fetching article with url:",
-    `${process.env.API_BASE_URL}/static/articles/${hash}`
+    `${process.env.API_BASE_URL}/static/articles/${hash}`,
   );
   const data = await fetch(
-    `${process.env.API_BASE_URL}/static/articles/${hash}`
+    `${process.env.API_BASE_URL}/static/articles/${hash}`,
   );
   if (!data.ok) {
     throw new Response("Article not found", { status: 404 });
@@ -30,7 +30,7 @@ export async function loader({ params }: Route.LoaderArgs) {
       remarkPlugins: [remarkFrontmatter, remarkGfm, remarkLinkCard],
       rehypePlugins: [[rehypeShiki, { theme: "catppuccin-mocha" }]],
       outputFormat: "function-body",
-    })
+    }),
   );
 
   return { code };
