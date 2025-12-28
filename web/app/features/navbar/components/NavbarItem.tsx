@@ -14,7 +14,7 @@ export function NavbarItem({ className, children, ...props }: NavbarItemProps) {
           "flex justify-between",
           isActive && "bg-base-300",
           isPending && "animate-pulse",
-          className
+          className,
         )
       }
     >
