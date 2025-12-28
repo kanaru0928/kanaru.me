@@ -16,6 +16,7 @@ const env = {
   githubToken: process.env.GITHUB_TOKEN,
   environmentName: process.env.ENVIRONMENT_NAME,
   layerHash: process.env.LAYER_HASH,
+  buildHash: process.env.BUILD_HASH || process.env.GITHUB_SHA || "unknown",
 };
 
 if (!env.certificateArn || !env.githubToken || !env.environmentName || !env.layerHash) {
@@ -35,4 +36,5 @@ new AppStack(app, `AppStack-${env.environmentName}`, {
   environmentName: env.environmentName,
   layerBucketName: baseStack.getLayerBucketName(),
   layerHash: env.layerHash,
+  buildHash: env.buildHash,
 });

@@ -17,6 +17,7 @@ type Props = cdk.StackProps & {
   githubToken: string;
   environmentName: string;
   layerHash: string;
+  buildHash: string;
 };
 
 export class AppStack extends cdk.Stack {
@@ -26,6 +27,7 @@ export class AppStack extends cdk.Stack {
   private readonly environmentName: string;
   private readonly layerBucketName: string;
   private readonly layerHash: string;
+  private readonly buildHash: string;
 
   private assetBucket: s3.Bucket;
   private lambdaLayerVersion: lambda.LayerVersion;
@@ -50,6 +52,7 @@ export class AppStack extends cdk.Stack {
     this.environmentName = props.environmentName;
     this.layerBucketName = props.layerBucketName;
     this.layerHash = props.layerHash;
+    this.buildHash = props.buildHash;
 
     this.assetBucket = this.createAssetBucket();
 
@@ -346,6 +349,7 @@ export class AppStack extends cdk.Stack {
     const domainName =
       this.domainName || this.distribution.distributionDomainName;
     const allowedOrigins = [`https://${domainName}`];
+
     const apiCutomResource = new customResource.AwsCustomResource(
       this,
       "UpdateApiFunctionEnvCR",
@@ -368,7 +372,7 @@ export class AppStack extends cdk.Stack {
             },
           },
           physicalResourceId: customResource.PhysicalResourceId.of(
-            `${this.apiFunction.functionName}-env-update`
+            `${this.apiFunction.functionName}-${this.buildHash}-env-update`
           ),
         },
         policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
@@ -386,6 +390,7 @@ export class AppStack extends cdk.Stack {
   private updateWebFunctionEnv() {
     const domainName =
       this.domainName || this.distribution.distributionDomainName;
+
     const webCutomResource = new customResource.AwsCustomResource(
       this,
       "UpdateWebFunctionEnvCR",
@@ -403,7 +408,7 @@ export class AppStack extends cdk.Stack {
             },
           },
           physicalResourceId: customResource.PhysicalResourceId.of(
-            `${this.webFunction.functionName}-env-update`
+            `${this.webFunction.functionName}-${this.buildHash}-env-update`
           ),
         },
         policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
