@@ -9,20 +9,29 @@ import { LinkCard } from "~/features/mdx/components/LinkCard";
 import { mdxComponents } from "~/features/mdx/mdx-components";
 import { apiClient } from "~/lib/apiClient";
 import type { Route } from "./+types/articles.$slug";
+import { logger } from "~/lib/logger";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const { slug } = params;
+
+  logger.debug("Fetching article with slug:", slug);
 
   const { data: article, error } = await apiClient.GET("/api/articles/{slug}", {
     params: { path: { slug } },
   });
 
+  logger.debug("Article fetch successful for slug:", slug);
+
   if (error || !article) {
     throw new Response("Article not found", { status: 404 });
   }
 
+  logger.debug("Compiling article content for slug:", slug);
+
   // 共通関数を使用
   const { code, ogpMap } = await compileArticleWithOGP(article.contentBody);
+
+  logger.debug("Article compiled successfully for slug:", slug);
 
   return { article, code, ogpMap };
 }
