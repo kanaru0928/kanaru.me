@@ -4,13 +4,20 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { remarkLinkCard } from "~/features/mdx/plugins/remark-link-card";
 import { extractURLsFromMarkdown, fetchMultipleOGP } from "./ogp";
+import { logger } from "~/lib/logger";
 
 export async function compileArticleWithOGP(contentBody: string) {
+  logger.debug("Extracting URLs from markdown content");
+
   // URL抽出
   const urls = extractURLsFromMarkdown(contentBody);
 
+  logger.debug("Promissing OGP data for extracted URLs:", urls);
+
   // OGP取得
-  const ogpMap = await fetchMultipleOGP(urls);
+  const ogpMap = fetchMultipleOGP(urls);
+
+  logger.debug("Compiling MDX content with OGP data");
 
   // MDXコンパイル
   const code = String(
@@ -20,6 +27,8 @@ export async function compileArticleWithOGP(contentBody: string) {
       outputFormat: "function-body",
     }),
   );
+
+  logger.debug("MDX content compiled successfully");
 
   return { code, ogpMap };
 }

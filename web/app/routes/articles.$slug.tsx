@@ -5,11 +5,11 @@ import { formatISO9075 } from "date-fns";
 import { useMemo } from "react";
 import * as runtime from "react/jsx-runtime";
 import { compileArticleWithOGP } from "~/features/articles/loaders/article-loader";
-import { LinkCard } from "~/features/mdx/components/LinkCard";
+import { SuspenseLinkCard } from "~/features/mdx/components/SuspenseLinkCard";
 import { mdxComponents } from "~/features/mdx/mdx-components";
 import { apiClient } from "~/lib/apiClient";
-import type { Route } from "./+types/articles.$slug";
 import { logger } from "~/lib/logger";
+import type { Route } from "./+types/articles.$slug";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const { slug } = params;
@@ -52,10 +52,9 @@ export default function ArticlesSlugRoute({
   // OGP情報を注入したmdxComponentsを作成
   const customComponents = {
     ...mdxComponents,
-    LinkCard: ({ url }: { url: string }) => {
-      const ogpData = ogpMap.get(url);
-      return <LinkCard url={url} {...ogpData} />;
-    },
+    LinkCard: ({ url }: { url: string }) => (
+      <SuspenseLinkCard url={url} ogpMap={ogpMap} />
+    ),
   };
 
   return (
