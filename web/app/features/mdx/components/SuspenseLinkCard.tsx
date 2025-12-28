@@ -5,17 +5,14 @@ import { LinkCard } from "./LinkCard";
 
 type SuspenseLinkCardProps = {
   url: string;
-  ogpMap: Promise<Map<string, OGPData>>;
+  ogpMap: Map<string, Promise<OGPData>>;
 };
 
 export function SuspenseLinkCard({ url, ogpMap }: SuspenseLinkCardProps) {
   return (
     <Suspense fallback={<LinkCard url={url} />}>
-      <Await resolve={ogpMap}>
-        {(resolvedOgpMap) => {
-          const ogpData = resolvedOgpMap.get(url);
-          return <LinkCard url={url} {...ogpData} />;
-        }}
+      <Await resolve={ogpMap.get(url)}>
+        {(ogpData) => <LinkCard url={url} {...ogpData} />}
       </Await>
     </Suspense>
   );

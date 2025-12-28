@@ -2,9 +2,10 @@
 
 import { runSync } from "@mdx-js/mdx";
 import { formatISO9075 } from "date-fns";
-import { useMemo } from "react";
+import { use, useMemo } from "react";
 import * as runtime from "react/jsx-runtime";
-import { compileArticleWithOGP } from "~/features/articles/loaders/article-loader";
+import { fetchArticleCode, fetchArticleContent } from "~/features/articles/loaders/article-client";
+import { fetchOgpMap } from "~/features/articles/loaders/article-loader";
 import { SuspenseLinkCard } from "~/features/mdx/components/SuspenseLinkCard";
 import { mdxComponents } from "~/features/mdx/mdx-components";
 import { apiClient } from "~/lib/apiClient";
@@ -28,18 +29,24 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   logger.debug("Compiling article content for slug:", slug);
 
-  // 共通関数を使用
-  const { code, ogpMap } = await compileArticleWithOGP(article.contentBody);
+  const code = await fetchArticleCode(article.content);
 
   logger.debug("Article compiled successfully for slug:", slug);
 
-  return { article, code, ogpMap };
+  // 共通関数を使用
+  const ogpMapPromise = fetchArticleContent(article.content).then((content) =>
+    fetchOgpMap(content),
+  );
+
+  return { article, code, ogpMapPromise };
 }
 
 export default function ArticlesSlugRoute({
   loaderData,
 }: Route.ComponentProps) {
-  const { article, code, ogpMap } = loaderData;
+  const { article, code, ogpMapPromise } = loaderData;
+
+  const ogpMap = use(ogpMapPromise);
 
   const Content = useMemo(() => {
     const mdxModule = runSync(code, {

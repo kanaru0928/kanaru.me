@@ -135,9 +135,9 @@
               "Hono"
             ]
           },
-          "contentBody": {
+          "content": {
             "type": "string",
-            "example": "# はじめに\n\nこれは記事本文です。"
+            "example": "MDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiAgLQo=.mdx"
           }
         },
         "required": [
@@ -149,7 +149,7 @@
           "createdAt",
           "updatedAt",
           "tags",
-          "contentBody"
+          "content"
         ]
       },
       "DeleteSuccess": {
@@ -501,6 +501,59 @@
           },
           "401": {
             "description": "認証失敗",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "サーバーエラー",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/og/articles/{slug}": {
+      "get": {
+        "tags": [
+          "OGP"
+        ],
+        "summary": "記事のOGP画像を生成",
+        "description": "指定された記事のタイトルを描画したOGP画像（PNG）を返します",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "slug",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OGP画像の生成に成功",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "記事が見つかりません",
             "content": {
               "application/json": {
                 "schema": {

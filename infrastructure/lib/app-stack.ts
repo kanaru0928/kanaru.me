@@ -227,12 +227,36 @@ export class AppStack extends cdk.Stack {
       this.certificateArn
     );
 
+    const longCachePolicy = new cloudfront.CachePolicy(this, "LongCachePolicy", {
+      comment: "Cache policy with long TTL",
+      defaultTtl: cdk.Duration.days(30),
+      maxTtl: cdk.Duration.days(365),
+      minTtl: cdk.Duration.days(1),
+      cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+      headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+      queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+    });
+
+    const shortCachePolicy = new cloudfront.CachePolicy(
+      this,
+      "ShortCachePolicy",
+      {
+        comment: "Cache policy with short TTL",
+        defaultTtl: cdk.Duration.seconds(10),
+        maxTtl: cdk.Duration.days(1),
+        minTtl: cdk.Duration.seconds(1),
+        cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+        headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+        queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+      }
+    );
+
     // CloudFront Distribution作成
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: {
         origin: webFunctionUrlOrigin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        cachePolicy: shortCachePolicy,
         originRequestPolicy:
           cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
@@ -249,7 +273,7 @@ export class AppStack extends cdk.Stack {
           origin: webFunctionUrlOrigin,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+          cachePolicy: shortCachePolicy,
           originRequestPolicy:
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
@@ -267,7 +291,7 @@ export class AppStack extends cdk.Stack {
           origin: apiFunctionUrlOrigin,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+          cachePolicy: shortCachePolicy,
           originRequestPolicy:
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
@@ -277,6 +301,15 @@ export class AppStack extends cdk.Stack {
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+        },
+        "/articles/code/*": {
+          origin: webFunctionUrlOrigin,
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: longCachePolicy,
+          originRequestPolicy:
+            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         },
       },

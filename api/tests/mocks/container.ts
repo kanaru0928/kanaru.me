@@ -24,7 +24,7 @@ export function createMockContainer(
 	// UseCaseを登録（モックリポジトリとストレージを注入）
 	container.registerSingleton(
 		DI_TOKENS.GetArticleUseCase,
-		() => new GetArticleUseCase(mockRepository, mockStorage),
+		() => new GetArticleUseCase(mockRepository),
 	);
 
 	container.registerSingleton(
