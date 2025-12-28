@@ -1,8 +1,8 @@
 "use client";
 
-import { run } from "@mdx-js/mdx";
+import { runSync } from "@mdx-js/mdx";
 import { formatISO9075 } from "date-fns";
-import { Fragment, useEffect, useState } from "react";
+import { useMemo } from "react";
 import * as runtime from "react/jsx-runtime";
 import { compileArticleWithOGP } from "~/features/articles/loaders/article-loader";
 import { LinkCard } from "~/features/mdx/components/LinkCard";
@@ -32,20 +32,12 @@ export default function ArticlesSlugRoute({
 }: Route.ComponentProps) {
   const { article, code, ogpMap } = loaderData;
 
-  const [mdxModule, setMdxModule] = useState<Awaited<
-    ReturnType<typeof run>
-  > | null>(null);
-  const Content = mdxModule ? mdxModule.default : Fragment;
-
-  useEffect(() => {
-    (async () => {
-      setMdxModule(
-        await run(code, {
-          ...runtime,
-          baseUrl: import.meta.url,
-        }),
-      );
-    })();
+  const Content = useMemo(() => {
+    const mdxModule = runSync(code, {
+      ...runtime,
+      baseUrl: import.meta.url,
+    });
+    return mdxModule.default;
   }, [code]);
 
   // OGP情報を注入したmdxComponentsを作成
@@ -63,7 +55,9 @@ export default function ArticlesSlugRoute({
       <meta property="og:title" content={article.title} />
       <meta
         property="og:image"
-        content={`${import.meta.env.VITE_BASE_URL}/api/og/articles/${article.slug}`}
+        content={`${import.meta.env.VITE_BASE_URL}/api/og/articles/${
+          article.slug
+        }`}
       />
       <meta property="og:type" content="article" />
       <meta property="og:description" content={"kanaru.me の投稿記事"} />
