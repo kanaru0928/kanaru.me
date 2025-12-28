@@ -7,8 +7,9 @@ import {
   Wrench,
 } from "lucide-react";
 import { type ReactNode, useId } from "react";
-import { Link, NavLink } from "react-router";
+import { Link } from "react-router";
 import { cn } from "~/lib/utils";
+import { NavbarItem } from "./NavbarItem";
 import { ThemeController } from "./ThemeController";
 
 type NavbarProviderProps = { children?: ReactNode; defaultOpen?: boolean };
@@ -21,7 +22,7 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
       <input type="checkbox" id={drawerId} className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         <div className="flex min-h-screen flex-col">
-          <nav className="navbar sticky top-0 z-50 justify-center bg-base-300/30 px-4 shadow-sm filter backdrop-blur-md">
+          <nav className="navbar sticky top-0 z-40 justify-center bg-base-300/30 px-4 shadow-sm filter backdrop-blur-md">
             <div className="flex-1">
               <div className={cn(defaultOpen && "lg:hidden")}>
                 <label htmlFor={drawerId} className="btn btn-ghost btn-square">
@@ -39,7 +40,7 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
           <div className="flex-1">{children}</div>
         </div>
       </div>
-      <div className="drawer-side z-50">
+      <div className="drawer-side z-40">
         <label
           htmlFor={drawerId}
           className="drawer-overlay"
@@ -56,74 +57,37 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
               <summary>Portfolio</summary>
               <ul>
                 <li>
-                  <NavLink
-                    to="/portfolio/about"
-                    className={({ isActive, isPending }) =>
-                      cn(
-                        isActive && "bg-base-300",
-                        isPending && "animate-pulse",
-                      )
-                    }
-                  >
+                  <NavbarItem to="/portfolio/about">
                     <User className="h-4 w-4" />
                     About
-                  </NavLink>
+                  </NavbarItem>
                 </li>
                 <li>
-                  <NavLink
-                    to="/portfolio/works"
-                    className={({ isActive, isPending }) =>
-                      cn(
-                        isActive && "bg-base-300",
-                        isPending && "animate-pulse",
-                      )
-                    }
-                  >
+                  <NavbarItem to="/portfolio/works">
                     <Briefcase className="h-4 w-4" />
                     Works
-                  </NavLink>
+                  </NavbarItem>
                 </li>
                 <li>
-                  <NavLink
-                    to="/portfolio/history"
-                    className={({ isActive, isPending }) =>
-                      cn(
-                        isActive && "bg-base-300",
-                        isPending && "animate-pulse",
-                      )
-                    }
-                  >
+                  <NavbarItem to="/portfolio/history">
                     <History className="h-4 w-4" />
                     History
-                  </NavLink>
+                  </NavbarItem>
                 </li>
                 <li>
-                  <NavLink
-                    to="/portfolio/skills"
-                    className={({ isActive, isPending }) =>
-                      cn(
-                        isActive && "bg-base-300",
-                        isPending && "animate-pulse",
-                      )
-                    }
-                  >
+                  <NavbarItem to="/portfolio/skills">
                     <Wrench className="h-4 w-4" />
                     Skills
-                  </NavLink>
+                  </NavbarItem>
                 </li>
               </ul>
             </details>
           </li>
           <li>
-            <NavLink
-              to="/articles"
-              className={({ isActive, isPending }) =>
-                cn(isActive && "bg-base-300", isPending && "animate-pulse")
-              }
-            >
+            <NavbarItem to="/articles">
               <Newspaper className="h-4 w-4" />
               Articles
-            </NavLink>
+            </NavbarItem>
           </li>
         </ul>
       </div>
