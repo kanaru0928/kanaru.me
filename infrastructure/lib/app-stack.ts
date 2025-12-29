@@ -234,15 +234,21 @@ export class AppStack extends cdk.Stack {
       this.certificateArn
     );
 
-    const longCachePolicy = new cloudfront.CachePolicy(this, "LongCachePolicy", {
-      comment: "Cache policy with long TTL",
-      defaultTtl: cdk.Duration.days(30),
-      maxTtl: cdk.Duration.days(365),
-      minTtl: cdk.Duration.days(1),
-      cookieBehavior: cloudfront.CacheCookieBehavior.none(),
-      headerBehavior: cloudfront.CacheHeaderBehavior.none(),
-      queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
-    });
+    const longCachePolicy = new cloudfront.CachePolicy(
+      this,
+      "LongCachePolicy",
+      {
+        comment: "Cache policy with long TTL",
+        defaultTtl: cdk.Duration.days(30),
+        maxTtl: cdk.Duration.days(365),
+        minTtl: cdk.Duration.days(1),
+        cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+        headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+        queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+        enableAcceptEncodingBrotli: true,
+        enableAcceptEncodingGzip: true,
+      }
+    );
 
     const shortCachePolicy = new cloudfront.CachePolicy(
       this,
@@ -250,11 +256,13 @@ export class AppStack extends cdk.Stack {
       {
         comment: "Cache policy with short TTL",
         defaultTtl: cdk.Duration.seconds(10),
-        maxTtl: cdk.Duration.days(1),
+        maxTtl: cdk.Duration.hours(1),
         minTtl: cdk.Duration.seconds(1),
         cookieBehavior: cloudfront.CacheCookieBehavior.none(),
         headerBehavior: cloudfront.CacheHeaderBehavior.none(),
         queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+        enableAcceptEncodingBrotli: true,
+        enableAcceptEncodingGzip: true,
       }
     );
 
@@ -328,7 +336,7 @@ export class AppStack extends cdk.Stack {
 
     distribution.addBehavior("/*.*", s3Origin, {
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+      cachePolicy: shortCachePolicy,
       allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
     });
 
