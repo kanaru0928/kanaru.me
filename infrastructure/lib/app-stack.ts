@@ -241,7 +241,7 @@ export class AppStack extends cdk.Stack {
       minTtl: cdk.Duration.days(1),
       cookieBehavior: cloudfront.CacheCookieBehavior.none(),
       headerBehavior: cloudfront.CacheHeaderBehavior.none(),
-      queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+      queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
     });
 
     const shortCachePolicy = new cloudfront.CachePolicy(
