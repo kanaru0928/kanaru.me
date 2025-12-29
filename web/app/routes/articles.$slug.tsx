@@ -12,34 +12,25 @@ import { fetchOgpMap } from "~/features/articles/loaders/article-loader";
 import { SuspenseLinkCard } from "~/features/mdx/components/SuspenseLinkCard";
 import { mdxComponents } from "~/features/mdx/mdx-components";
 import { apiClient } from "~/lib/apiClient";
-import { logger } from "~/lib/logger";
 import type { Route } from "./+types/articles.$slug";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const { slug } = params;
 
-  logger.debug("Fetching article with slug:", slug);
-
   const { data: article, error } = await apiClient.GET("/api/articles/{slug}", {
     params: { path: { slug } },
   });
-
-  logger.debug("Article fetch successful for slug:", slug);
 
   if (error || !article) {
     throw new Response("Article not found", { status: 404 });
   }
 
-  logger.debug("Compiling article content for slug:", slug);
-
-  const code = await fetchArticleCode(article.content);
-
-  logger.debug("Article compiled successfully for slug:", slug);
-
   // 共通関数を使用
   const ogpMapPromise = fetchArticleContent(article.content).then((content) =>
-    fetchOgpMap(content),
+    fetchOgpMap(content)
   );
+
+  const code = await fetchArticleCode(article.content);
 
   return { article, code, ogpMapPromise };
 }
