@@ -27,7 +27,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   // 共通関数を使用
   const ogpMapPromise = fetchArticleContent(article.content).then((content) =>
-    fetchOgpMap(content)
+    fetchOgpMap(content),
   );
 
   const code = await fetchArticleCode(article.content);
