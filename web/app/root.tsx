@@ -7,6 +7,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLocation,
+  useNavigation,
 } from "react-router";
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -14,6 +15,7 @@ import { mdxComponents } from "./features/mdx/mdx-components";
 import { NavbarProvider } from "./features/navbar/components/NavbarProvider";
 import { useTypekit } from "./hooks/useTypekit";
 import "devicon/devicon.min.css";
+import { GlobalNavigating } from "./features/global/components/GlobalNavigating";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   useTypekit();
@@ -65,11 +67,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const location = useLocation();
+  const navigation = useNavigation();
   const drawerDefaultOpen = location.pathname !== "/";
 
   return (
     <NavbarProvider defaultOpen={drawerDefaultOpen}>
       <MDXProvider components={mdxComponents}>
+        {Boolean(navigation.location) && <GlobalNavigating />}
         <Outlet />
       </MDXProvider>
     </NavbarProvider>

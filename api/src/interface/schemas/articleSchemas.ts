@@ -29,9 +29,10 @@ export const ArticleDetailSchema = z
     createdAt: z.string().openapi({ example: "2025-01-01T00:00:00.000Z" }),
     updatedAt: z.string().openapi({ example: "2025-01-02T12:34:56.000Z" }),
     tags: z.array(z.string()).openapi({ example: ["TypeScript", "Hono"] }),
-    contentBody: z
-      .string()
-      .openapi({ example: "# はじめに\n\nこれは記事本文です。" }),
+    content: z.string().openapi({
+      example:
+        "MDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiAgLQo=.mdx",
+    }),
   })
   .openapi("ArticleDetail");
 

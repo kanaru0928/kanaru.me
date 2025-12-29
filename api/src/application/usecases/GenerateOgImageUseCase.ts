@@ -2,17 +2,17 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-	type SKRSContext2D,
-	createCanvas,
-	GlobalFonts,
-	loadImage,
+  createCanvas,
+  GlobalFonts,
+  loadImage,
+  type SKRSContext2D,
 } from "@napi-rs/canvas";
 import { NotFoundError } from "../../domain/errors/DomainError";
 import type { IArticleRepository } from "../../domain/repositories/IArticleRepository";
 
 const ASSETS_DIR = path.join(
-	path.dirname(fileURLToPath(import.meta.url)),
-	"assets",
+  path.dirname(fileURLToPath(import.meta.url)),
+  "assets",
 );
 const FONT_PATH = path.join(ASSETS_DIR, "fonts/SourceHanSansJP-Bold.otf");
 const BG_IMAGE_PATH = path.join(ASSETS_DIR, "og-background.png");
@@ -27,7 +27,10 @@ export class GenerateOgImageUseCase {
   constructor(private repository: IArticleRepository) {
     // フォント登録（初回のみ）
     if (!GenerateOgImageUseCase.fontRegistered) {
-      GlobalFonts.registerFromPath(FONT_PATH, GenerateOgImageUseCase.FONT_FAMILY);
+      GlobalFonts.registerFromPath(
+        FONT_PATH,
+        GenerateOgImageUseCase.FONT_FAMILY,
+      );
       GenerateOgImageUseCase.fontRegistered = true;
     }
   }
@@ -152,7 +155,10 @@ export class GenerateOgImageUseCase {
           lines.push(current);
           current = char;
 
-          if (currentLineCount + lines.length >= GenerateOgImageUseCase.MAX_LINES) {
+          if (
+            currentLineCount + lines.length >=
+            GenerateOgImageUseCase.MAX_LINES
+          ) {
             return { lines, remainder: current };
           }
         } else {
@@ -177,7 +183,10 @@ export class GenerateOgImageUseCase {
   ): string[] {
     let lastLine = lines[lines.length - 1];
 
-    while (ctx.measureText(`${lastLine}...`).width > maxWidth && lastLine.length > 0) {
+    while (
+      ctx.measureText(`${lastLine}...`).width > maxWidth &&
+      lastLine.length > 0
+    ) {
       lastLine = lastLine.slice(0, -1);
     }
 
@@ -207,7 +216,12 @@ export class GenerateOgImageUseCase {
       if (metrics.width > maxWidth) {
         if (currentLine === "") {
           // 単一トークンがmaxWidthを超える場合
-          const splitResult = this.splitLongToken(ctx, token, maxWidth, lines.length);
+          const splitResult = this.splitLongToken(
+            ctx,
+            token,
+            maxWidth,
+            lines.length,
+          );
           lines.push(...splitResult.lines);
           currentLine = splitResult.remainder;
 
@@ -228,7 +242,10 @@ export class GenerateOgImageUseCase {
       }
     }
 
-    if (currentLine.trim() !== "" && lines.length < GenerateOgImageUseCase.MAX_LINES) {
+    if (
+      currentLine.trim() !== "" &&
+      lines.length < GenerateOgImageUseCase.MAX_LINES
+    ) {
       lines.push(currentLine.trim());
     }
 

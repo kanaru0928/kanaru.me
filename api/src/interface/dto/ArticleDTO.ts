@@ -1,4 +1,3 @@
-import type { ArticleWithContent } from "../../application/usecases/GetArticleUseCase";
 import type { Article } from "../../domain/entities/Article";
 
 export interface ArticleListItemDTO {
@@ -13,7 +12,7 @@ export interface ArticleListItemDTO {
 }
 
 export interface ArticleDetailDTO extends ArticleListItemDTO {
-  contentBody: string;
+  content: string;
 }
 
 export function toArticleListItem(article: Article): ArticleListItemDTO {
@@ -29,7 +28,7 @@ export function toArticleListItem(article: Article): ArticleListItemDTO {
   };
 }
 
-export function toArticleDetail(article: ArticleWithContent): ArticleDetailDTO {
+export function toArticleDetail(article: Article): ArticleDetailDTO {
   return {
     slug: article.slug,
     title: article.title,
@@ -39,6 +38,6 @@ export function toArticleDetail(article: ArticleWithContent): ArticleDetailDTO {
     createdAt: article.createdAt,
     updatedAt: article.updatedAt,
     tags: article.tags,
-    contentBody: article.contentBody,
+    content: article.content,
   };
 }

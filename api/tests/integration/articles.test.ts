@@ -401,7 +401,7 @@ describe("Article API Routes", () => {
 			expect(res.status).toBe(200);
 			const json = await res.json();
 			expect(json).toHaveProperty("slug", "test-article");
-			expect(json).toHaveProperty("contentBody", "# Test Content");
+			expect(json).toHaveProperty("content", "articles/abc12345.md");
 		});
 
 		it("存在しない記事にアクセスすると404エラー", async () => {

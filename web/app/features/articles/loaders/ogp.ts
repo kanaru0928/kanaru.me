@@ -65,25 +65,21 @@ export async function fetchOGP(url: string): Promise<OGPResult> {
 /**
  * 複数のURLのOGP情報を並列取得
  */
-export async function fetchMultipleOGP(
+export function fetchMultipleOGP(
   urls: string[],
-): Promise<Map<string, OGPData>> {
-  const results = await Promise.all(urls.map((url) => fetchOGP(url)));
+): Map<string, Promise<OGPData>> {
+  const ogpMap = new Map<string, Promise<OGPData>>();
 
-  const ogpMap = new Map<string, OGPData>();
-
-  for (const result of results) {
-    if (result.success) {
-      ogpMap.set(result.data.url, result.data);
-    } else {
-      ogpMap.set(result.url, {
-        url: result.url,
-        title: result.url,
-        image: undefined,
-        siteName: undefined,
-      });
-    }
-  }
+  urls.forEach((url) => {
+    const ogpPromise = fetchOGP(url).then((result) => {
+      if (result.success) {
+        return result.data;
+      } else {
+        return { url };
+      }
+    });
+    ogpMap.set(url, ogpPromise);
+  });
 
   return ogpMap;
 }

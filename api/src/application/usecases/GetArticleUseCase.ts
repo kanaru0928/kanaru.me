@@ -1,28 +1,13 @@
 import type { Article } from "../../domain/entities/Article";
-import { InternalServerError } from "../../domain/errors/DomainError";
 import type { IArticleRepository } from "../../domain/repositories/IArticleRepository";
-import type { IArticleStorage } from "../../domain/repositories/IArticleStorage";
-
-export interface ArticleWithContent extends Article {
-  contentBody: string;
-}
 
 export class GetArticleUseCase {
-  constructor(
-    private repository: IArticleRepository,
-    private storage: IArticleStorage,
-  ) {}
+  constructor(private repository: IArticleRepository) {}
 
-  async execute(slug: string): Promise<ArticleWithContent | null> {
+  async execute(slug: string): Promise<Article | null> {
     const article = await this.repository.findBySlug(slug);
     if (!article) {
       return null;
-    }
-
-    // S3からコンテンツを取得
-    const contentBody = await this.storage.getContent(article.content);
-    if (!contentBody) {
-      throw new InternalServerError(`Content not found for article "${slug}"`);
     }
 
     // PVを自動インクリメント（非同期で実行、エラーは無視）
@@ -30,9 +15,6 @@ export class GetArticleUseCase {
       console.error(`Failed to increment PV for article "${slug}":`, err);
     });
 
-    return {
-      ...article,
-      contentBody,
-    };
+    return article;
   }
 }

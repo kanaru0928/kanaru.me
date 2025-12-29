@@ -45,10 +45,7 @@ export function setupContainer(
     const repository = container.resolve<IArticleRepository>(
       DI_TOKENS.ArticleRepository,
     );
-    const storage = container.resolve<IArticleStorage>(
-      DI_TOKENS.ArticleStorage,
-    );
-    return new GetArticleUseCase(repository, storage);
+    return new GetArticleUseCase(repository);
   });
 
   container.registerSingleton(DI_TOKENS.ListArticlesUseCase, () => {

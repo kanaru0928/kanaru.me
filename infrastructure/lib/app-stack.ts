@@ -17,6 +17,7 @@ type Props = cdk.StackProps & {
   githubToken: string;
   environmentName: string;
   layerHash: string;
+  buildHash: string;
 };
 
 export class AppStack extends cdk.Stack {
@@ -26,6 +27,7 @@ export class AppStack extends cdk.Stack {
   private readonly environmentName: string;
   private readonly layerBucketName: string;
   private readonly layerHash: string;
+  private readonly buildHash: string;
 
   private assetBucket: s3.Bucket;
   private lambdaLayerVersion: lambda.LayerVersion;
@@ -50,6 +52,7 @@ export class AppStack extends cdk.Stack {
     this.environmentName = props.environmentName;
     this.layerBucketName = props.layerBucketName;
     this.layerHash = props.layerHash;
+    this.buildHash = props.buildHash;
 
     this.assetBucket = this.createAssetBucket();
 
@@ -231,12 +234,44 @@ export class AppStack extends cdk.Stack {
       this.certificateArn
     );
 
+    const longCachePolicy = new cloudfront.CachePolicy(
+      this,
+      "LongCachePolicy",
+      {
+        comment: "Cache policy with long TTL",
+        defaultTtl: cdk.Duration.days(30),
+        maxTtl: cdk.Duration.days(365),
+        minTtl: cdk.Duration.days(1),
+        cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+        headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+        queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+        enableAcceptEncodingBrotli: true,
+        enableAcceptEncodingGzip: true,
+      }
+    );
+
+    const shortCachePolicy = new cloudfront.CachePolicy(
+      this,
+      "ShortCachePolicy",
+      {
+        comment: "Cache policy with short TTL",
+        defaultTtl: cdk.Duration.seconds(10),
+        maxTtl: cdk.Duration.hours(1),
+        minTtl: cdk.Duration.seconds(1),
+        cookieBehavior: cloudfront.CacheCookieBehavior.none(),
+        headerBehavior: cloudfront.CacheHeaderBehavior.none(),
+        queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+        enableAcceptEncodingBrotli: true,
+        enableAcceptEncodingGzip: true,
+      }
+    );
+
     // CloudFront Distribution作成
     const distribution = new cloudfront.Distribution(this, "Distribution", {
       defaultBehavior: {
         origin: webFunctionUrlOrigin,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        cachePolicy: shortCachePolicy,
         originRequestPolicy:
           cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
@@ -253,7 +288,7 @@ export class AppStack extends cdk.Stack {
           origin: webFunctionUrlOrigin,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          cachePolicy: shortCachePolicy,
           originRequestPolicy:
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
@@ -271,7 +306,7 @@ export class AppStack extends cdk.Stack {
           origin: apiFunctionUrlOrigin,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+          cachePolicy: shortCachePolicy,
           originRequestPolicy:
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
@@ -283,6 +318,15 @@ export class AppStack extends cdk.Stack {
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         },
+        "/articles/code/*": {
+          origin: webFunctionUrlOrigin,
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: longCachePolicy,
+          originRequestPolicy:
+            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+        },
       },
       certificate: certificate,
       domainNames: this.domainName ? [this.domainName] : undefined,
@@ -292,7 +336,7 @@ export class AppStack extends cdk.Stack {
 
     distribution.addBehavior("/*.*", s3Origin, {
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+      cachePolicy: shortCachePolicy,
       allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
     });
 
@@ -354,6 +398,7 @@ export class AppStack extends cdk.Stack {
     const domainName =
       this.domainName || this.distribution.distributionDomainName;
     const allowedOrigins = [`https://${domainName}`];
+
     const apiCutomResource = new customResource.AwsCustomResource(
       this,
       "UpdateApiFunctionEnvCR",
@@ -376,7 +421,7 @@ export class AppStack extends cdk.Stack {
             },
           },
           physicalResourceId: customResource.PhysicalResourceId.of(
-            `${this.apiFunction.functionName}-env-update`
+            `${this.apiFunction.functionName}-${this.buildHash}-env-update`
           ),
         },
         policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
@@ -394,6 +439,7 @@ export class AppStack extends cdk.Stack {
   private updateWebFunctionEnv() {
     const domainName =
       this.domainName || this.distribution.distributionDomainName;
+
     const webCutomResource = new customResource.AwsCustomResource(
       this,
       "UpdateWebFunctionEnvCR",
@@ -411,7 +457,7 @@ export class AppStack extends cdk.Stack {
             },
           },
           physicalResourceId: customResource.PhysicalResourceId.of(
-            `${this.webFunction.functionName}-env-update`
+            `${this.webFunction.functionName}-${this.buildHash}-env-update`
           ),
         },
         policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({

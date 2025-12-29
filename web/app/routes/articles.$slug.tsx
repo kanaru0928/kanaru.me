@@ -1,11 +1,15 @@
 "use client";
 
-import { run } from "@mdx-js/mdx";
+import { runSync } from "@mdx-js/mdx";
 import { formatISO9075 } from "date-fns";
-import { Fragment, useEffect, useState } from "react";
+import { use, useMemo } from "react";
 import * as runtime from "react/jsx-runtime";
-import { compileArticleWithOGP } from "~/features/articles/loaders/article-loader";
-import { LinkCard } from "~/features/mdx/components/LinkCard";
+import {
+  fetchArticleCode,
+  fetchArticleContent,
+} from "~/features/articles/loaders/article-client";
+import { fetchOgpMap } from "~/features/articles/loaders/article-loader";
+import { SuspenseLinkCard } from "~/features/mdx/components/SuspenseLinkCard";
 import { mdxComponents } from "~/features/mdx/mdx-components";
 import { apiClient } from "~/lib/apiClient";
 import type { Route } from "./+types/articles.$slug";
@@ -22,39 +26,36 @@ export async function loader({ params }: Route.LoaderArgs) {
   }
 
   // 共通関数を使用
-  const { code, ogpMap } = await compileArticleWithOGP(article.contentBody);
+  const ogpMapPromise = fetchArticleContent(article.content).then((content) =>
+    fetchOgpMap(content),
+  );
 
-  return { article, code, ogpMap };
+  const code = await fetchArticleCode(article.content);
+
+  return { article, code, ogpMapPromise };
 }
 
 export default function ArticlesSlugRoute({
   loaderData,
 }: Route.ComponentProps) {
-  const { article, code, ogpMap } = loaderData;
+  const { article, code, ogpMapPromise } = loaderData;
 
-  const [mdxModule, setMdxModule] = useState<Awaited<
-    ReturnType<typeof run>
-  > | null>(null);
-  const Content = mdxModule ? mdxModule.default : Fragment;
+  const ogpMap = use(ogpMapPromise);
 
-  useEffect(() => {
-    (async () => {
-      setMdxModule(
-        await run(code, {
-          ...runtime,
-          baseUrl: import.meta.url,
-        }),
-      );
-    })();
+  const Content = useMemo(() => {
+    const mdxModule = runSync(code, {
+      ...runtime,
+      baseUrl: import.meta.url,
+    });
+    return mdxModule.default;
   }, [code]);
 
   // OGP情報を注入したmdxComponentsを作成
   const customComponents = {
     ...mdxComponents,
-    LinkCard: ({ url }: { url: string }) => {
-      const ogpData = ogpMap.get(url);
-      return <LinkCard url={url} {...ogpData} />;
-    },
+    LinkCard: ({ url }: { url: string }) => (
+      <SuspenseLinkCard url={url} ogpMap={ogpMap} />
+    ),
   };
 
   return (
@@ -63,7 +64,9 @@ export default function ArticlesSlugRoute({
       <meta property="og:title" content={article.title} />
       <meta
         property="og:image"
-        content={`${import.meta.env.VITE_BASE_URL}/api/og/articles/${article.slug}`}
+        content={`${import.meta.env.VITE_BASE_URL}/api/og/articles/${
+          article.slug
+        }`}
       />
       <meta property="og:type" content="article" />
       <meta property="og:description" content={"kanaru.me の投稿記事"} />
