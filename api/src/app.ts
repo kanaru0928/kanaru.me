@@ -18,10 +18,6 @@ export type { EnvConfig };
 // モジュールレベル変数でSecretRepositoryを保持
 let secretRepositoryInstance: ISecretRepository | null = null;
 
-// モジュールレベル変数で環境変数をキャッシュ
-let cachedEnv: EnvConfig | null = null;
-let cachedContainer: ReturnType<typeof setupContainer> | null = null;
-
 /**
  * SecretRepositoryを設定（エントリポイントから呼び出される）
  */
@@ -60,27 +56,25 @@ app.use("*", async (c, next) => {
     );
   }
 
-  // 初回リクエスト時のみ環境変数とシークレットを取得
-  if (!cachedEnv || !cachedContainer) {
-    const envVars = env<Env["Bindings"]>(c);
+  // 毎リクエストで環境変数を取得
+  const envVars = env<Env["Bindings"]>(c);
 
-    // シークレットを取得（非同期）
-    cachedEnv = await validateEnv(envVars, secretRepositoryInstance);
+  // 毎リクエストでシークレットを取得（非同期）
+  const validatedEnv = await validateEnv(envVars, secretRepositoryInstance);
 
-    // DIコンテナのセットアップ
-    cachedContainer = setupContainer(
-      cachedEnv.DYNAMODB_TABLE_NAME,
-      cachedEnv.S3_BUCKET_NAME,
-      cachedEnv.AWS_REGION,
-      secretRepositoryInstance,
-      cachedEnv.S3_ORIGIN_URL,
-      cachedEnv.S3_KEY_PREFIX,
-    );
-  }
+  // DIコンテナのセットアップ（毎リクエスト）
+  const container = setupContainer(
+    validatedEnv.DYNAMODB_TABLE_NAME,
+    validatedEnv.S3_BUCKET_NAME,
+    validatedEnv.AWS_REGION,
+    secretRepositoryInstance,
+    validatedEnv.S3_ORIGIN_URL,
+    validatedEnv.S3_KEY_PREFIX,
+  );
 
   // コンテキストに注入
-  c.set("container", cachedContainer);
-  c.set("env", cachedEnv);
+  c.set("container", container);
+  c.set("env", validatedEnv);
 
   await next();
 });
