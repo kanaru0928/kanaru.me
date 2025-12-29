@@ -244,7 +244,7 @@ export class AppStack extends cdk.Stack {
         minTtl: cdk.Duration.days(1),
         cookieBehavior: cloudfront.CacheCookieBehavior.none(),
         headerBehavior: cloudfront.CacheHeaderBehavior.none(),
-        queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
+        queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
         enableAcceptEncodingBrotli: true,
         enableAcceptEncodingGzip: true,
       }
@@ -260,7 +260,7 @@ export class AppStack extends cdk.Stack {
         minTtl: cdk.Duration.seconds(1),
         cookieBehavior: cloudfront.CacheCookieBehavior.none(),
         headerBehavior: cloudfront.CacheHeaderBehavior.none(),
-        queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
+        queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
         enableAcceptEncodingBrotli: true,
         enableAcceptEncodingGzip: true,
       }
