@@ -47,9 +47,22 @@ export default function AboutPage() {
         {/* 資格カード */}
         <SectionCard title="資格">
           <ul className="list-inside list-disc space-y-2">
-            <li>応用情報技術者</li>
-            <li>第一種普通自動車運転免許 (AT限定)</li>
-            <li>実用英語技能検定 2級</li>
+            <li>
+              <span className="mr-2">情報処理安全確保支援士試験 合格</span>
+              <div className="badge badge-sm">2025-12</div>
+            </li>
+            <li>
+              <span className="mr-2">応用情報技術者試験 合格</span>
+              <div className="badge badge-sm">2024-12</div>
+            </li>
+            <li>
+              <span className="mr-2">第一種普通自動車運転免許 (AT限定)</span>
+              <div className="badge badge-sm">2023-09</div>
+            </li>
+            <li>
+              <span className="mr-2">実用英語技能検定 2級</span>
+              <div className="badge badge-sm">2019-06</div>
+            </li>
           </ul>
         </SectionCard>
 
@@ -58,7 +71,7 @@ export default function AboutPage() {
           <ul className="list-inside list-disc space-y-2">
             <li>プログラミング</li>
             <li>動画制作</li>
-            <li>VRChat</li>
+            <li>旅行</li>
           </ul>
         </SectionCard>
 

@@ -202,7 +202,7 @@ export const skills = [
   },
   {
     name: "Go",
-    tags: ["言語", "クラウド"],
+    tags: ["言語"],
     proficiency: "proficient",
     Icon: <i className="devicon-go-original-wordmark colored"></i>,
     description: "インターンで使用しました。",
