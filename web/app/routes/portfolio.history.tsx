@@ -56,7 +56,9 @@ export default function HistoryPage() {
           <p>2025-03 一身上の都合で退社。</p>
         </TimelineItem>
         <TimelineItem date="2025-08" prevColor="primary" nextColor="primary">
-          <p className="font-bold">さくらインターネット株式会社 短期インターンに参加</p>
+          <p className="font-bold">
+            さくらインターネット株式会社 短期インターンに参加
+          </p>
         </TimelineItem>
         <TimelineItem date="2025-10" prevColor="primary" nextColor="primary">
           <p className="font-bold">株式会社ドワンゴ インターンとして入社</p>
