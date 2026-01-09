@@ -1,9 +1,9 @@
 {
   "name": "web",
   "dependencies": {
-    "@react-router/express": "^7.9.5",
-    "@react-router/fs-routes": "^7.9.5",
-    "@react-router/node": "^7.9.5",
+    "@react-router/express": "^7.12.0",
+    "@react-router/fs-routes": "^7.12.0",
+    "@react-router/node": "^7.12.0",
     "compression": "^1.8.1",
     "cross-env": "^10.1.0",
     "express": "^5.1.0",
@@ -12,7 +12,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-flip-toolkit": "^7.2.4",
-    "react-router": "^7.9.5",
+    "react-router": "^7.12.0",
     "serverless-http": "^4.0.0"
   },
   "devDependencies": {
@@ -22,7 +22,7 @@
     "@mdx-js/mdx": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@mdx-js/rollup": "^3.1.1",
-    "@react-router/dev": "^7.9.5",
+    "@react-router/dev": "^7.12.0",
     "@shikijs/rehype": "^3.15.0",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.17",
