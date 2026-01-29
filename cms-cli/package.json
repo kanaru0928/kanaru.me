@@ -34,7 +34,7 @@
 		"@rollup/plugin-json": "^6.1.0",
 		"@rollup/plugin-node-resolve": "^16.0.0",
 		"@rollup/plugin-typescript": "^12.1.2",
-		"@types/node": "^24.10.1",
+		"@types/node": "^22.9.0",
 		"openapi-typescript": "^7.10.1",
 		"rollup": "^4.53.2",
 		"typescript": "^5.7.3",
