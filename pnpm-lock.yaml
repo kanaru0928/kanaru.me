@@ -35,7 +35,7 @@ importers:
         version: 3.978.0(@aws-sdk/client-dynamodb@3.978.0)
       '@hono/swagger-ui':
         specifier: ^0.5.2
-        version: 0.5.2(hono@4.10.6)
+        version: 0.5.3(hono@4.10.6)
       '@hono/zod-openapi':
         specifier: ^1.1.5
         version: 1.2.0(hono@4.10.6)(zod@4.1.13)
@@ -1418,10 +1418,10 @@ packages:
     peerDependencies:
       hono: ^4
 
-  '@hono/swagger-ui@0.5.2':
-    resolution: {integrity: sha512-7wxLKdb8h7JTdZ+K8DJNE3KXQMIpJejkBTQjrYlUWF28Z1PGOKw6kUykARe5NTfueIN37jbyG/sBYsbzXzG53A==}
+  '@hono/swagger-ui@0.5.3':
+    resolution: {integrity: sha512-Hn90DOOJ62ICJQplQvCDVpi9Jcn6EhtRaiffyJIS53wA5RmRLtMCDQGVc0bor8vQD7JIwpkweWjs+3cycp+IvA==}
     peerDependencies:
-      hono: '*'
+      hono: '>=4.0.0'
 
   '@hono/zod-openapi@1.2.0':
     resolution: {integrity: sha512-KDfHqv/Wy4elVseZXgokbHxeWuqBL+AZfqsOMpEihBMUsk/fJ+bLIi3Sf70JFVpt1Ihui8RasYrInozt7ZBDIA==}
@@ -8220,7 +8220,7 @@ snapshots:
     dependencies:
       hono: 4.10.6
 
-  '@hono/swagger-ui@0.5.2(hono@4.10.6)':
+  '@hono/swagger-ui@0.5.3(hono@4.10.6)':
     dependencies:
       hono: 4.10.6
 
