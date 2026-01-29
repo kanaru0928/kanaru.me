@@ -12,7 +12,7 @@
   "packageManager": "pnpm@10.15.1",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.157",
-    "@types/node": "^24.10.0"
+    "@types/node": "^22.9.0"
   },
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.922.0"
