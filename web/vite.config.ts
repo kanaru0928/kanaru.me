@@ -25,19 +25,6 @@ export default defineConfig(({ isSsrBuild }) => ({
   ssr: isSsrBuild
     ? {
         noExternal: true,
-        external: [
-          "@react-router/fs-routes",
-          "@react-router/node",
-          "@react-router/express",
-          "express",
-          "compression",
-          "isbot",
-          "morgan",
-          "serverless-http",
-          "react",
-          "react-dom",
-          "react-router",
-        ],
       }
     : undefined,
 }));
