@@ -63,15 +63,6 @@ jobs:
           role-to-assume: ${{ vars.ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
 
-      - name: Deploy Base Resources with CDK
-        run: cd infrastructure && pnpm cdk deploy BaseStack-${{ inputs.environment-name }} --require-approval never
-        env:
-          CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
-          DOMAIN_NAME: ${{ inputs.environment-name == 'prod' && vars.DOMAIN_NAME || '' }}
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
-          ENVIRONMENT_NAME: ${{ inputs.environment-name }}
-          LAYER_HASH: ${{ steps.calculate_hash.outputs.hash }}
-
       - name: Deploy with CDK
         run: cd infrastructure && pnpm cdk deploy AppStack-${{ inputs.environment-name }} --require-approval never
         env:
