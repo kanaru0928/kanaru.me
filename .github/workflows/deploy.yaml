@@ -3,11 +3,6 @@ name: Deploy
 on:
   workflow_dispatch:
     inputs:
-      force-layer-update:
-        description: "Force update Lambda Layer"
-        required: true
-        default: false
-        type: boolean
       environment-name:
         description: "Environment name"
         required: false
