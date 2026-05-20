@@ -23,7 +23,7 @@ if (!env.certificateArn || !env.githubToken || !env.environmentName || !env.laye
   throw new Error("CERTIFICATE_ARN, GITHUB_TOKEN, ENVIRONMENT_NAME and LAYER_HASH must be set");
 }
 
-const baseStack = new BaseStack(app, `BaseStack-${env.environmentName}`, {
+new BaseStack(app, `BaseStack-${env.environmentName}`, {
   env,
   environmentName: env.environmentName,
 });
@@ -34,7 +34,5 @@ new AppStack(app, `AppStack-${env.environmentName}`, {
   domainName: env.domainName,
   githubToken: env.githubToken,
   environmentName: env.environmentName,
-  layerBucketName: baseStack.getLayerBucketName(),
-  layerHash: env.layerHash,
   buildHash: env.buildHash,
 });
