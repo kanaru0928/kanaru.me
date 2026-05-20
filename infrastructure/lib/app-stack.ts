@@ -77,7 +77,7 @@ export class AppStack extends cdk.Stack {
   private createLambda() {
     const lambdaFunction = new lambda.Function(this, "KanarumeWebFunction", {
       runtime: lambda.Runtime.NODEJS_22_X,
-      handler: "build.server.index.handler",
+      handler: "build/server/index.handler",
       code: lambda.Code.fromAsset("../web", {
         ignoreMode: cdk.IgnoreMode.DOCKER,
         exclude: [
