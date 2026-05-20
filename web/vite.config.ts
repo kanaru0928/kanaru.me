@@ -25,6 +25,11 @@ export default defineConfig(({ isSsrBuild }) => ({
   ssr: isSsrBuild
     ? {
         noExternal: true,
+        external: [
+          "compression",
+          "express",
+          "httpmorgan",
+        ]
       }
     : undefined,
 }));
