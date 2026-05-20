@@ -109,6 +109,8 @@ export class AppStack extends cdk.Stack {
         exclude: [
           "**",
           "!package.json",
+          "!index.mjs",
+          "!server.js",
           "!build",
           "!build/server",
           "!build/server/**",
