@@ -14,12 +14,11 @@ const env = {
   domainName: process.env.DOMAIN_NAME,
   githubToken: process.env.GITHUB_TOKEN,
   environmentName: process.env.ENVIRONMENT_NAME,
-  layerHash: process.env.LAYER_HASH,
   buildHash: process.env.BUILD_HASH || process.env.GITHUB_SHA || "unknown",
 };
 
-if (!env.certificateArn || !env.githubToken || !env.environmentName || !env.layerHash) {
-  throw new Error("CERTIFICATE_ARN, GITHUB_TOKEN, ENVIRONMENT_NAME and LAYER_HASH must be set");
+if (!env.certificateArn || !env.githubToken || !env.environmentName) {
+  throw new Error("CERTIFICATE_ARN, GITHUB_TOKEN, ENVIRONMENT_NAME must be set");
 }
 
 new AppStack(app, `AppStack-${env.environmentName}`, {
