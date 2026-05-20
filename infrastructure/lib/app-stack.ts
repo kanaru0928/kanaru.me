@@ -88,6 +88,7 @@ export class AppStack extends cdk.Stack {
           "!build/server/**",
           "!node_modules/**",
         ],
+        followSymlinks: cdk.SymlinkFollowMode.EXTERNAL,
       }),
       timeout: cdk.Duration.minutes(3),
       memorySize: 1024,
