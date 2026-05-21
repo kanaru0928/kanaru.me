@@ -79,7 +79,7 @@ export class AppStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_22_X,
       handler: "index.handler",
       code: lambda.Code.fromAsset("../web/deploy", {
-        followSymlinks: cdk.SymlinkFollowMode.BLOCK_EXTERNAL,
+        followSymlinks: cdk.SymlinkFollowMode.NEVER,
       }),
       timeout: cdk.Duration.minutes(3),
       memorySize: 1024,
