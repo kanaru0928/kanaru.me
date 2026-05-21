@@ -50,15 +50,15 @@ jobs:
         run: cd web && pnpm build
         env:
           VITE_BASE_URL: ${{ inputs.environment-name == 'prod' && format('https://{0}', vars.DOMAIN_NAME) || vars.DEV_BASE_URL }}
+        
+      - name: Prepare Lambda Function Code
+        run: pnpm web:deploy
 
       - name: Build API
         run: cd api && pnpm build
 
       - name: Install Lambda dependencies
         run: cd api && pnpm build:lambda-deps
-
-      - name: Prepare Lambda Layer
-        run: pnpm deploy:layer
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4

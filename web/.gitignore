@@ -6,8 +6,7 @@
 /.react-router/
 /build/
 
-# Lambda Layer
-/layer/
+/deploy/
 
 # Articles
 /app/articles/**/*.md
