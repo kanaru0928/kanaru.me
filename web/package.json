@@ -3,7 +3,8 @@
   "dependencies": {
     "compression": "^1.8.1",
     "express": "^5.1.0",
-    "morgan": "^1.10.1"
+    "morgan": "^1.10.1",
+    "serverless-http": "^4.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.13",
@@ -44,7 +45,6 @@
     "react-dom": "^19.2.0",
     "react-flip-toolkit": "^7.2.4",
     "react-router": "^7.12.0",
-    "serverless-http": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "remark-mdx-frontmatter": "^5.2.0",
     "serverless": "^4.23.0",
