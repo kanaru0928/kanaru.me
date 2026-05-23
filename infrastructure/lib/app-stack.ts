@@ -78,9 +78,7 @@ export class AppStack extends cdk.Stack {
     const lambdaFunction = new lambda.Function(this, "KanarumeWebFunction", {
       runtime: lambda.Runtime.NODEJS_22_X,
       handler: "index.handler",
-      code: lambda.Code.fromAsset("../web/deploy", {
-        followSymlinks: cdk.SymlinkFollowMode.NEVER,
-      }),
+      code: lambda.Code.fromAsset("../web/deploy.zip"),
       timeout: cdk.Duration.minutes(3),
       memorySize: 1024,
       architecture: lambda.Architecture.ARM_64,
