@@ -5,6 +5,8 @@ packages:
   - functions/*
   - cms-cli
 
+injectWorkspacePackages: true
+
 ignoredBuiltDependencies:
   - aws-sdk
 

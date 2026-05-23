@@ -122,7 +122,7 @@ export class AppStack extends cdk.Stack {
 
   private createApiFunction() {
     return new lambda.Function(this, `APIFunction`, {
-      runtime: lambda.Runtime.NODEJS_22_X,
+      runtime: lambda.Runtime.NODEJS_LATEST,
       handler: "index.handler",
       code: lambda.Code.fromAsset("../api/dist"),
       initialPolicy: [
