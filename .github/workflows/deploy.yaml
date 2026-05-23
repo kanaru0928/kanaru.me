@@ -55,7 +55,7 @@ jobs:
         run: pnpm web:deploy
 
       - name: Compress Lambda Code
-        run: cd web && zip -r9y deploy.zip deploy/
+        run: cd web/deploy && zip -r9y ../deploy.zip .
 
       - name: Build API
         run: cd api && pnpm build
