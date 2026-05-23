@@ -19,11 +19,16 @@ jobs:
   quality-check:
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v3
-      - run: corepack enable
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
         with:
-          node-version: 20
+          version: 11
+      - name: Setup Node.js with cache
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
           cache: "pnpm"
       - name: Install dependencies
         run: cd web && pnpm install
