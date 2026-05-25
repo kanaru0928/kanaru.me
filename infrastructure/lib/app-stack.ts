@@ -11,12 +11,10 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as customResource from "aws-cdk-lib/custom-resources";
 
 type Props = cdk.StackProps & {
-  layerBucketName: string;
   certificateArn: string;
   domainName?: string;
   githubToken: string;
   environmentName: string;
-  layerHash: string;
   buildHash: string;
 };
 
@@ -25,12 +23,9 @@ export class AppStack extends cdk.Stack {
   private readonly domainName?: string;
   private readonly githubToken: string;
   private readonly environmentName: string;
-  private readonly layerBucketName: string;
-  private readonly layerHash: string;
   private readonly buildHash: string;
 
   private assetBucket: s3.Bucket;
-  private lambdaLayerVersion: lambda.LayerVersion;
   private webFunction: lambda.Function;
   private functionUrl: lambda.FunctionUrl;
   private articleTable: dynamodb.TableV2;
@@ -50,13 +45,10 @@ export class AppStack extends cdk.Stack {
     this.domainName = props.domainName === "" ? undefined : props.domainName;
     this.githubToken = props.githubToken;
     this.environmentName = props.environmentName;
-    this.layerBucketName = props.layerBucketName;
-    this.layerHash = props.layerHash;
     this.buildHash = props.buildHash;
 
     this.assetBucket = this.createAssetBucket();
 
-    this.lambdaLayerVersion = this.createLambdaLayerVersion();
     this.webFunction = this.createLambda();
     this.functionUrl = this.createFunctionUrl();
 
@@ -82,31 +74,11 @@ export class AppStack extends cdk.Stack {
     });
   }
 
-  private createLambdaLayerVersion() {
-    const layerBucket = s3.Bucket.fromBucketName(
-      this,
-      "LambdaLayerBucket",
-      this.layerBucketName
-    );
-
-    return new lambda.LayerVersion(this, "KanarumeWebLayer", {
-      code: lambda.Code.fromBucketV2(
-        layerBucket,
-        `layer-${this.layerHash}.zip`
-      ),
-      compatibleRuntimes: [lambda.Runtime.NODEJS_22_X],
-      description: `Layer from package.json hash: ${this.layerHash}`,
-    });
-  }
-
   private createLambda() {
     const lambdaFunction = new lambda.Function(this, "KanarumeWebFunction", {
       runtime: lambda.Runtime.NODEJS_22_X,
       handler: "index.handler",
-      code: lambda.Code.fromAsset("../web", {
-        exclude: ["node_modules", "app", "layer"],
-      }),
-      layers: [this.lambdaLayerVersion],
+      code: lambda.Code.fromAsset("../web/deploy.zip"),
       timeout: cdk.Duration.minutes(3),
       memorySize: 1024,
       architecture: lambda.Architecture.ARM_64,
@@ -174,7 +146,7 @@ export class AppStack extends cdk.Stack {
         lambda.LayerVersion.fromLayerVersionArn(
           this,
           "AWSLambdaPowertoolsLayer",
-          "arn:aws:lambda:ap-northeast-1:133490724326:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:21"
+          "arn:aws:lambda:ap-northeast-1:133490724326:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:21",
         ),
       ],
       timeout: cdk.Duration.minutes(1),
@@ -198,7 +170,7 @@ export class AppStack extends cdk.Stack {
       "LambdaOAC",
       {
         signing: cloudfront.Signing.SIGV4_ALWAYS,
-      }
+      },
     );
 
     // Lambda Function URL用のOrigin設定
@@ -207,7 +179,7 @@ export class AppStack extends cdk.Stack {
       {
         protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
         originAccessControlId: lambdaOac.originAccessControlId,
-      }
+      },
     );
 
     const apiFunctionUrlOrigin = new origins.HttpOrigin(
@@ -215,23 +187,23 @@ export class AppStack extends cdk.Stack {
       {
         protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
         originAccessControlId: lambdaOac.originAccessControlId,
-      }
+      },
     );
 
     // S3用のOrigin設定（OACで自動的にバケットポリシー設定）
     const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(
-      this.assetBucket
+      this.assetBucket,
     );
 
     const articleOrigin = origins.S3BucketOrigin.withOriginAccessControl(
-      this.articleBucket
+      this.articleBucket,
     );
 
     // ACM証明書の参照
     const certificate = acm.Certificate.fromCertificateArn(
       this,
       "Certificate",
-      this.certificateArn
+      this.certificateArn,
     );
 
     const longCachePolicy = new cloudfront.CachePolicy(
@@ -247,7 +219,7 @@ export class AppStack extends cdk.Stack {
         queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
         enableAcceptEncodingBrotli: true,
         enableAcceptEncodingGzip: true,
-      }
+      },
     );
 
     const shortCachePolicy = new cloudfront.CachePolicy(
@@ -263,7 +235,7 @@ export class AppStack extends cdk.Stack {
         queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
         enableAcceptEncodingBrotli: true,
         enableAcceptEncodingGzip: true,
-      }
+      },
     );
 
     // CloudFront Distribution作成
@@ -421,13 +393,13 @@ export class AppStack extends cdk.Stack {
             },
           },
           physicalResourceId: customResource.PhysicalResourceId.of(
-            `${this.apiFunction.functionName}-${this.buildHash}-env-update`
+            `${this.apiFunction.functionName}-${this.buildHash}-env-update`,
           ),
         },
         policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
           resources: [this.apiFunction.functionArn],
         }),
-      }
+      },
     );
 
     apiCutomResource.node.addDependency(this.articleTable);
@@ -457,13 +429,13 @@ export class AppStack extends cdk.Stack {
             },
           },
           physicalResourceId: customResource.PhysicalResourceId.of(
-            `${this.webFunction.functionName}-${this.buildHash}-env-update`
+            `${this.webFunction.functionName}-${this.buildHash}-env-update`,
           ),
         },
         policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
           resources: [this.webFunction.functionArn],
         }),
-      }
+      },
     );
 
     webCutomResource.node.addDependency(this.webFunction);
