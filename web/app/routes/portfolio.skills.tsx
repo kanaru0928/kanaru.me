@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { useMemo } from "react";
+import { useCallback, useMemo, type ChangeEventHandler } from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { Form, useSearchParams, useSubmit } from "react-router";
 import { SkillCard } from "~/features/skills/components/SkillCard";
@@ -33,6 +33,39 @@ export default function SkillsPage() {
   );
 
   const submit = useSubmit();
+
+  const handleTagChange = useCallback<
+    ChangeEventHandler<HTMLInputElement>
+  >(() => {
+    const formData = new FormData(
+      document.getElementById("search-form") as HTMLFormElement,
+    );
+    formData.delete("tag");
+
+    // 空のkeywordsを削除
+    const keywordsValue = formData.get("keywords");
+    if (!keywordsValue || keywordsValue === "") {
+      formData.delete("keywords");
+    }
+
+    submit(formData, { replace: true });
+  }, [submit]);
+
+  const handleInputChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      const formData = new FormData(event.currentTarget.form ?? undefined);
+
+      // 空のkeywordsを削除
+      const keywordsValue = formData.get("keywords");
+      if (!keywordsValue || keywordsValue === "") {
+        formData.delete("keywords");
+      }
+
+      const isFirstSearch = tag === null;
+      submit(formData, { replace: !isFirstSearch });
+    },
+    [submit, tag],
+  );
 
   return (
     <div className="space-y-8">
@@ -85,20 +118,7 @@ export default function SkillsPage() {
               aria-label="All"
               value="none"
               defaultChecked={tag === null}
-              onChange={() => {
-                const formData = new FormData(
-                  document.getElementById("search-form") as HTMLFormElement,
-                );
-                formData.delete("tag");
-
-                // 空のkeywordsを削除
-                const keywordsValue = formData.get("keywords");
-                if (!keywordsValue || keywordsValue === "") {
-                  formData.delete("keywords");
-                }
-
-                submit(formData, { replace: true });
-              }}
+              onChange={handleTagChange}
             />
             {allTags.map((t) => (
               <input
@@ -108,20 +128,7 @@ export default function SkillsPage() {
                 name="tag"
                 value={t}
                 aria-label={t}
-                onChange={(event) => {
-                  const formData = new FormData(
-                    event.currentTarget.form ?? undefined,
-                  );
-
-                  // 空のkeywordsを削除
-                  const keywordsValue = formData.get("keywords");
-                  if (!keywordsValue || keywordsValue === "") {
-                    formData.delete("keywords");
-                  }
-
-                  const isFirstSearch = tag === null;
-                  submit(formData, { replace: !isFirstSearch });
-                }}
+                onChange={handleInputChange}
                 defaultChecked={t === tag}
               />
             ))}
