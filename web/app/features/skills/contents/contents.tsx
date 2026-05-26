@@ -263,7 +263,8 @@ export const skills = [
     tags: ["IaC"],
     proficiency: "proficient",
     Icon: <i className="devicon-ansible-plain colored"></i>,
-    description: "自宅鯖の構築に使用しています。ほとんどのリソースを Ansible で構築できるようにしています。"
+    description:
+      "自宅鯖の構築に使用しています。ほとんどのリソースを Ansible で構築できるようにしています。",
   },
   {
     name: "AWS",
