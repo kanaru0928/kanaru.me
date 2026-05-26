@@ -65,7 +65,9 @@ export default function HistoryPage() {
           <p>2025-12 契約期間満了につき退社。</p>
         </TimelineItem>
         <TimelineItem date="2026-05" prevColor="primary" nextColor="primary">
-          <p className="font-bold">クラスメソッド株式会社 インターンとして入社</p>
+          <p className="font-bold">
+            クラスメソッド株式会社 インターンとして入社
+          </p>
         </TimelineItem>
       </ul>
     </div>
