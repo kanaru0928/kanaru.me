@@ -224,6 +224,27 @@ export const skills = [
       "開発環境や本番環境のコンテナ化に使用しています。Docker Compose も活用しています。",
   },
   {
+    name: "Kubernetes",
+    tags: ["コンテナ"],
+    proficiency: "intermediate",
+    Icon: <i className="devicon-kubernetes-plain colored"></i>,
+    description:
+      "自宅鯖のコンテナ管理に使用しています。構築には MicroK8s を使用しました。",
+  },
+  {
+    name: "Argo CD",
+    tags: ["コンテナ"],
+    proficiency: "intermediate",
+    Icon: (
+      <img
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/argocd/argocd-original.svg"
+        alt="Argo CD"
+        className="h-12"
+      />
+    ),
+    description: "自宅鯖のコンテナ管理に使用しています。",
+  },
+  {
     name: "Terraform",
     tags: ["IaC", "クラウド"],
     proficiency: "intermediate",
@@ -236,6 +257,14 @@ export const skills = [
     ),
     description:
       "AWS や自宅サーバーのインフラ構築に使用しています。モジュール化や状態管理も活用しています。",
+  },
+  {
+    name: "Ansible",
+    tags: ["IaC"],
+    proficiency: "proficient",
+    Icon: <i className="devicon-ansible-plain colored"></i>,
+    description:
+      "自宅鯖の構築に使用しています。ほとんどのリソースを Ansible で構築できるようにしています。",
   },
   {
     name: "AWS",

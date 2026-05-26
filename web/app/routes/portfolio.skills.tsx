@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { useMemo } from "react";
+import { type ChangeEventHandler, useCallback, useMemo } from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { Form, useSearchParams, useSubmit } from "react-router";
 import { SkillCard } from "~/features/skills/components/SkillCard";
@@ -34,6 +34,39 @@ export default function SkillsPage() {
 
   const submit = useSubmit();
 
+  const handleTagChange = useCallback<
+    ChangeEventHandler<HTMLInputElement>
+  >(() => {
+    const formData = new FormData(
+      document.getElementById("search-form") as HTMLFormElement,
+    );
+    formData.delete("tag");
+
+    // 空のkeywordsを削除
+    const keywordsValue = formData.get("keywords");
+    if (!keywordsValue || keywordsValue === "") {
+      formData.delete("keywords");
+    }
+
+    submit(formData, { replace: true });
+  }, [submit]);
+
+  const handleInputChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      const formData = new FormData(event.currentTarget.form ?? undefined);
+
+      // 空のkeywordsを削除
+      const keywordsValue = formData.get("keywords");
+      if (!keywordsValue || keywordsValue === "") {
+        formData.delete("keywords");
+      }
+
+      const isFirstSearch = tag === null;
+      submit(formData, { replace: !isFirstSearch });
+    },
+    [submit, tag],
+  );
+
   return (
     <div className="space-y-8">
       <h1 className="font-extrabold text-3xl">Skills</h1>
@@ -41,7 +74,11 @@ export default function SkillsPage() {
         経験のある技術の一覧です。ここ 3
         年程度で使用歴のある技術の一部を掲載しています。以前に使用していた技術や、特別アウトプットのない技術は含まれていません。
       </p>
-      <Form role="search" id="search-form" className="flex flex-wrap gap-2">
+      <Form
+        role="search"
+        id="search-form"
+        className="flex flex-wrap justify-stretch gap-2"
+      >
         <fieldset className="fieldset">
           <legend className="fieldset-legend">検索</legend>
           <label className="input input-sm">
@@ -75,7 +112,7 @@ export default function SkillsPage() {
             />
           </label>
         </fieldset>
-        <fieldset className="fieldset flex-1">
+        <fieldset className="fieldset min-w-40 flex-1">
           <legend className="fieldset-legend">タグで絞り込み</legend>
           <div className="flex-nowrap overflow-x-scroll filter">
             <input
@@ -85,20 +122,7 @@ export default function SkillsPage() {
               aria-label="All"
               value="none"
               defaultChecked={tag === null}
-              onChange={() => {
-                const formData = new FormData(
-                  document.getElementById("search-form") as HTMLFormElement,
-                );
-                formData.delete("tag");
-
-                // 空のkeywordsを削除
-                const keywordsValue = formData.get("keywords");
-                if (!keywordsValue || keywordsValue === "") {
-                  formData.delete("keywords");
-                }
-
-                submit(formData, { replace: true });
-              }}
+              onChange={handleTagChange}
             />
             {allTags.map((t) => (
               <input
@@ -108,20 +132,7 @@ export default function SkillsPage() {
                 name="tag"
                 value={t}
                 aria-label={t}
-                onChange={(event) => {
-                  const formData = new FormData(
-                    event.currentTarget.form ?? undefined,
-                  );
-
-                  // 空のkeywordsを削除
-                  const keywordsValue = formData.get("keywords");
-                  if (!keywordsValue || keywordsValue === "") {
-                    formData.delete("keywords");
-                  }
-
-                  const isFirstSearch = tag === null;
-                  submit(formData, { replace: !isFirstSearch });
-                }}
+                onChange={handleInputChange}
                 defaultChecked={t === tag}
               />
             ))}
