@@ -48,6 +48,10 @@ export default function AboutPage() {
         <SectionCard title="資格">
           <ul className="list-inside list-disc space-y-2">
             <li>
+              <span>TOEIC 645 点</span>
+              <div className="badge badge-sm">2026-04</div>
+            </li>
+            <li>
               <span className="mr-2">情報処理安全確保支援士試験 合格</span>
               <div className="badge badge-sm">2025-12</div>
             </li>
