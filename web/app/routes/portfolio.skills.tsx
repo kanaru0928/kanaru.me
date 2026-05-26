@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { useCallback, useMemo, type ChangeEventHandler } from "react";
+import { type ChangeEventHandler, useCallback, useMemo } from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { Form, useSearchParams, useSubmit } from "react-router";
 import { SkillCard } from "~/features/skills/components/SkillCard";
