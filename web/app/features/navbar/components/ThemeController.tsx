@@ -1,13 +1,32 @@
-import { Moon, Sun } from "lucide-react";
+import { Monitor, Moon, Sun } from "lucide-react";
 
 export function ThemeController() {
   return (
-    <label className="swap swap-rotate">
-      <input type="checkbox" className="theme-controller" value="frappe" />
+    <div className="join">
+      <label className="join-item btn btn-square has-checked:btn-primary">
+        <Monitor className="h-4 w-4" />
+        <input type="radio" name="theme" className="hidden" defaultChecked />
+      </label>
 
-      <Sun className="swap-off h-6 w-6" />
+      <label className="join-item btn btn-square has-checked:btn-primary">
+        <Sun className="h-4 w-4" />
+        <input
+          type="radio"
+          name="theme"
+          className="theme-controller hidden"
+          value="latte"
+        />
+      </label>
 
-      <Moon className="swap-on h-6 w-6" />
-    </label>
+      <label className="join-item btn btn-square has-checked:btn-primary">
+        <Moon className="h-4 w-4" />
+        <input
+          type="radio"
+          name="theme"
+          className="theme-controller hidden"
+          value="frappe"
+        />
+      </label>
+    </div>
   );
 }
