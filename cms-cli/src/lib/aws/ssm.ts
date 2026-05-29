@@ -1,4 +1,5 @@
 import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
+import { getAwsConfig } from "./config.js";
 
 /**
  * SSM Parameter Store からパラメータを取得
@@ -6,9 +7,11 @@ import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 export async function getSSMParameter(
 	parameterName: string,
 	region: string,
+	profile?: string,
 ): Promise<string | null> {
 	try {
-		const client = new SSMClient({ region });
+		const awsConfig = getAwsConfig({ region, profile });
+		const client = new SSMClient(awsConfig);
 		const command = new GetParameterCommand({
 			Name: parameterName,
 			WithDecryption: true,
