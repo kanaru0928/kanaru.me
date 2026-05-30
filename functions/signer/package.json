@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.34.1",
   "dependencies": {
     "aws-lambda": "^1.0.7"
   },
