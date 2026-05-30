@@ -52,7 +52,7 @@ export async function getEnvConfig(options: {
 	// .env に設定されていない場合のみ SSM から取得を試みる
 	if (!initialBearerToken) {
 		const ssmParameterName = `/kanaru.me-v2/${envName}/initial-bearer-token`;
-		initialBearerToken = await getSSMParameter(ssmParameterName, awsRegion);
+		initialBearerToken = await getSSMParameter(ssmParameterName, awsRegion, awsProfile);
 
 		if (initialBearerToken) {
 			logger.info(
