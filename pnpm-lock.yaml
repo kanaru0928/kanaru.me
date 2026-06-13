@@ -35,19 +35,19 @@ importers:
         version: 3.978.0(@aws-sdk/client-dynamodb@3.978.0)
       '@hono/swagger-ui':
         specifier: ^0.5.2
-        version: 0.5.3(hono@4.12.23)
+        version: 0.5.3(hono@4.12.25)
       '@hono/zod-openapi':
         specifier: ^1.1.5
-        version: 1.2.0(hono@4.12.23)(zod@4.4.3)
+        version: 1.2.0(hono@4.12.25)(zod@4.4.3)
       '@hono/zod-validator':
         specifier: ^0.7.5
-        version: 0.7.6(hono@4.12.23)(zod@4.4.3)
+        version: 0.7.6(hono@4.12.25)(zod@4.4.3)
       '@napi-rs/canvas':
         specifier: ^0.1.84
         version: 0.1.100
       hono:
         specifier: ^4.10.6
-        version: 4.12.23
+        version: 4.12.25
       zod:
         specifier: ^4.1.13
         version: 4.4.3
@@ -57,7 +57,7 @@ importers:
         version: 2.3.13
       '@hono/node-server':
         specifier: ^1.19.6
-        version: 1.19.14(hono@4.12.23)
+        version: 1.19.14(hono@4.12.25)
       '@types/node':
         specifier: ^22.9.0
         version: 22.19.7
@@ -3975,8 +3975,8 @@ packages:
     resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
     engines: {node: '>=12.0.0'}
 
-  hono@4.12.23:
-    resolution: {integrity: sha512-eIaZ9qDgu7XV0pxOCrg7/WhnQ6Ivm22UcxhXx/A3dcbqbbYgBEkc6e/J/s7j2tS96zoB0S9VBdLwQNCWwUo4LA==}
+  hono@4.12.25:
+    resolution: {integrity: sha512-2NFaIyNVgJmBs/ecmtGzlmluTFs5cHEWGTdu0t1HBwYzoGXOL5nUQBRMXsXWla5i4KkG//QMzVP88m1+I3fdAQ==}
     engines: {node: '>=16.9.0'}
 
   hook-std@4.0.0:
@@ -8211,25 +8211,25 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@hono/node-server@1.19.14(hono@4.12.23)':
+  '@hono/node-server@1.19.14(hono@4.12.25)':
     dependencies:
-      hono: 4.12.23
+      hono: 4.12.25
 
-  '@hono/swagger-ui@0.5.3(hono@4.12.23)':
+  '@hono/swagger-ui@0.5.3(hono@4.12.25)':
     dependencies:
-      hono: 4.12.23
+      hono: 4.12.25
 
-  '@hono/zod-openapi@1.2.0(hono@4.12.23)(zod@4.4.3)':
+  '@hono/zod-openapi@1.2.0(hono@4.12.25)(zod@4.4.3)':
     dependencies:
       '@asteasolutions/zod-to-openapi': 8.4.0(zod@4.4.3)
-      '@hono/zod-validator': 0.7.6(hono@4.12.23)(zod@4.4.3)
-      hono: 4.12.23
+      '@hono/zod-validator': 0.7.6(hono@4.12.25)(zod@4.4.3)
+      hono: 4.12.25
       openapi3-ts: 4.5.0
       zod: 4.4.3
 
-  '@hono/zod-validator@0.7.6(hono@4.12.23)(zod@4.4.3)':
+  '@hono/zod-validator@0.7.6(hono@4.12.25)(zod@4.4.3)':
     dependencies:
-      hono: 4.12.23
+      hono: 4.12.25
       zod: 4.4.3
 
   '@img/colour@1.0.0': {}
@@ -10980,7 +10980,7 @@ snapshots:
 
   highlight.js@11.11.1: {}
 
-  hono@4.12.23: {}
+  hono@4.12.25: {}
 
   hook-std@4.0.0: {}
 
