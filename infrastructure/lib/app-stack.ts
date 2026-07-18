@@ -2,6 +2,7 @@ import * as cdk from "aws-cdk-lib";
 import * as acm from "aws-cdk-lib/aws-certificatemanager";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
+import * as cognito from "aws-cdk-lib/aws-cognito";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as events from "aws-cdk-lib/aws-events";
 import * as targets from "aws-cdk-lib/aws-events-targets";
@@ -51,6 +52,8 @@ export class AppStack extends cdk.Stack {
 
     this.webFunction = this.createLambda();
     this.functionUrl = this.createFunctionUrl();
+
+    this.createUserPool();
 
     this.articleTable = this.createArticleTable();
     this.articleBucket = this.createArticleBucket();
@@ -153,6 +156,17 @@ export class AppStack extends cdk.Stack {
       memorySize: 512,
       architecture: lambda.Architecture.ARM_64,
     });
+  }
+
+  private createUserPool() {
+    const userPool = new cognito.UserPool(this, "KanarumeUserPool", {
+      standardAttributes: {
+        email: {
+          required: true,
+        }
+      }
+    });
+    return userPool;
   }
 
   private createApiFunctionUrl() {
