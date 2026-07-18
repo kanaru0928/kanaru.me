@@ -17,6 +17,9 @@ type Props = cdk.StackProps & {
   githubToken: string;
   environmentName: string;
   buildHash: string;
+  providerClientId: string;
+  providerClientSecret: string;
+  providerIssuerUrl: string;
 };
 
 export class AppStack extends cdk.Stack {
@@ -25,6 +28,9 @@ export class AppStack extends cdk.Stack {
   private readonly githubToken: string;
   private readonly environmentName: string;
   private readonly buildHash: string;
+  private readonly providerClientId: string;
+  private readonly providerClientSecret: string;
+  private readonly providerIssuerUrl: string;
 
   private assetBucket: s3.Bucket;
   private webFunction: lambda.Function;
@@ -47,6 +53,9 @@ export class AppStack extends cdk.Stack {
     this.githubToken = props.githubToken;
     this.environmentName = props.environmentName;
     this.buildHash = props.buildHash;
+    this.providerClientId = props.providerClientId;
+    this.providerClientSecret = props.providerClientSecret;
+    this.providerIssuerUrl = props.providerIssuerUrl;
 
     this.assetBucket = this.createAssetBucket();
 
@@ -163,9 +172,34 @@ export class AppStack extends cdk.Stack {
       standardAttributes: {
         email: {
           required: true,
-        }
-      }
+        },
+      },
     });
+
+    new cognito.UserPoolIdentityProviderOidc(
+      this,
+      "ExternalProvider",
+      {
+        userPool: userPool,
+        clientId: this.providerClientId,
+        clientSecret: this.providerClientSecret,
+        issuerUrl: this.providerIssuerUrl,
+        attributeMapping: {
+          email: cognito.ProviderAttribute.other("email"),
+        },
+      },
+    );
+
+    new cognito.UserPoolClient(this, "KanarumeUserPoolClient", {
+      userPool: userPool,
+      generateSecret: true,
+      oAuth: {
+        flows: {
+          authorizationCodeGrant: true,
+        },
+      },
+    });
+
     return userPool;
   }
 
