@@ -20,7 +20,7 @@
     "check": "biome check"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.8",
+    "@biomejs/biome": "2.5.9",
     "@hono/node-server": "^1.19.6",
     "@types/node": "^22.9.0",
     "@vitest/ui": "4.0.18",
