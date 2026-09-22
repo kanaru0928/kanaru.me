@@ -96,7 +96,7 @@ importers:
         version: 14.0.3
       dotenv:
         specifier: ^17.2.3
-        version: 17.2.3
+        version: 17.4.2
       gray-matter:
         specifier: ^4.0.3
         version: 4.0.3
@@ -171,7 +171,7 @@ importers:
         version: 10.4.2
       dotenv:
         specifier: ^17.2.3
-        version: 17.2.3
+        version: 17.4.2
     devDependencies:
       '@biomejs/biome':
         specifier: 2.5.13
@@ -183,8 +183,8 @@ importers:
         specifier: 22.20.2
         version: 22.20.2
       aws-cdk:
-        specifier: 2.1136.0
-        version: 2.1136.0
+        specifier: 2.1142.0
+        version: 2.1142.0
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.20.2)(supports-color@10.2.2)(ts-node@10.9.2(@types/node@22.20.2)(typescript@5.9.3))
@@ -281,7 +281,7 @@ importers:
         version: 2.1.1
       cms-cli:
         specifier: workspace:*
-        version: file:cms-cli
+        version: link:../cms-cli
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -2460,8 +2460,8 @@ packages:
       - yaml
       - mime-types
 
-  aws-cdk@2.1136.0:
-    resolution: {integrity: sha512-n6kCL9R9uuvb7WXEwiSs3rYGwnTy9AHHmxOT5Pj5/++E4PYz2bLDXIxzoiOMIj5maoyC52PTe/0GezFV+O0ILQ==}
+  aws-cdk@2.1142.0:
+    resolution: {integrity: sha512-gNOeii+avTJmOwfR8tVgraZ5A2EBC/529EXg7e+yBp8Zl608dAv5CtFRoJt8QoKiruiCwYr4HF6ClNAse/NkSg==}
     engines: {node: '>= 18.0.0'}
     hasBin: true
 
@@ -2685,10 +2685,6 @@ packages:
   clsx@2.1.1:
     resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
-
-  cms-cli@file:cms-cli:
-    resolution: {directory: cms-cli, type: directory}
-    hasBin: true
 
   co@4.6.0:
     resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}
@@ -2966,10 +2962,6 @@ packages:
   dot-prop@5.3.0:
     resolution: {integrity: sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==}
     engines: {node: '>=8'}
-
-  dotenv@17.2.3:
-    resolution: {integrity: sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w==}
-    engines: {node: '>=12'}
 
   dotenv@17.4.2:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
@@ -7951,7 +7943,7 @@ snapshots:
       '@aws-cdk/cloud-assembly-schema': 53.28.0
       constructs: 10.4.2
 
-  aws-cdk@2.1136.0: {}
+  aws-cdk@2.1142.0: {}
 
   aws-lambda@1.0.7:
     dependencies:
@@ -8238,18 +8230,6 @@ snapshots:
 
   clsx@2.1.1: {}
 
-  cms-cli@file:cms-cli:
-    dependencies:
-      '@aws-sdk/client-lambda': 3.1137.0
-      '@aws-sdk/client-s3': 3.1137.0
-      '@aws-sdk/client-ssm': 3.1137.0
-      '@aws-sdk/credential-providers': 3.1137.0
-      commander: 14.0.3
-      dotenv: 17.4.2
-      gray-matter: 4.0.3
-      openapi-fetch: 0.15.0
-      sharp: 0.34.5
-
   co@4.6.0: {}
 
   collapse-white-space@2.1.0: {}
@@ -8496,8 +8476,6 @@ snapshots:
   dot-prop@5.3.0:
     dependencies:
       is-obj: 2.0.0
-
-  dotenv@17.2.3: {}
 
   dotenv@17.4.2: {}
 
