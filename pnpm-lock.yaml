@@ -146,7 +146,7 @@ importers:
     devDependencies:
       '@types/aws-lambda':
         specifier: ^8.10.158
-        version: 8.10.163
+        version: 8.10.164
 
   functions/warmer:
     dependencies:
@@ -156,7 +156,7 @@ importers:
     devDependencies:
       '@types/aws-lambda':
         specifier: ^8.10.157
-        version: 8.10.163
+        version: 8.10.164
       '@types/node':
         specifier: ^22.9.0
         version: 22.20.4
@@ -183,8 +183,8 @@ importers:
         specifier: 22.20.4
         version: 22.20.4
       aws-cdk:
-        specifier: 2.1142.0
-        version: 2.1142.0
+        specifier: 2.1143.0
+        version: 2.1143.0
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.20.4)(supports-color@10.2.2)(ts-node@10.9.2(@types/node@22.20.4)(typescript@5.9.3))
@@ -2171,8 +2171,8 @@ packages:
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
-  '@types/aws-lambda@8.10.163':
-    resolution: {integrity: sha512-+4zuoEB3S8RIhimtOFT7zAEk2SbpwrKjjGl9CyYnQR6k08uynxfauIIB0pDU1ssr05F8oyGiETwpn+8eXZMqPw==}
+  '@types/aws-lambda@8.10.164':
+    resolution: {integrity: sha512-XOnrazWcOd6yWPnR7DxqCBPPYciDjHq+NN8LPwwqBCJNXLyPJgKo47fZpJ113+oyAn9Zti0Cf6H4k6yPcE3WFg==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -2468,8 +2468,8 @@ packages:
       - yaml
       - mime-types
 
-  aws-cdk@2.1142.0:
-    resolution: {integrity: sha512-gNOeii+avTJmOwfR8tVgraZ5A2EBC/529EXg7e+yBp8Zl608dAv5CtFRoJt8QoKiruiCwYr4HF6ClNAse/NkSg==}
+  aws-cdk@2.1143.0:
+    resolution: {integrity: sha512-bTbgEmNuN6UMDAyhGFWOAnriafSu7j0cAjaFKRw1/WEs6RE5g062D2v2+YE8Dw6qw7RgNGQPH5Nv47TsK5kZSQ==}
     engines: {node: '>= 18.0.0'}
     hasBin: true
 
@@ -7657,7 +7657,7 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
-  '@types/aws-lambda@8.10.163': {}
+  '@types/aws-lambda@8.10.164': {}
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -7960,7 +7960,7 @@ snapshots:
       '@aws-cdk/cloud-assembly-schema': 53.28.0
       constructs: 10.4.2
 
-  aws-cdk@2.1142.0: {}
+  aws-cdk@2.1143.0: {}
 
   aws-lambda@1.0.7:
     dependencies:
