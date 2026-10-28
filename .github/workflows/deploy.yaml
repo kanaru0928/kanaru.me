@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          submodules: true
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -61,6 +63,20 @@ jobs:
 
       - name: Install Lambda dependencies
         run: cd api && pnpm build:lambda-deps
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: cms/go.mod
+          cache-dependency-path: cms/go.sum
+
+      - name: Build CMS
+        run: cd cms && go build -o dist/bootstrap ./cmd/api
+        env:
+          GOOS: linux
+          GOARCH: arm64
+          CGO_ENABLED: "0"
+          GOEXPERIMENT: jsonv2
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
