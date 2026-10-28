@@ -339,14 +339,6 @@ export class AppStack extends cdk.Stack {
       },
     );
 
-    const apiFunctionUrlOrigin = new origins.HttpOrigin(
-      cdk.Fn.select(2, cdk.Fn.split("/", this.apiFunctionUrl.url)),
-      {
-        protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
-        originAccessControlId: lambdaOac.originAccessControlId,
-      },
-    );
-
     // S3用のOrigin設定（OACで自動的にバケットポリシー設定）
     const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(
       this.assetBucket,
@@ -482,25 +474,7 @@ export class AppStack extends cdk.Stack {
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
         },
-        "/api/og/*": {
-          origin: apiFunctionUrlOrigin,
-          viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-          originRequestPolicy:
-            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-        },
-        "/api/articles*": {
-          origin: cmsFunctionUrlOrigin,
-          viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cmsApiCachePolicy,
-          originRequestPolicy:
-            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-        },
-        "/api/thumbnails*": {
+        "/api/*": {
           origin: cmsFunctionUrlOrigin,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
