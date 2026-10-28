@@ -5,10 +5,9 @@ import { formatISO9075 } from "date-fns";
 import { use, useMemo } from "react";
 import * as runtime from "react/jsx-runtime";
 import {
-  fetchArticleCode,
-  fetchArticleContent,
-} from "~/features/articles/loaders/article-client";
-import { fetchOgpMap } from "~/features/articles/loaders/article-loader";
+  compileArticle,
+  fetchOgpMap,
+} from "~/features/articles/loaders/article-loader";
 import { SuspenseLinkCard } from "~/features/mdx/components/SuspenseLinkCard";
 import { mdxComponents } from "~/features/mdx/mdx-components";
 import { apiClient } from "~/lib/apiClient";
@@ -25,12 +24,9 @@ export async function loader({ params }: Route.LoaderArgs) {
     throw new Response("Article not found", { status: 404 });
   }
 
-  // 共通関数を使用
-  const ogpMapPromise = fetchArticleContent(article.content).then((content) =>
-    fetchOgpMap(content),
-  );
+  const ogpMapPromise = Promise.resolve(fetchOgpMap(article.content));
 
-  const code = await fetchArticleCode(article.content);
+  const code = await compileArticle(article.content);
 
   return { article, code, ogpMapPromise };
 }
