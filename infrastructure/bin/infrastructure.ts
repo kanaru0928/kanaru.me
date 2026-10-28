@@ -15,10 +15,13 @@ const env = {
   githubToken: process.env.GITHUB_TOKEN,
   environmentName: process.env.ENVIRONMENT_NAME,
   buildHash: process.env.BUILD_HASH || process.env.GITHUB_SHA || "unknown",
+  providerClientId: process.env.PROVIDER_CLIENT_ID,
+  providerClientSecret: process.env.PROVIDER_CLIENT_SECRET,
+  providerIssuerUrl: process.env.PROVIDER_ISSUER_URL,
 };
 
-if (!env.certificateArn || !env.githubToken || !env.environmentName) {
-  throw new Error("CERTIFICATE_ARN, GITHUB_TOKEN, ENVIRONMENT_NAME must be set");
+if (!env.certificateArn || !env.githubToken || !env.environmentName || !env.providerClientId || !env.providerClientSecret || !env.providerIssuerUrl) {
+  throw new Error("All environment variables must be set");
 }
 
 new AppStack(app, `AppStack-${env.environmentName}`, {
@@ -28,4 +31,7 @@ new AppStack(app, `AppStack-${env.environmentName}`, {
   githubToken: env.githubToken,
   environmentName: env.environmentName,
   buildHash: env.buildHash,
+  providerClientId: env.providerClientId,
+  providerClientSecret: env.providerClientSecret,
+  providerIssuerUrl: env.providerIssuerUrl,
 });

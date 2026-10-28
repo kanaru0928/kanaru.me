@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          submodules: true
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -62,6 +64,20 @@ jobs:
       - name: Install Lambda dependencies
         run: cd api && pnpm build:lambda-deps
 
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: cms/go.mod
+          cache-dependency-path: cms/go.sum
+
+      - name: Build CMS
+        run: cd cms && go build -o dist/bootstrap ./cmd/api
+        env:
+          GOOS: linux
+          GOARCH: arm64
+          CGO_ENABLED: "0"
+          GOEXPERIMENT: jsonv2
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -76,6 +92,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
           ENVIRONMENT_NAME: ${{ inputs.environment-name }}
           BUILD_HASH: ${{ github.sha }}
+          PROVIDER_CLIENT_ID: ${{ vars.AUTHENTIK_CLIENT_ID }}
+          PROVIDER_CLIENT_SECRET: ${{ secrets.AUTHENTIK_CLIENT_SECRET }}
+          PROVIDER_ISSUER_URL: ${{ vars.AUTHENTIK_ISSUER }}
 
       - name: Deploy Client Resources
         run: cd web/build/client && aws s3 sync --delete . s3://${{ vars.AWS_ACCOUNT_ID }}-kanaru-me-v2-web-assets-${{ inputs.environment-name }}/
