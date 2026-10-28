@@ -47,6 +47,7 @@ export class AppStack extends cdk.Stack {
   private userPool: cognito.UserPool;
   private cmsTable: dynamodb.TableV2;
   private cmsBucket: s3.Bucket;
+  private thumbnailBucket: s3.Bucket;
   private cmsFunction: lambda.Function;
   private cmsFunctionUrl: lambda.FunctionUrl;
   private distribution: cloudfront.Distribution;
@@ -81,6 +82,7 @@ export class AppStack extends cdk.Stack {
 
     this.cmsTable = this.createCmsTable();
     this.cmsBucket = this.createCmsBucket();
+    this.thumbnailBucket = this.createThumbnailBucket();
     this.cmsFunction = this.createCmsFunction();
     this.cmsFunctionUrl = this.createCmsFunctionUrl();
 
@@ -270,6 +272,13 @@ export class AppStack extends cdk.Stack {
     });
   }
 
+  private createThumbnailBucket() {
+    return new s3.Bucket(this, "CmsThumbnailBucket", {
+      bucketName: `${this.account}-kanaru-me-cms-thumbnails-${this.environmentName}`,
+      removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
+    });
+  }
+
   private createCmsFunction() {
     const cmsFunction = new lambda.Function(this, "CmsFunction", {
       runtime: lambda.Runtime.PROVIDED_AL2023,
@@ -289,6 +298,7 @@ export class AppStack extends cdk.Stack {
         S3_BUCKET_NAME: this.cmsBucket.bucketName,
         S3_PREFIX: `${CMS_CONTENT_PREFIX}/`,
         DYNAMODB_TABLE_NAME: this.cmsTable.tableName,
+        THUMBNAIL_S3_BUCKET_NAME: this.thumbnailBucket.bucketName,
       },
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,
@@ -297,6 +307,8 @@ export class AppStack extends cdk.Stack {
 
     this.cmsTable.grantReadWriteData(cmsFunction);
     this.cmsBucket.grantReadWrite(cmsFunction);
+    // 署名付き URL でのアップロードは cms の権限で実行される
+    this.thumbnailBucket.grantPut(cmsFunction);
 
     return cmsFunction;
   }
@@ -327,14 +339,6 @@ export class AppStack extends cdk.Stack {
       },
     );
 
-    const apiFunctionUrlOrigin = new origins.HttpOrigin(
-      cdk.Fn.select(2, cdk.Fn.split("/", this.apiFunctionUrl.url)),
-      {
-        protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
-        originAccessControlId: lambdaOac.originAccessControlId,
-      },
-    );
-
     // S3用のOrigin設定（OACで自動的にバケットポリシー設定）
     const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(
       this.assetBucket,
@@ -357,6 +361,10 @@ export class AppStack extends cdk.Stack {
       {
         originPath: `/${CMS_CONTENT_PREFIX}`,
       },
+    );
+
+    const thumbnailOrigin = origins.S3BucketOrigin.withOriginAccessControl(
+      this.thumbnailBucket,
     );
 
     // ACM証明書の参照
@@ -466,16 +474,7 @@ export class AppStack extends cdk.Stack {
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
         },
-        "/api/og/*": {
-          origin: apiFunctionUrlOrigin,
-          viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-          originRequestPolicy:
-            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-        },
-        "/api/articles*": {
+        "/api/*": {
           origin: cmsFunctionUrlOrigin,
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -483,6 +482,13 @@ export class AppStack extends cdk.Stack {
           originRequestPolicy:
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+        },
+        "/thumbnails/*": {
+          origin: thumbnailOrigin,
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         },
         "/static/articles/*": {
           origin: articleOrigin,
