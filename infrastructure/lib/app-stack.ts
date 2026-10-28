@@ -321,7 +321,6 @@ export class AppStack extends cdk.Stack {
     const webFunctionUrlOrigin = new origins.HttpOrigin(
       cdk.Fn.select(2, cdk.Fn.split("/", this.functionUrl.url)),
       {
-        // CloudFront Functions から ID で選択するため、ID を固定する
         originId: WEB_ORIGIN_ID,
         protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
         originAccessControlId: lambdaOac.originAccessControlId,
@@ -501,7 +500,6 @@ export class AppStack extends cdk.Stack {
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         },
-        // ハッシュ付きは S3 が返し、最新版は CloudFront Functions で SSR に振り分ける
         "/articles/*.md": {
           origin: cmsContentOrigin,
           viewerProtocolPolicy:

@@ -6,8 +6,6 @@ const MARKDOWN_PATH_PATTERN = /^\/articles\/([^/]+)\.md$/;
 // app-stack.ts の WEB_ORIGIN_ID と値を揃える
 const WEB_ORIGIN_ID = "web";
 
-// /articles/{slug}.md?h={hash} を S3 の articles/{slug}/{hash}.md に変換する
-// ハッシュがなければ、最新版として SSR に振り分ける
 // biome-ignore lint/correctness/noUnusedVariables: CloudFront Functions が handler を呼び出す
 function handler(event) {
   const request = event.request;
