@@ -12,7 +12,6 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as customResource from "aws-cdk-lib/custom-resources";
 
-// cms が本文を保存する S3 のキー prefix
 const CMS_CONTENT_PREFIX = "contents";
 // CloudFront Functions から参照するため、markdown-router.js と値を揃える
 const WEB_ORIGIN_ID = "web";
@@ -276,7 +275,6 @@ export class AppStack extends cdk.Stack {
       runtime: lambda.Runtime.PROVIDED_AL2023,
       handler: "bootstrap",
       code: lambda.Code.fromAsset("../cms/dist"),
-      // Echo の HTTP サーバーを Lambda で動かすため、Lambda Web Adapter を使う
       layers: [
         lambda.LayerVersion.fromLayerVersionArn(
           this,
@@ -285,7 +283,7 @@ export class AppStack extends cdk.Stack {
         ),
       ],
       environment: {
-        // cms と Lambda Web Adapter の両方がこのポートを使う
+        // Lambda Web Adapter の転送先のため、cmd/api が待ち受けるポートと揃える
         PORT: "3000",
         JWKS_URL: `https://cognito-idp.${this.region}.amazonaws.com/${this.userPool.userPoolId}/.well-known/jwks.json`,
         S3_BUCKET_NAME: this.cmsBucket.bucketName,
@@ -401,7 +399,6 @@ export class AppStack extends cdk.Stack {
       },
     );
 
-    // TTL はオリジンの Cache-Control で制御する
     const cmsApiCachePolicy = new cloudfront.CachePolicy(
       this,
       "CmsApiCachePolicy",
@@ -420,7 +417,6 @@ export class AppStack extends cdk.Stack {
       },
     );
 
-    // TTL はオリジンの Cache-Control で制御する
     const articleCachePolicy = new cloudfront.CachePolicy(
       this,
       "ArticleCachePolicy",
