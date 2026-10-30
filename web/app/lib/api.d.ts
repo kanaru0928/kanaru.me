@@ -33,7 +33,7 @@ export interface paths {
     };
     /**
      * 記事詳細を取得
-     * @description 指定されたスラッグの記事詳細を取得します
+     * @description 指定されたスラッグの記事詳細を取得します。認証されていない場合、非公開記事は存在しないものとして扱われます。
      */
     get: operations["Articles_read"];
     /**
@@ -47,6 +47,26 @@ export interface paths {
      * @description 指定されたスラッグの記事を削除します（要認証）
      */
     delete: operations["Articles_delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/thumbnails/upload-url": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * サムネイルのアップロード URL を発行
+     * @description サムネイル画像をアップロードするための署名付き URL を発行します（要認証）
+     */
+    post: operations["Thumbnails_createUploadUrl"];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -72,6 +92,11 @@ export interface components {
     };
     /** @enum {string} */
     ArticleStatus: "published" | "unpublished";
+    CreateThumbnailUploadUrl: {
+      contentType: components["schemas"]["ThumbnailContentType"];
+      /** @description 画像の MD5 ハッシュ（16 進数） */
+      md5: string;
+    };
     DeleteSuccess: {
       message: string;
     };
@@ -80,12 +105,19 @@ export interface components {
     };
     /** @enum {string} */
     SortOrder: "asc" | "desc";
+    /** @enum {string} */
+    ThumbnailContentType: "image/webp";
+    ThumbnailUploadUrl: {
+      /** @description アップロード先の署名付き URL。`PUT` で `Content-Type` と `Content-MD5` を指定してアップロードします */
+      uploadUrl: string;
+      /** @description アップロード後に配信されるパス */
+      url: string;
+    };
     UpsertTextArticle: {
       title: string;
       contentBody: string;
       source: string;
       status: components["schemas"]["ArticleStatus"];
-      /** @default [] */
       tags: string[];
       thumbnailUrl: string;
     };
@@ -121,6 +153,24 @@ export interface operations {
           "application/json": components["schemas"]["ArticleMetadata"][];
         };
       };
+      /** @description Access is unauthorized. */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description Client error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
       /** @description Server error */
       500: {
         headers: {
@@ -152,8 +202,26 @@ export interface operations {
           "application/json": components["schemas"]["ArticleDetail"];
         };
       };
+      /** @description Access is unauthorized. */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
       /** @description The server cannot find the requested resource. */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description Client error */
+      422: {
         headers: {
           [name: string]: unknown;
         };
@@ -214,6 +282,15 @@ export interface operations {
           "application/json": components["schemas"]["Error"];
         };
       };
+      /** @description Client error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
       /** @description Server error */
       500: {
         headers: {
@@ -256,6 +333,66 @@ export interface operations {
       };
       /** @description The server cannot find the requested resource. */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description Client error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description Server error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+    };
+  };
+  Thumbnails_createUploadUrl: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateThumbnailUploadUrl"];
+      };
+    };
+    responses: {
+      /** @description The request has succeeded. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ThumbnailUploadUrl"];
+        };
+      };
+      /** @description Access is unauthorized. */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description Client error */
+      422: {
         headers: {
           [name: string]: unknown;
         };
