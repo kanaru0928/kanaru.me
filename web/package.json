@@ -65,7 +65,7 @@
     "check": "biome check",
     "ci": "biome ci",
     "dev": "cross-env NODE_ENV=development node server.js",
-    "generate-types": "openapi-typescript ../api/openapi.json -o ./app/lib/api.d.ts",
+    "generate-types": "openapi-typescript ../cms-schema/tsp-output/schema/openapi.yaml -o ./app/lib/api.d.ts",
     "start": "node server.js",
     "typecheck": "react-router typegen && tsc"
   },
