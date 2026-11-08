@@ -7,14 +7,14 @@ import iconImage from "~/features/top-page/images/icon@512.webp";
 export default function AboutPage() {
   return (
     <div className="flex min-h-full flex-col gap-8">
-      <h1 className="font-extrabold text-3xl">About</h1>
+      <h1 className="text-3xl font-extrabold">About</h1>
 
       <div className="columns-1 gap-6 space-y-6 sm:columns-2">
         {/* プロフィールカード */}
         <SectionCard title="プロフィール">
           <div className="mb-4 flex flex-wrap items-center gap-6">
             <div className="avatar">
-              <div className="w-24 rounded-full ring-2 ring-accent ring-offset-2 ring-offset-base-100">
+              <div className="ring-accent ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2">
                 <img src={iconImage} alt="Kanaru's Avatar" />
               </div>
             </div>

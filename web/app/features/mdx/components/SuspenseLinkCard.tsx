@@ -1,14 +1,15 @@
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 import { Await } from "react-router";
-import type { OGPData } from "~/features/articles/loaders/ogp";
+import { OgpMapContext } from "../contexts/OgpMapContext";
 import { LinkCard } from "./LinkCard";
 
 type SuspenseLinkCardProps = {
   url: string;
-  ogpMap: Map<string, Promise<OGPData>>;
 };
 
-export function SuspenseLinkCard({ url, ogpMap }: SuspenseLinkCardProps) {
+export function SuspenseLinkCard({ url }: SuspenseLinkCardProps) {
+  const ogpMap = use(OgpMapContext);
+
   return (
     <Suspense fallback={<LinkCard url={url} />}>
       <Await resolve={ogpMap.get(url)}>

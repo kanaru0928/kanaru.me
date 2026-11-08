@@ -22,7 +22,7 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
       <input type="checkbox" id={drawerId} className="drawer-toggle" />
       <div className="drawer-content flex flex-col">
         <div className="flex min-h-screen flex-col">
-          <nav className="navbar sticky top-0 z-40 justify-center bg-base-300/30 px-4 shadow-sm filter backdrop-blur-md">
+          <nav className="navbar bg-base-300/30 sticky top-0 z-40 justify-center px-4 shadow-sm filter backdrop-blur-md">
             <div className="flex-1">
               <div className={cn(defaultOpen && "lg:hidden")}>
                 <label htmlFor={drawerId} className="btn btn-ghost btn-square">
@@ -46,9 +46,9 @@ export function NavbarProvider({ children, defaultOpen }: NavbarProviderProps) {
           className="drawer-overlay"
           aria-label="close sidebar"
         ></label>
-        <ul className="menu min-h-full w-80 bg-base-200 p-4">
+        <ul className="menu bg-base-200 min-h-full w-80 p-4">
           <li className="mb-2">
-            <Link to="/" className="btn btn-ghost font-bold text-xl">
+            <Link to="/" className="btn btn-ghost text-xl font-bold">
               kanaru.me
             </Link>
           </li>

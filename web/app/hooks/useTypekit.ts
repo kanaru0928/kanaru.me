@@ -43,7 +43,7 @@ export function useTypekit(kitId = "kwj0diz") {
     const scriptElement = document.createElement("script");
     const firstScript = document.getElementsByTagName("script")[0];
 
-    if (!firstScript || !firstScript.parentNode) {
+    if (!firstScript?.parentNode) {
       clearTimeout(timeoutId);
       return;
     }

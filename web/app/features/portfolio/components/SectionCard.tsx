@@ -7,8 +7,8 @@ type SectionCardProps = {
 
 export function SectionCard({ title, children }: SectionCardProps) {
   return (
-    <section className="card break-inside-avoid-column overflow-hidden bg-base-100 shadow-xl">
-      <div className="absolute inset-0 h-100 w-1.5 bg-primary"></div>
+    <section className="card bg-base-100 break-inside-avoid-column overflow-hidden shadow-xl">
+      <div className="bg-primary absolute inset-0 h-100 w-1.5"></div>
       <div className="card-body pl-8">
         <h2 className="card-title mb-2 text-xl">{title}</h2>
         {children}

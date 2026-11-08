@@ -55,7 +55,7 @@ export function ArticleCard({
           </div>
           <div className="flex items-end justify-between">
             <div>
-              <div className="flex items-center gap-2 text-base-content text-sm">
+              <div className="text-base-content flex items-center gap-2 text-sm">
                 作成日
                 {skeleton ? (
                   <div className="skeleton h-4 w-18"></div>
@@ -67,7 +67,7 @@ export function ArticleCard({
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-base-content text-sm">
+              <div className="text-base-content flex items-center gap-2 text-sm">
                 更新日
                 {skeleton ? (
                   <div className="skeleton h-4 w-18"></div>

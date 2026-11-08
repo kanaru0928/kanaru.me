@@ -26,7 +26,7 @@ export function WorkCard({
 }: WorkCardProps) {
   return (
     <div
-      className={cn("card break-normal bg-base-100 shadow-sm", className)}
+      className={cn("card bg-base-100 break-normal shadow-sm", className)}
       {...props}
     >
       <figure className="aspect-video">
@@ -40,7 +40,7 @@ export function WorkCard({
             {techs.map((tech) => (
               <Link
                 key={tech}
-                className="btn btn-xs btn-outline btn-secondary rounded-sm text-base-content"
+                className="btn btn-xs btn-outline btn-secondary text-base-content rounded-sm"
                 role="button"
                 to={`/portfolio/skills?keywords=${encodeURIComponent(tech)}`}
               >
