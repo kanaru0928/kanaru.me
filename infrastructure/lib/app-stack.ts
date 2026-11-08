@@ -374,22 +374,6 @@ export class AppStack extends cdk.Stack {
       this.certificateArn,
     );
 
-    const longCachePolicy = new cloudfront.CachePolicy(
-      this,
-      "LongCachePolicy",
-      {
-        comment: "Cache policy with long TTL",
-        defaultTtl: cdk.Duration.days(30),
-        maxTtl: cdk.Duration.days(365),
-        minTtl: cdk.Duration.days(1),
-        cookieBehavior: cloudfront.CacheCookieBehavior.none(),
-        headerBehavior: cloudfront.CacheHeaderBehavior.none(),
-        queryStringBehavior: cloudfront.CacheQueryStringBehavior.none(),
-        enableAcceptEncodingBrotli: true,
-        enableAcceptEncodingGzip: true,
-      },
-    );
-
     const shortCachePolicy = new cloudfront.CachePolicy(
       this,
       "ShortCachePolicy",
@@ -495,15 +479,6 @@ export class AppStack extends cdk.Stack {
           viewerProtocolPolicy:
             cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
-        },
-        "/articles/code/*": {
-          origin: webFunctionUrlOrigin,
-          viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: longCachePolicy,
-          originRequestPolicy:
-            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         },
         "/articles/*.md": {
