@@ -64,7 +64,6 @@ flowchart LR
     CF -->|"/assets/*"| P1["CachingOptimized<br/>1 日"] --> S3Web[("S3<br/>Web アセット")]
     CF -->|"/*.*"| P2["Short<br/>10 秒"] --> S3Web
     CF -->|"/thumbnails/*"| P3["CachingOptimized<br/>1 日"] --> S3Thumb[("S3<br/>サムネイル")]
-    CF -->|"/static/articles/*"| P4["CachingOptimized<br/>1 日"] --> S3Article[("S3<br/>articleBucket")]
     CF -->|"/articles/*.md?h="| P5["Article<br/>1 時間"] --> S3Cms[("S3<br/>CMS 本文")]
     CF -->|"/api/*"| P6["CmsApi<br/>30 秒 + SWR 60 秒<br/>(未認証の GET/HEAD のみ)"] --> CMS["CMS Lambda"]
     CF -->|"/articles/code/*"| P7["Long<br/>30 日"] --> Web["Web Lambda"]
@@ -80,7 +79,6 @@ flowchart LR
 | `/api/*`（未認証の GET/HEAD） | CMS Lambda | `CmsApiCachePolicy` | `public, max-age=0, s-maxage=30, stale-while-revalidate=60` | 30 秒 + SWR 60 秒 |
 | `/api/*`（上記以外） | CMS Lambda | `CmsApiCachePolicy` | `private, no-store` | キャッシュしない |
 | `/thumbnails/*` | S3（サムネイル） | `CachingOptimized` | なし | 1 日 |
-| `/static/articles/*` | S3（`articleBucket`） | `CachingOptimized` | なし | 1 日 |
 | `/articles/code/*` | Web Lambda | `LongCachePolicy` | なし | 30 日 |
 | `/articles/*.md?h={hash}` | S3（CMS 本文） | `ArticleCachePolicy` | `public, max-age=0, s-maxage=3600` | 1 時間 |
 | `/articles/*.md`（`h` なし） | Web Lambda | `ArticleCachePolicy` | なし | キャッシュしない |

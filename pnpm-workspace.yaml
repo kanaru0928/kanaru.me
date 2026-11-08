@@ -1,7 +1,6 @@
 packages:
   - web
   - infrastructure
-  - api
   - functions/*
   - cms-cli
 

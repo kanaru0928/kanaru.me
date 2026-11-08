@@ -58,12 +58,6 @@ jobs:
       - name: Compress Lambda Code
         run: cd web/deploy && zip -r9y ../deploy.zip .
 
-      - name: Build API
-        run: cd api && pnpm build
-
-      - name: Install Lambda dependencies
-        run: cd api && pnpm build:lambda-deps
-
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
