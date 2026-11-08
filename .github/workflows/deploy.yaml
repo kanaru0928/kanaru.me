@@ -50,7 +50,7 @@ jobs:
       - name: Build web app
         run: cd web && pnpm build
         env:
-          VITE_BASE_URL: ${{ inputs.environment-name == 'prod' && format('https://{0}', vars.DOMAIN_NAME) || vars.DEV_BASE_URL }}
+          VITE_BASE_URL: ${{ inputs.environment-name == 'prod' && format('https://{0}', vars.DOMAIN_NAME) || 'https://dev.kanaru.me' }}
         
       - name: Prepare Lambda Function Code
         run: pnpm web:deploy
@@ -87,8 +87,8 @@ jobs:
       - name: Deploy with CDK
         run: cd infrastructure && pnpm cdk deploy AppStack-${{ inputs.environment-name }} --require-approval never
         env:
-          CERTIFICATE_ARN: ${{ secrets.CERTIFICATE_ARN }}
-          DOMAIN_NAME: ${{ inputs.environment-name == 'prod' && vars.DOMAIN_NAME || '' }}
+          CERTIFICATE_ARN: ${{ inputs.environment-name == 'prod' && secrets.CERTIFICATE_ARN || secrets.DEV_CERTIFICATE_ARN }}
+          DOMAIN_NAME: ${{ inputs.environment-name == 'prod' && vars.DOMAIN_NAME || 'dev.kanaru.me' }}
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
           ENVIRONMENT_NAME: ${{ inputs.environment-name }}
           BUILD_HASH: ${{ github.sha }}
