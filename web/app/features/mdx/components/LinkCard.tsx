@@ -18,7 +18,7 @@ export function LinkCard({ url, title, image, siteName }: LinkCardProps) {
       rel="noopener noreferrer"
       className="not-prose my-4 block"
     >
-      <div className="card card-compact lg:card-side border border-base-300 bg-base-100 shadow-md transition-shadow hover:shadow-xl">
+      <div className="card card-compact lg:card-side border-base-300 bg-base-100 border shadow-md transition-shadow hover:shadow-xl">
         {image && (
           <figure className="h-48 shrink-0 lg:h-auto lg:w-48">
             <img
@@ -30,7 +30,7 @@ export function LinkCard({ url, title, image, siteName }: LinkCardProps) {
         )}
         <div className="card-body">
           <h3 className="card-title line-clamp-2 text-base">{title || url}</h3>
-          <div className="mt-auto flex items-center gap-2 text-base-content/50 text-xs">
+          <div className="text-base-content/50 mt-auto flex items-center gap-2 text-xs">
             {siteName && <span>{siteName}</span>}
             {siteName && <span>•</span>}
             <ExternalLink className="h-3 w-3" />

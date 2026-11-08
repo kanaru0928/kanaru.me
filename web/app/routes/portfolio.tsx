@@ -18,7 +18,7 @@ export function loader({ request }: Route.LoaderArgs) {
 
 export default function PortfolioLayout() {
   return (
-    <div className="wrap-anywhere min-h-full break-keep p-8">
+    <div className="min-h-full p-8 wrap-anywhere break-keep">
       <meta
         property="og:image"
         content={`${import.meta.env.VITE_BASE_URL}/og-image.png`}
