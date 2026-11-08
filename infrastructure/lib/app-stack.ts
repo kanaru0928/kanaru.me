@@ -131,19 +131,15 @@ export class AppStack extends cdk.Stack {
       },
     });
 
-    new cognito.UserPoolIdentityProviderOidc(
-      this,
-      "ExternalProvider",
-      {
-        userPool: userPool,
-        clientId: this.providerClientId,
-        clientSecret: this.providerClientSecret,
-        issuerUrl: this.providerIssuerUrl,
-        attributeMapping: {
-          email: cognito.ProviderAttribute.other("email"),
-        },
+    new cognito.UserPoolIdentityProviderOidc(this, "ExternalProvider", {
+      userPool: userPool,
+      clientId: this.providerClientId,
+      clientSecret: this.providerClientSecret,
+      issuerUrl: this.providerIssuerUrl,
+      attributeMapping: {
+        email: cognito.ProviderAttribute.other("email"),
       },
-    );
+    });
 
     new cognito.UserPoolClient(this, "KanarumeUserPoolClient", {
       userPool: userPool,
