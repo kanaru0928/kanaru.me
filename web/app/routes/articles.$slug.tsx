@@ -10,9 +10,15 @@ import {
 } from "~/features/articles/loaders/article-client";
 import { fetchOgpMap } from "~/features/articles/loaders/article-loader";
 import { SuspenseLinkCard } from "~/features/mdx/components/SuspenseLinkCard";
+import { OgpMapContext } from "~/features/mdx/contexts/OgpMapContext";
 import { mdxComponents } from "~/features/mdx/mdx-components";
 import { apiClient } from "~/lib/apiClient";
 import type { Route } from "./+types/articles.$slug";
+
+const customComponents = {
+  ...mdxComponents,
+  LinkCard: SuspenseLinkCard,
+};
 
 export async function loader({ params }: Route.LoaderArgs) {
   const { slug } = params;
@@ -50,14 +56,6 @@ export default function ArticlesSlugRoute({
     return mdxModule.default;
   }, [code]);
 
-  // OGP情報を注入したmdxComponentsを作成
-  const customComponents = {
-    ...mdxComponents,
-    LinkCard: ({ url }: { url: string }) => (
-      <SuspenseLinkCard url={url} ogpMap={ogpMap} />
-    ),
-  };
-
   return (
     <>
       <title>{article.title}</title>
@@ -87,7 +85,9 @@ export default function ArticlesSlugRoute({
           ))}
         </div>
       </div>
-      <Content components={customComponents} />
+      <OgpMapContext value={ogpMap}>
+        <Content components={customComponents} />
+      </OgpMapContext>
     </>
   );
 }
