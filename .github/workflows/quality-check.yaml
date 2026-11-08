@@ -6,12 +6,16 @@ on:
       - main
     paths:
       - "web/**"
+      - "infrastructure/**"
+      - "cms-cli/**"
       - ".github/workflows/**"
   push:
     branches:
       - main
     paths:
       - "web/**"
+      - "infrastructure/**"
+      - "cms-cli/**"
       - ".github/workflows/**"
   workflow_dispatch:
 
@@ -34,5 +38,9 @@ jobs:
         run: cd web && pnpm install
       - name: Lint and format
         run: cd web && pnpm run ci
+      - name: Lint and format (infrastructure)
+        run: cd infrastructure && pnpm exec biome ci .
+      - name: Lint and format (cms-cli)
+        run: cd cms-cli && pnpm run ci
       - name: Build
         run: cd web && pnpm run build
