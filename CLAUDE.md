@@ -9,7 +9,6 @@ React Router v7 (旧Remix) をベースとした個人ポートフォリオサ�
 ### モノレポ構成
 
 - `web/` - フロントエンドアプリケーション (React Router v7)
-- `api/` - バックエンドAPI (Hono + AWS Lambda)
 - `infrastructure/` - インフラストラクチャ (AWS CDK)
 - `functions/` - サーバーレス関数
 

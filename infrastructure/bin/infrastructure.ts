@@ -20,7 +20,14 @@ const env = {
   providerIssuerUrl: process.env.PROVIDER_ISSUER_URL,
 };
 
-if (!env.certificateArn || !env.githubToken || !env.environmentName || !env.providerClientId || !env.providerClientSecret || !env.providerIssuerUrl) {
+if (
+  !env.certificateArn ||
+  !env.githubToken ||
+  !env.environmentName ||
+  !env.providerClientId ||
+  !env.providerClientSecret ||
+  !env.providerIssuerUrl
+) {
   throw new Error("All environment variables must be set");
 }
 

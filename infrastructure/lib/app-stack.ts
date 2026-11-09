@@ -40,10 +40,6 @@ export class AppStack extends cdk.Stack {
   private assetBucket: s3.Bucket;
   private webFunction: lambda.Function;
   private functionUrl: lambda.FunctionUrl;
-  private articleTable: dynamodb.TableV2;
-  private articleBucket: s3.Bucket;
-  private apiFunction: lambda.Function;
-  private apiFunctionUrl: lambda.FunctionUrl;
   private userPool: cognito.UserPool;
   private cmsTable: dynamodb.TableV2;
   private cmsBucket: s3.Bucket;
@@ -75,11 +71,6 @@ export class AppStack extends cdk.Stack {
 
     this.userPool = this.createUserPool();
 
-    this.articleTable = this.createArticleTable();
-    this.articleBucket = this.createArticleBucket();
-    this.apiFunction = this.createApiFunction();
-    this.apiFunctionUrl = this.createApiFunctionUrl();
-
     this.cmsTable = this.createCmsTable();
     this.cmsBucket = this.createCmsBucket();
     this.thumbnailBucket = this.createThumbnailBucket();
@@ -91,7 +82,6 @@ export class AppStack extends cdk.Stack {
     this.warmerFunction = this.createWarmerFunction();
     this.createWarmerEventBridge();
     this.grantOACAccess();
-    this.updateApiFunctionEnv();
     this.updateWebFunctionEnv();
   }
 
@@ -132,58 +122,6 @@ export class AppStack extends cdk.Stack {
     return functionUrl;
   }
 
-  private createArticleTable() {
-    return new dynamodb.TableV2(this, `ArticlesTable`, {
-      partitionKey: {
-        name: "slug",
-        type: dynamodb.AttributeType.STRING,
-      },
-      removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
-    });
-  }
-
-  private createArticleBucket() {
-    return new s3.Bucket(this, `ArticleBucket`, {
-      bucketName: `${this.account}-kanaru-me-articles-storage-${this.environmentName}`,
-      removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
-    });
-  }
-
-  private createApiFunction() {
-    return new lambda.Function(this, `APIFunction`, {
-      runtime: lambda.Runtime.NODEJS_LATEST,
-      handler: "index.handler",
-      code: lambda.Code.fromAsset("../api/dist"),
-      initialPolicy: [
-        new iam.PolicyStatement({
-          actions: ["dynamodb:*"],
-          resources: [this.articleTable.tableArn],
-        }),
-        new iam.PolicyStatement({
-          actions: ["s3:*"],
-          resources: [
-            this.articleBucket.bucketArn,
-            `${this.articleBucket.bucketArn}/*`,
-          ],
-        }),
-        new iam.PolicyStatement({
-          actions: ["ssm:GetParameter"],
-          resources: [`arn:aws:ssm:${this.region}:${this.account}:*`],
-        }),
-      ],
-      layers: [
-        lambda.LayerVersion.fromLayerVersionArn(
-          this,
-          "AWSLambdaPowertoolsLayer",
-          "arn:aws:lambda:ap-northeast-1:133490724326:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:21",
-        ),
-      ],
-      timeout: cdk.Duration.minutes(1),
-      memorySize: 512,
-      architecture: lambda.Architecture.ARM_64,
-    });
-  }
-
   private createUserPool() {
     const userPool = new cognito.UserPool(this, "KanarumeUserPool", {
       standardAttributes: {
@@ -193,19 +131,15 @@ export class AppStack extends cdk.Stack {
       },
     });
 
-    new cognito.UserPoolIdentityProviderOidc(
-      this,
-      "ExternalProvider",
-      {
-        userPool: userPool,
-        clientId: this.providerClientId,
-        clientSecret: this.providerClientSecret,
-        issuerUrl: this.providerIssuerUrl,
-        attributeMapping: {
-          email: cognito.ProviderAttribute.other("email"),
-        },
+    new cognito.UserPoolIdentityProviderOidc(this, "ExternalProvider", {
+      userPool: userPool,
+      clientId: this.providerClientId,
+      clientSecret: this.providerClientSecret,
+      issuerUrl: this.providerIssuerUrl,
+      attributeMapping: {
+        email: cognito.ProviderAttribute.other("email"),
       },
-    );
+    });
 
     new cognito.UserPoolClient(this, "KanarumeUserPoolClient", {
       userPool: userPool,
@@ -218,14 +152,6 @@ export class AppStack extends cdk.Stack {
     });
 
     return userPool;
-  }
-
-  private createApiFunctionUrl() {
-    const functionUrl = this.apiFunction.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.AWS_IAM,
-    });
-
-    return functionUrl;
   }
 
   private createCmsTable() {
@@ -342,10 +268,6 @@ export class AppStack extends cdk.Stack {
     // S3用のOrigin設定（OACで自動的にバケットポリシー設定）
     const s3Origin = origins.S3BucketOrigin.withOriginAccessControl(
       this.assetBucket,
-    );
-
-    const articleOrigin = origins.S3BucketOrigin.withOriginAccessControl(
-      this.articleBucket,
     );
 
     const cmsFunctionUrlOrigin = new origins.HttpOrigin(
@@ -474,13 +396,6 @@ export class AppStack extends cdk.Stack {
           cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
           allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         },
-        "/static/articles/*": {
-          origin: articleOrigin,
-          viewerProtocolPolicy:
-            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
-          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
-        },
         "/articles/*.md": {
           origin: cmsContentOrigin,
           viewerProtocolPolicy:
@@ -540,17 +455,13 @@ export class AppStack extends cdk.Stack {
       handler: "index.handler",
       code: lambda.Code.fromAsset("../functions/warmer"),
       environment: {
-        FUNCTION_NAMES: [
-          this.webFunction.functionName,
-          this.apiFunction.functionName,
-        ].join(","),
+        FUNCTION_NAMES: [this.webFunction.functionName].join(","),
       },
       timeout: cdk.Duration.seconds(30),
       architecture: lambda.Architecture.ARM_64,
     });
 
     this.webFunction.grantInvoke(warmerFunction);
-    this.apiFunction.grantInvoke(warmerFunction);
 
     return warmerFunction;
   }
@@ -564,61 +475,12 @@ export class AppStack extends cdk.Stack {
       sourceArn: this.distribution.distributionArn,
     });
 
-    this.apiFunction.addPermission("CloudFrontApiInvokePermission", {
-      principal: new iam.ServicePrincipal("cloudfront.amazonaws.com"),
-      action: "lambda:InvokeFunctionUrl",
-      functionUrlAuthType: lambda.FunctionUrlAuthType.AWS_IAM,
-      sourceArn: this.distribution.distributionArn,
-    });
-
     this.cmsFunction.addPermission("CloudFrontCmsInvokePermission", {
       principal: new iam.ServicePrincipal("cloudfront.amazonaws.com"),
       action: "lambda:InvokeFunctionUrl",
       functionUrlAuthType: lambda.FunctionUrlAuthType.AWS_IAM,
       sourceArn: this.distribution.distributionArn,
     });
-  }
-
-  private updateApiFunctionEnv() {
-    const domainName =
-      this.domainName || this.distribution.distributionDomainName;
-    const allowedOrigins = [`https://${domainName}`];
-
-    const apiCutomResource = new customResource.AwsCustomResource(
-      this,
-      "UpdateApiFunctionEnvCR",
-      {
-        onUpdate: {
-          service: "Lambda",
-          action: "updateFunctionConfiguration",
-          parameters: {
-            FunctionName: this.apiFunction.functionName,
-            Environment: {
-              Variables: {
-                DYNAMODB_TABLE_NAME: this.articleTable.tableName,
-                S3_BUCKET_NAME: this.articleBucket.bucketName,
-                S3_ORIGIN_URL: `https://${domainName}`,
-                S3_KEY_PREFIX: "static/articles/",
-                SECRET_NAME_PREFIX: `/kanaru.me-v2/${this.environmentName}/`,
-                SSM_PARAMETER_STORE_TTL: "300",
-                ALLOWED_ORIGINS: allowedOrigins.join(","),
-              },
-            },
-          },
-          physicalResourceId: customResource.PhysicalResourceId.of(
-            `${this.apiFunction.functionName}-${this.buildHash}-env-update`,
-          ),
-        },
-        policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
-          resources: [this.apiFunction.functionArn],
-        }),
-      },
-    );
-
-    apiCutomResource.node.addDependency(this.articleTable);
-    apiCutomResource.node.addDependency(this.articleBucket);
-    apiCutomResource.node.addDependency(this.apiFunction);
-    apiCutomResource.node.addDependency(this.distribution);
   }
 
   private updateWebFunctionEnv() {
