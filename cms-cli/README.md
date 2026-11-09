@@ -110,12 +110,13 @@ cms-cli post ./draft.md --title "新しい記事" --tags "tech,javascript"
 title: 記事タイトル
 tags: [tech, javascript, aws]
 published: true
-# 省略時は OGP 画像を生成する
 thumbnailUrl: /thumbnails/xxxx.webp
 ---
 
 記事の本文...
 ```
+
+`thumbnailUrl` を省略した場合は OGP 画像を生成する。
 
 ### sync - 記事の同期
 
