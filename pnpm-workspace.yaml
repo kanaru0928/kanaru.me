@@ -9,4 +9,5 @@ injectWorkspacePackages: true
 allowBuilds:
   aws-sdk: false
   esbuild: true
+  puppeteer: true
   sharp: true

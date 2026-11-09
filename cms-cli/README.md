@@ -4,19 +4,18 @@ API ディレクトリ以下にある API をコマンドライン経由で実�
 
 ## 目的
 
-Lambda でホスティングされている記事管理 API をコマンドラインから操作し、記事の投稿・取得・同期を行う。
+記事管理 API（cms）をコマンドラインから操作し、記事の投稿・取得・同期を行う。
 
 ## 技術スタック
 
 - **CLI フレームワーク**: Commander.js
 - **テストフレームワーク**: Vitest
-- **AWS SDK**: AWS SDK for JavaScript v3
+- **サムネイル生成**: Puppeteer、sharp
 
 ## 前提条件
 
-- AWS SSO による認証が事前に完了していること
-- Lambda 関数への Invoke 権限があること
-- 環境変数 `AWS_DEFAULT_PROFILE` または `AWS_PROFILE` が設定されているか、`--profile` オプションで指定できること
+- Cognito の CLI 用 App Client（AppStack の出力 `CmsCliClientId`）が作成済みであること
+- ログイン時にポート 8976 でコールバックを待ち受けるため、同ポートが空いていること
 
 ## インストール
 
@@ -26,29 +25,17 @@ pnpm install
 
 ## 基本的な使い方
 
-### プロファイル指定
+### 環境変数
 
-全てのコマンドで共通のグローバルオプション（コマンドの最初に指定）:
+`.env.example` を参考に、カレントディレクトリの `.env` またはシェルの環境変数で以下を設定する。
 
-```bash
-cms-cli --profile <profile-name> --function <function-name> <command>
-```
+- `API_BASE_URL` - API のベース URL
+- `COGNITO_DOMAIN` - Cognito ドメインの URL（AppStack の出力 `CognitoDomainUrl`）
+- `COGNITO_CLIENT_ID` - CLI 用 App Client の ID（AppStack の出力 `CmsCliClientId`）
 
-#### プロファイル指定
+### 認証
 
-プロファイルの優先順位:
-
-1. `--profile` オプションで指定した値
-2. 環境変数 `AWS_PROFILE`
-3. 環境変数 `AWS_DEFAULT_PROFILE`
-
-#### Lambda 関数名指定
-
-Lambda 関数名の優先順位:
-
-1. `--function` オプションで指定した値
-2. 環境変数 `CMS_FUNCTION_NAME`
-3. （デフォルト値が設定されていない場合はエラー）
+API を呼び出すコマンドは、実行時にブラウザで Cognito にログインする（Authorization Code + PKCE）。ブラウザが開かない場合は、ターミナルに表示された URL を開く。
 
 ## コマンド
 
@@ -57,7 +44,7 @@ Lambda 関数名の優先順位:
 現在投稿されている記事の一覧を表示する。
 
 ```bash
-cms-cli [--profile <name>] [--function <name>] list [options]
+cms-cli list [options]
 ```
 
 #### オプション
@@ -78,15 +65,6 @@ cms-cli list
 
 # 2ページ目を表示
 cms-cli list --page 2
-
-# プロファイルを指定して実行
-cms-cli --profile my-profile list --page 3
-
-# Lambda関数名を指定して実行
-cms-cli --function my-function list
-
-# プロファイルと関数名を両方指定
-cms-cli --profile my-profile --function my-function list --page 2
 ```
 
 ### post - 記事の投稿
@@ -94,7 +72,7 @@ cms-cli --profile my-profile --function my-function list --page 2
 指定した Markdown ファイル（.md または.mdx）を投稿する。
 
 ```bash
-cms-cli [--profile <name>] [--function <name>] post <file> [options]
+cms-cli post <file> [options]
 ```
 
 #### 引数
@@ -104,16 +82,15 @@ cms-cli [--profile <name>] [--function <name>] post <file> [options]
 #### オプション
 
 - `--title <title>` - 記事タイトル（frontmatter がない場合に使用）
-- `--description <desc>` - 記事の説明（frontmatter がない場合に使用）
-- `--tags <tags>` - タグ（カンマ区切り、frontmatter がない場合に使用）
+- `--tags <tags>` - タグ（カンマ区切り、frontmatter がない場合に使用）。1 件以上必須
 
 #### 動作
 
 1. 指定されたファイルを読み込む
 2. frontmatter が存在する場合、そこからメタデータを抽出
 3. frontmatter が存在しない場合、オプションからメタデータを取得
-4. コンテンツは frontmatter を含めてそのまま投稿（削除不要）
-5. Lambda 関数を呼び出して記事を投稿
+4. frontmatter に `thumbnailUrl` がない場合、タイトルとタグを入れた OGP 画像（1200x630）を Puppeteer で生成し、WebP に変換してアップロード
+5. コンテンツは frontmatter を含めてそのまま投稿（削除不要）。`source` は `kanaru.me` 固定
 
 #### 使用例
 
@@ -122,16 +99,7 @@ cms-cli [--profile <name>] [--function <name>] post <file> [options]
 cms-cli post ./articles/my-post.md
 
 # frontmatterなしのファイルをオプション指定で投稿
-cms-cli post ./draft.md --title "新しい記事" --description "記事の説明" --tags "tech,javascript"
-
-# プロファイル指定
-cms-cli --profile my-profile post ./articles/my-post.md
-
-# Lambda関数名を指定
-cms-cli --function my-function post ./articles/my-post.md
-
-# プロファイルと関数名を両方指定
-cms-cli --profile my-profile --function my-function post ./draft.md --title "記事"
+cms-cli post ./draft.md --title "新しい記事" --tags "tech,javascript"
 ```
 
 #### frontmatter の例
@@ -140,9 +108,10 @@ cms-cli --profile my-profile --function my-function post ./draft.md --title "記
 ---
 
 title: 記事タイトル
-description: 記事の説明
 tags: [tech, javascript, aws]
 published: true
+# 省略時は OGP 画像を生成する
+thumbnailUrl: /thumbnails/xxxx.webp
 ---
 
 記事の本文...
@@ -153,7 +122,7 @@ published: true
 投稿されている記事を取得して、指定したディレクトリに格納する。
 
 ```bash
-cms-cli [--profile <name>] [--function <name>] sync <directory>
+cms-cli sync <directory>
 ```
 
 #### 引数
@@ -162,7 +131,7 @@ cms-cli [--profile <name>] [--function <name>] sync <directory>
 
 #### 動作
 
-1. Lambda 関数から全記事を取得
+1. API から全記事（最大 100 件）を取得
 2. 指定されたディレクトリに記事をファイルとして保存
 3. ファイルが既に存在する場合、更新日を比較して新しい方を優先
 4. 以下の情報を標準出力:
@@ -177,13 +146,7 @@ cms-cli [--profile <name>] [--function <name>] sync <directory>
 cms-cli sync ./articles
 
 # 絶対パスで指定
-cms-cli --profile my-profile sync /path/to/articles
-
-# Lambda関数名を指定
-cms-cli --function my-function sync ./articles
-
-# プロファイルと関数名を両方指定
-cms-cli --profile my-profile --function my-function sync ./articles
+cms-cli sync /path/to/articles
 ```
 
 #### 出力例
@@ -202,12 +165,13 @@ Summary:
   Total: 3
 ```
 
-## Lambda 関数の設定
+### upload-image - 画像のアップロード
 
-CLI ツールが呼び出す Lambda 関数の設定:
+画像を WebP に変換し、API が発行した署名付き URL へアップロードする。アップロード後の URL を標準出力に出力する。
 
-- 関数名: `--function` オプションまたは環境変数 `CMS_FUNCTION_NAME` で指定
-- リージョン: AWS プロファイルのデフォルトリージョンを使用
+```bash
+cms-cli upload-image <file> [--max-size <number>] [--quality <number>]
+```
 
 ## 開発
 

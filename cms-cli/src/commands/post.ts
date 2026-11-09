@@ -4,8 +4,15 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { ApiClient } from "../lib/api/client.js";
+import { processImage } from "../lib/image/processor.js";
+import { renderThumbnail } from "../lib/image/thumbnail.js";
+import { uploadThumbnail } from "../lib/image/uploader.js";
 import { parseMarkdown } from "../lib/markdown/parser.js";
 import { logger } from "../lib/utils/logger.js";
+
+const SOURCE = "kanaru.me";
+// 生成する OGP 画像（1200x630）を縮小しない
+const THUMBNAIL_MAX_SIZE = 1200;
 
 export interface PostCommandOptions {
 	title?: string;
@@ -45,27 +52,44 @@ export async function postCommand(
 		const tags =
 			parsed.frontmatter.tags ||
 			(options.tags ? options.tags.split(",").map((t) => t.trim()) : []);
+		if (tags.length === 0) {
+			logger.error(
+				"タグが指定されていません。frontmatterまたは--tagsオプションでタグを指定してください",
+			);
+			process.exit(1);
+		}
 		const status =
 			parsed.frontmatter.published === false ? "unpublished" : "published";
-		const author = parsed.frontmatter.author || "cms-cli";
+
+		// サムネイルの決定（frontmatter > 生成）
+		let thumbnailUrl = parsed.frontmatter.thumbnailUrl;
+		if (!thumbnailUrl) {
+			logger.info("サムネイルを生成中");
+			const png = await renderThumbnail({ title, tags });
+			const processed = await processImage(png, {
+				maxSize: THUMBNAIL_MAX_SIZE,
+			});
+			thumbnailUrl = await uploadThumbnail(apiClient, processed.buffer);
+		}
 
 		logger.info(`記事を投稿中: ${title} (slug: ${slug})`);
 
 		// 記事を投稿（frontmatter付きコンテンツをそのまま送信）
-		await apiClient.postArticle({
-			slug,
+		await apiClient.postArticle(slug, {
 			title,
 			contentBody: parsed.originalContent,
-			author,
+			source: SOURCE,
 			status,
 			tags,
+			thumbnailUrl,
 		});
 
 		logger.success(`記事の投稿に成功しました`);
 		logger.info(`  タイトル: ${title}`);
 		logger.info(`  Slug: ${slug}`);
 		logger.info(`  ステータス: ${status === "published" ? "公開" : "非公開"}`);
-		logger.info(`  タグ: ${tags.join(", ") || "なし"}`);
+		logger.info(`  タグ: ${tags.join(", ")}`);
+		logger.info(`  サムネイル: ${thumbnailUrl}`);
 	} catch (error) {
 		if (error instanceof Error) {
 			logger.error(`記事の投稿に失敗しました: ${error.message}`);
