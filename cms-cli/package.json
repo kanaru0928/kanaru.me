@@ -20,6 +20,7 @@
 	"dependencies": {
 		"commander": "^14.0.2",
 		"dotenv": "^17.2.3",
+		"eta": "^4.6.0",
 		"gray-matter": "^4.0.3",
 		"openapi-fetch": "^0.15.0",
 		"puppeteer": "^25.16.0",
