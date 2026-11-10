@@ -48,9 +48,9 @@ export async function syncCommand(
 			const filePath = path.join(directory, fileName);
 
 			try {
-				// 記事詳細を取得（contentBodyを含む）
+				// 記事詳細を取得（contentを含む）
 				const articleDetail = await apiClient.getArticle(article.slug);
-				const content = articleDetail.contentBody;
+				const content = articleDetail.content;
 
 				// 既存ファイルの確認
 				let existingContent: string | null = null;

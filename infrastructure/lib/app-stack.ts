@@ -15,6 +15,8 @@ import * as customResource from "aws-cdk-lib/custom-resources";
 const CMS_CONTENT_PREFIX = "contents";
 // CloudFront Functions から参照するため、markdown-router.js と値を揃える
 const WEB_ORIGIN_ID = "web";
+// cms-cli のログイン時に待ち受けるコールバック URL と揃える
+const CMS_CLI_CALLBACK_URL = "http://localhost:8976/callback";
 
 type Props = cdk.StackProps & {
   certificateArn: string;
@@ -149,6 +151,51 @@ export class AppStack extends cdk.Stack {
           authorizationCodeGrant: true,
         },
       },
+    });
+
+    const domain = userPool.addDomain("KanarumeUserPoolDomain", {
+      cognitoDomain: {
+        domainPrefix: `kanaru-me-${this.environmentName}`,
+      },
+    });
+
+    const readScope = new cognito.ResourceServerScope({
+      scopeName: "read",
+      scopeDescription: "Read articles",
+    });
+    const writeScope = new cognito.ResourceServerScope({
+      scopeName: "write",
+      scopeDescription: "Write articles",
+    });
+    const articlesResourceServer = userPool.addResourceServer(
+      "ArticlesResourceServer",
+      {
+        identifier: "articles",
+        scopes: [readScope, writeScope],
+      },
+    );
+
+    // CLI はシークレットを安全に保持できないため、パブリッククライアントとして PKCE を使用する
+    const cliClient = userPool.addClient("CmsCliClient", {
+      generateSecret: false,
+      oAuth: {
+        flows: {
+          authorizationCodeGrant: true,
+        },
+        scopes: [
+          cognito.OAuthScope.OPENID,
+          cognito.OAuthScope.resourceServer(articlesResourceServer, readScope),
+          cognito.OAuthScope.resourceServer(articlesResourceServer, writeScope),
+        ],
+        callbackUrls: [CMS_CLI_CALLBACK_URL],
+      },
+    });
+
+    new cdk.CfnOutput(this, "CognitoDomainUrl", {
+      value: domain.baseUrl(),
+    });
+    new cdk.CfnOutput(this, "CmsCliClientId", {
+      value: cliClient.userPoolClientId,
     });
 
     return userPool;

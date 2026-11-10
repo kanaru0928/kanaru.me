@@ -11,21 +11,20 @@
 		"lint": "biome lint --fix",
 		"ci": "biome ci",
 		"build": "rollup -c",
-		"generate-types": "openapi-typescript ../api/openapi.json --output src/api/api.d.ts"
+		"preview:thumbnail": "node scripts/preview-thumbnail.ts",
+		"generate-types": "openapi-typescript ../cms-schema/tsp-output/schema/openapi.yaml --output src/api/api.d.ts"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"packageManager": "pnpm@10.34.9",
 	"dependencies": {
-		"@aws-sdk/client-lambda": "^3.922.0",
-		"@aws-sdk/client-s3": "^3.929.0",
-		"@aws-sdk/client-ssm": "^3.940.0",
-		"@aws-sdk/credential-providers": "^3.929.0",
 		"commander": "^14.0.2",
 		"dotenv": "^17.2.3",
+		"eta": "^4.6.0",
 		"gray-matter": "^4.0.3",
 		"openapi-fetch": "^0.15.0",
+		"puppeteer": "^25.16.0",
 		"sharp": "^0.34.5"
 	},
 	"devDependencies": {

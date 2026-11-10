@@ -9,7 +9,11 @@ export interface FrontmatterData {
 	tags?: string[];
 	published?: boolean;
 	slug?: string;
-	author?: string;
+	thumbnailUrl?: string;
+	/** サムネイルのアイキャッチ画像（Markdown ファイルからの相対パス） */
+	eyecatchImage?: string;
+	/** サムネイルのアイキャッチ絵文字（eyecatchImage があればそちらを優先） */
+	eyecatchEmoji?: string;
 }
 
 export interface ParsedMarkdown {
@@ -31,7 +35,9 @@ export function parseMarkdown(fileContent: string): ParsedMarkdown {
 			tags: Array.isArray(data.tags) ? data.tags : undefined,
 			published: data.published,
 			slug: data.slug,
-			author: data.author,
+			thumbnailUrl: data.thumbnailUrl,
+			eyecatchImage: data.eyecatchImage,
+			eyecatchEmoji: data.eyecatchEmoji,
 		},
 		content,
 		originalContent: fileContent,

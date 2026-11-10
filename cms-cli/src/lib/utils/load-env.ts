@@ -12,8 +12,7 @@ const __dirname = dirname(__filename);
  * 優先順位（高→低）:
  * 1. カレントディレクトリの .env
  * 2. cms-cli ディレクトリの .env
- * 3. SSM Parameter Store
- * 4. シェル環境変数
+ * 3. シェル環境変数
  */
 export function loadEnvFiles(): void {
 	// カレントディレクトリ（CLIを実行した場所）

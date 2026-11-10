@@ -16,13 +16,22 @@ const program = new Command();
 
 program
 	.name("cms-cli")
-	.description(
-		"Lambda でホスティングされている記事管理 API をコマンドラインから操作",
-	)
-	.version("1.0.0")
-	.option("--profile <name>", "AWS プロファイル名")
-	.option("--function <name>", "Lambda 関数名")
-	.option("--env <name>", "環境名 (デフォルト: prod)");
+	.description("記事管理 API をコマンドラインから操作")
+	.version("1.0.0");
+
+function createApiClientFromEnv() {
+	const envConfig = getEnvConfig();
+
+	const authManager = createAuthManager({
+		cognitoDomain: envConfig.cognitoDomain,
+		clientId: envConfig.cognitoClientId,
+	});
+
+	return createApiClient({
+		baseUrl: envConfig.apiBaseUrl,
+		authManager,
+	});
+}
 
 // listコマンド
 program
@@ -31,24 +40,7 @@ program
 	.option("--page <number>", "ページ番号", "1")
 	.action(async (options) => {
 		try {
-			const globalOpts = program.opts();
-			const envConfig = await getEnvConfig({
-				profile: globalOpts.profile,
-				functionName: globalOpts.function,
-				env: globalOpts.env,
-			});
-
-			const authManager = createAuthManager({
-				initialToken: envConfig.initialBearerToken,
-				functionName: envConfig.functionName,
-				region: envConfig.awsRegion,
-				profile: envConfig.awsProfile,
-			});
-
-			const apiClient = createApiClient({
-				baseUrl: envConfig.apiBaseUrl,
-				authManager,
-			});
+			const apiClient = createApiClientFromEnv();
 
 			await listCommand(apiClient, {
 				page: Number.parseInt(options.page, 10),
@@ -69,24 +61,7 @@ program
 	.option("--tags <tags>", "タグ（カンマ区切り）")
 	.action(async (file, options) => {
 		try {
-			const globalOpts = program.opts();
-			const envConfig = await getEnvConfig({
-				profile: globalOpts.profile,
-				functionName: globalOpts.function,
-				env: globalOpts.env,
-			});
-
-			const authManager = createAuthManager({
-				initialToken: envConfig.initialBearerToken,
-				functionName: envConfig.functionName,
-				region: envConfig.awsRegion,
-				profile: envConfig.awsProfile,
-			});
-
-			const apiClient = createApiClient({
-				baseUrl: envConfig.apiBaseUrl,
-				authManager,
-			});
+			const apiClient = createApiClientFromEnv();
 
 			await postCommand(file, apiClient, {
 				title: options.title,
@@ -106,24 +81,7 @@ program
 	.description("記事を同期")
 	.action(async (directory) => {
 		try {
-			const globalOpts = program.opts();
-			const envConfig = await getEnvConfig({
-				profile: globalOpts.profile,
-				functionName: globalOpts.function,
-				env: globalOpts.env,
-			});
-
-			const authManager = createAuthManager({
-				initialToken: envConfig.initialBearerToken,
-				functionName: envConfig.functionName,
-				region: envConfig.awsRegion,
-				profile: envConfig.awsProfile,
-			});
-
-			const apiClient = createApiClient({
-				baseUrl: envConfig.apiBaseUrl,
-				authManager,
-			});
+			const apiClient = createApiClientFromEnv();
 
 			await syncCommand(directory, apiClient, {});
 		} catch (error) {
@@ -137,26 +95,18 @@ program
 // upload-imageコマンド
 program
 	.command("upload-image <file>")
-	.description("画像をWebPに変換してS3にアップロード")
+	.description("画像をWebPに変換してアップロード")
 	.option("--max-size <number>", "最大サイズ（デフォルト: 1000）", "1000")
 	.option("--quality <number>", "WebP品質（0-100、デフォルト: 80）", "80")
 	.action(async (file, options) => {
 		try {
-			const globalOpts = program.opts();
-			const envConfig = await getEnvConfig({
-				profile: globalOpts.profile,
-				functionName: globalOpts.function,
-				env: globalOpts.env,
-			});
+			const envConfig = getEnvConfig();
+			const apiClient = createApiClientFromEnv();
 
-			await uploadImageCommand(
-				file,
-				{
-					maxSize: Number.parseInt(options.maxSize, 10),
-					quality: Number.parseInt(options.quality, 10),
-				},
-				envConfig,
-			);
+			await uploadImageCommand(file, apiClient, envConfig.apiBaseUrl, {
+				maxSize: Number.parseInt(options.maxSize, 10),
+				quality: Number.parseInt(options.quality, 10),
+			});
 		} catch (error) {
 			if (error instanceof Error) {
 				logger.error(error.message);

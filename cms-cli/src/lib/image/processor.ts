@@ -19,14 +19,14 @@ export interface ProcessedImage {
  * 画像を WebP に変換し、必要に応じてリサイズ
  */
 export async function processImage(
-	inputPath: string,
+	input: string | Buffer,
 	options: ProcessImageOptions = {},
 ): Promise<ProcessedImage> {
 	const maxSize = options.maxSize ?? 1000;
 	const quality = options.quality ?? 80;
 
 	// Sharp で画像を読み込み
-	const image = sharp(inputPath);
+	const image = sharp(input);
 
 	// メタデータを取得
 	const metadata = await image.metadata();
