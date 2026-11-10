@@ -118,6 +118,11 @@ thumbnailUrl: /thumbnails/xxxx.webp
 
 `thumbnailUrl` を省略した場合は OGP 画像を生成する。
 
+生成する OGP 画像の左側には、以下の項目でアイキャッチを表示できる。両方を指定した場合は画像を優先し、どちらも指定しない場合はアイキャッチを表示しない。
+
+- `eyecatchImage` - 画像ファイルのパス（Markdown ファイルからの相対パス。png、jpg、webp、gif、svg に対応）
+- `eyecatchEmoji` - 絵文字
+
 ### sync - 記事の同期
 
 投稿されている記事を取得して、指定したディレクトリに格納する。

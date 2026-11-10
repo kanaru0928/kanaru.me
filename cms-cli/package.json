@@ -11,6 +11,7 @@
 		"lint": "biome lint --fix",
 		"ci": "biome ci",
 		"build": "rollup -c",
+		"preview:thumbnail": "node scripts/preview-thumbnail.ts",
 		"generate-types": "openapi-typescript ../cms-schema/tsp-output/schema/openapi.yaml --output src/api/api.d.ts"
 	},
 	"keywords": [],

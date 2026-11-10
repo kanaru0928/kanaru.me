@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { ApiClient } from "../lib/api/client.js";
 import { processImage } from "../lib/image/processor.js";
-import { renderThumbnail } from "../lib/image/thumbnail.js";
+import { loadImageAsDataUrl, renderThumbnail } from "../lib/image/thumbnail.js";
 import { uploadThumbnail } from "../lib/image/uploader.js";
 import { parseMarkdown } from "../lib/markdown/parser.js";
 import { logger } from "../lib/utils/logger.js";
@@ -65,7 +65,18 @@ export async function postCommand(
 		let thumbnailUrl = parsed.frontmatter.thumbnailUrl;
 		if (!thumbnailUrl) {
 			logger.info("サムネイルを生成中");
-			const png = await renderThumbnail({ title, tags });
+			const { eyecatchImage, eyecatchEmoji } = parsed.frontmatter;
+			const png = await renderThumbnail({
+				title,
+				tags,
+				// 画像のパスは Markdown ファイルからの相対パスとして解決する
+				eyecatchImage: eyecatchImage
+					? await loadImageAsDataUrl(
+							path.resolve(path.dirname(filePath), eyecatchImage),
+						)
+					: undefined,
+				eyecatchEmoji,
+			});
 			const processed = await processImage(png, {
 				maxSize: THUMBNAIL_MAX_SIZE,
 			});
