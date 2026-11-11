@@ -2,6 +2,7 @@
 	"name": "cms-cli",
 	"version": "1.0.0",
 	"description": "",
+	"type": "module",
 	"main": "cli.ts",
 	"bin": "./dist/cli.js",
 	"scripts": {
