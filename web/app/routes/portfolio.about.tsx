@@ -1,10 +1,22 @@
-import { Mail } from "lucide-react";
+import { Cake, Mail } from "lucide-react";
 import { SectionCard } from "~/features/portfolio/components/SectionCard";
 import { GitHubIcon } from "~/features/top-page/components/GitHubIcon";
 import { TwitterIcon } from "~/features/top-page/components/TwitterIcon";
 import iconImage from "~/features/top-page/images/icon@512.webp";
+import { getElapsedTime, useBirthday } from "~/hooks/useBirthday";
+import type { Route } from "./+types/portfolio.about";
 
-export default function AboutPage() {
+const BIRTHDAY = new Date(2004, 8, 28);
+
+export function loader() {
+  const { age, days, progress } = getElapsedTime(BIRTHDAY, new Date());
+  return { age, days, progress };
+}
+
+export default function AboutPage({ loaderData }: Route.ComponentProps) {
+  const { elapsedTime } = useBirthday(BIRTHDAY);
+  const { age, days, progress } = elapsedTime ?? loaderData;
+
   return (
     <div className="flex min-h-full flex-col gap-8">
       <h1 className="text-3xl font-extrabold">About</h1>
@@ -38,7 +50,21 @@ export default function AboutPage() {
                   </p>
                 </div>
                 <span className="text-sm opacity-60">年齢</span>
-                <span>21歳</span>
+                <div>
+                  <p className="flex items-center gap-2">
+                    <span>{age}歳</span> / <Cake size={16} /> 2004-09-28
+                  </p>
+                  <p className="text-sm opacity-60">
+                    {days}日
+                    {elapsedTime &&
+                      ` ${elapsedTime.hours}時間 ${elapsedTime.minutes}分 ${elapsedTime.seconds}秒`}
+                  </p>
+                  <progress
+                    className="progress w-full"
+                    value={progress * 100}
+                    max={100}
+                  />
+                </div>
               </div>
             </div>
           </div>

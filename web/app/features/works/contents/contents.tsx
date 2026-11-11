@@ -1,9 +1,12 @@
-import { BookText, Link, Megaphone } from "lucide-react";
+import { BookText, Form, Link, Megaphone } from "lucide-react";
 import kanarumeImage from "../images/kanarume.png";
 import moImage from "../images/mo.png";
 import osansakuImage from "../images/osansaku.png";
 import riatoraImage from "../images/riatora.png";
+import sakurallyImage from "../images/sakurally.png";
+import teireiImage from "../images/teireikun.jpg";
 import vbcImage from "../images/vbc.png";
+import warikanImage from "../images/warikan.jpg";
 import githubLogo from "../logos/github-mark.svg";
 import type { Work } from "./types";
 
@@ -52,6 +55,63 @@ export const works = [
       "CDK",
     ],
     image: moImage,
+  },
+  {
+    name: "Sakurally",
+    description:
+      "コミュニティで作り上げるデジタルスタンプラリーツールです。調布市郷土博物館と協力して実証実験をしています。U☆PoC 2026 調布市長賞受賞。",
+    links: [
+      {
+        name: "プレスリリース",
+        to: "https://www.uec.ac.jp/news/newsrelease/2026/20261020_8016.html",
+        Icon: <Megaphone size={16} />,
+        color: "primary",
+      },
+      {
+        name: "広報",
+        to: "https://chofu-city.liqlid.jp/spaceyf09sq5p/info-iq75v0q4",
+        Icon: <Form size={16} />,
+        color: "primary",
+      },
+      {
+        name: "アプリを見る",
+        to: "https://sakurally.com/",
+        Icon: <Link size={16} />,
+        color: "primary",
+      },
+    ],
+    techs: ["React", "Python", "AWS", "Next.js"],
+    image: sakurallyImage,
+  },
+  {
+    name: "warikan",
+    description:
+      "旅行等で使える清算アプリです。誰がいくら払ったかを記録し、最終的なお金の移動量を計算します。",
+    links: [
+      {
+        name: "サイトを見る",
+        to: "https://warikan.kanaru.me",
+        Icon: <Link size={16} />,
+        color: "primary",
+      },
+    ],
+    techs: ["React", "Tanstack Start", "Cloudflare"],
+    image: warikanImage,
+  },
+  {
+    name: "定例くん Pro",
+    description:
+      "なぜか使い慣れた UI で日時や週次の日程調整ができるアプリです。",
+    links: [
+      {
+        name: "サイトを見る",
+        to: "https://teireikun.kanaru.me",
+        Icon: <Link size={16} />,
+        color: "primary",
+      },
+    ],
+    techs: ["React", "React Router", "Cloudflare"],
+    image: teireiImage,
   },
   {
     name: "VRC Browser Chat",
