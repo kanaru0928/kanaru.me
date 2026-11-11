@@ -58,7 +58,8 @@ export const works = [
   },
   {
     name: "Sakurally",
-    description: "コミュニティで作り上げるデジタルスタンプラリーツールです。調布市郷土博物館と協力して実証実験をしています。U☆PoC 2026 調布市長賞受賞。",
+    description:
+      "コミュニティで作り上げるデジタルスタンプラリーツールです。調布市郷土博物館と協力して実証実験をしています。U☆PoC 2026 調布市長賞受賞。",
     links: [
       {
         name: "プレスリリース",
@@ -77,20 +78,21 @@ export const works = [
         to: "https://sakurally.com/",
         Icon: <Link size={16} />,
         color: "primary",
-      }
+      },
     ],
     techs: ["React", "Python", "AWS", "Next.js"],
     image: sakurallyImage,
   },
   {
     name: "warikan",
-    description: "旅行等で使える清算アプリです。誰がいくら払ったかを記録し、最終的なお金の移動量を計算します。",
+    description:
+      "旅行等で使える清算アプリです。誰がいくら払ったかを記録し、最終的なお金の移動量を計算します。",
     links: [
       {
         name: "サイトを見る",
         to: "https://warikan.kanaru.me",
         Icon: <Link size={16} />,
-        color: "primary"
+        color: "primary",
       },
     ],
     techs: ["React", "Tanstack Start", "Cloudflare"],
@@ -98,7 +100,8 @@ export const works = [
   },
   {
     name: "定例くん Pro",
-    description: "なぜか使い慣れた UI で日時や週次の日程調整ができるアプリです。",
+    description:
+      "なぜか使い慣れた UI で日時や週次の日程調整ができるアプリです。",
     links: [
       {
         name: "サイトを見る",
