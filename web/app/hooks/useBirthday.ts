@@ -1,3 +1,4 @@
+import { tz } from "@date-fns/tz";
 import {
   addDays,
   addHours,
@@ -10,6 +11,11 @@ import {
   differenceInYears,
 } from "date-fns";
 import { useEffect, useState } from "react";
+
+/** サーバーとブラウザで結果を揃えるため、日付の計算は常にこのタイムゾーンで行う */
+export const TIME_ZONE = "Asia/Tokyo";
+
+const inTimeZone = tz(TIME_ZONE);
 
 interface ElapsedTime {
   age: number;
@@ -37,9 +43,11 @@ function getProgress(birthday: Date, now: Date) {
 }
 
 /**
- * 誕生日から見た `now` 時点の年齢・経過時間・経過割合を計算する
+ * 誕生日から見た `now` 時点の年齢・経過時間・経過割合を `TIME_ZONE` で計算する
  */
-export function getElapsedTime(birthday: Date, now: Date): ElapsedTime {
+export function getElapsedTime(birthdayDate: Date, nowDate: Date): ElapsedTime {
+  const birthday = inTimeZone(birthdayDate);
+  const now = inTimeZone(nowDate);
   const age = getAge(birthday, now);
   const lastBirthday = addYears(birthday, age);
   const days = differenceInDays(now, lastBirthday);
