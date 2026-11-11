@@ -2,6 +2,7 @@
 	"name": "cms-cli",
 	"version": "1.0.0",
 	"description": "",
+	"type": "module",
 	"main": "cli.ts",
 	"bin": "./dist/cli.js",
 	"scripts": {
@@ -28,6 +29,9 @@
 		"sharp": "^0.34.5"
 	},
 	"devDependencies": {
+		"@aws-sdk/client-dynamodb": "^3.1164.0",
+		"@aws-sdk/client-s3": "^3.1164.0",
+		"@aws-sdk/lib-dynamodb": "^3.1164.0",
 		"@biomejs/biome": "2.6.4",
 		"@rollup/plugin-commonjs": "^28.0.2",
 		"@rollup/plugin-json": "^6.1.0",
