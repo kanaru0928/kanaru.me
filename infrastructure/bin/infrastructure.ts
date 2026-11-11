@@ -15,19 +15,9 @@ const env = {
   githubToken: process.env.GITHUB_TOKEN,
   environmentName: process.env.ENVIRONMENT_NAME,
   buildHash: process.env.BUILD_HASH || process.env.GITHUB_SHA || "unknown",
-  providerClientId: process.env.PROVIDER_CLIENT_ID,
-  providerClientSecret: process.env.PROVIDER_CLIENT_SECRET,
-  providerIssuerUrl: process.env.PROVIDER_ISSUER_URL,
 };
 
-if (
-  !env.certificateArn ||
-  !env.githubToken ||
-  !env.environmentName ||
-  !env.providerClientId ||
-  !env.providerClientSecret ||
-  !env.providerIssuerUrl
-) {
+if (!env.certificateArn || !env.githubToken || !env.environmentName) {
   throw new Error("All environment variables must be set");
 }
 
@@ -38,7 +28,4 @@ new AppStack(app, `AppStack-${env.environmentName}`, {
   githubToken: env.githubToken,
   environmentName: env.environmentName,
   buildHash: env.buildHash,
-  providerClientId: env.providerClientId,
-  providerClientSecret: env.providerClientSecret,
-  providerIssuerUrl: env.providerIssuerUrl,
 });
