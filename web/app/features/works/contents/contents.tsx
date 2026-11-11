@@ -3,11 +3,11 @@ import kanarumeImage from "../images/kanarume.png";
 import moImage from "../images/mo.png";
 import osansakuImage from "../images/osansaku.png";
 import riatoraImage from "../images/riatora.png";
-import vbcImage from "../images/vbc.png";
-import githubLogo from "../logos/github-mark.svg";
-import warikanImage from "../images/warikan.jpg";
-import teireiImage from "../images/teireikun.jpg";
 import sakurallyImage from "../images/sakurally.png";
+import teireiImage from "../images/teireikun.jpg";
+import vbcImage from "../images/vbc.png";
+import warikanImage from "../images/warikan.jpg";
+import githubLogo from "../logos/github-mark.svg";
 import type { Work } from "./types";
 
 export const works = [
