@@ -1,12 +1,13 @@
+import { TZDate } from "@date-fns/tz";
 import { Cake, Mail } from "lucide-react";
 import { SectionCard } from "~/features/portfolio/components/SectionCard";
 import { GitHubIcon } from "~/features/top-page/components/GitHubIcon";
 import { TwitterIcon } from "~/features/top-page/components/TwitterIcon";
 import iconImage from "~/features/top-page/images/icon@512.webp";
-import { getElapsedTime, useBirthday } from "~/hooks/useBirthday";
+import { getElapsedTime, TIME_ZONE, useBirthday } from "~/hooks/useBirthday";
 import type { Route } from "./+types/portfolio.about";
 
-const BIRTHDAY = new Date(2004, 8, 28);
+const BIRTHDAY = new TZDate(2004, 8, 28, TIME_ZONE);
 
 export function loader() {
   const { age, days, progress } = getElapsedTime(BIRTHDAY, new Date());
