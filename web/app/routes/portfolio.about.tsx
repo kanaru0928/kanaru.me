@@ -75,24 +75,34 @@ export default function AboutPage({ loaderData }: Route.ComponentProps) {
         <SectionCard title="資格">
           <ul className="list-inside list-disc space-y-2">
             <li>
-              <span>TOEIC 645 点</span>
-              <div className="badge badge-sm">2026-04</div>
+              <span className="inline-flex items-center gap-2">
+                <span>TOEIC 645 点</span>
+                <div className="badge badge-sm">2026-04</div>
+              </span>
             </li>
             <li>
-              <span className="mr-2">情報処理安全確保支援士試験 合格</span>
-              <div className="badge badge-sm">2025-12</div>
+              <span className="inline-flex items-center gap-2">
+                <span>情報処理安全確保支援士試験 合格</span>
+                <div className="badge badge-sm">2025-12</div>
+              </span>
             </li>
             <li>
-              <span className="mr-2">応用情報技術者試験 合格</span>
-              <div className="badge badge-sm">2024-12</div>
+              <span className="inline-flex items-center gap-2">
+                <span>応用情報技術者試験 合格</span>
+                <div className="badge badge-sm">2024-12</div>
+              </span>
             </li>
             <li>
-              <span className="mr-2">第一種普通自動車運転免許 (AT限定)</span>
-              <div className="badge badge-sm">2023-09</div>
+              <span className="inline-flex items-center gap-2">
+                <span>第一種普通自動車運転免許 (AT限定)</span>
+                <div className="badge badge-sm">2023-09</div>
+              </span>
             </li>
             <li>
-              <span className="mr-2">実用英語技能検定 2級</span>
-              <div className="badge badge-sm">2019-06</div>
+              <span className="inline-flex items-center gap-2">
+                <span>実用英語技能検定 2級</span>
+                <div className="badge badge-sm">2019-06</div>
+              </span>
             </li>
           </ul>
         </SectionCard>
